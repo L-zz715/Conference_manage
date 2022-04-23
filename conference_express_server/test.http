@@ -1,0 +1,22 @@
+@url=http://localhost:3001/api
+@json=Content-Type: application/application/json
+###
+get {{url}}
+
+###
+post {{url}}
+
+### 注册
+post {{url}}/register
+{{json}}
+
+{
+    "userEmail":"admin123@admin.com",
+    "username":"admin123",
+    "password":"123456",
+
+}
+
+### 登录
+post {{url}}/login
+{{json}}
