@@ -1,4 +1,4 @@
-@url=http://localhost:3001/api
+@url=http://localhost:3001
 @json=Content-Type: application/application/json
 ###
 get {{url}}
@@ -7,7 +7,7 @@ get {{url}}
 post {{url}}
 
 ### 注册
-post {{url}}/register
+post {{url}}/api/register
 {{json}}
 
 {
@@ -19,4 +19,8 @@ post {{url}}/register
 
 ### 登录
 post {{url}}/login
+{{json}}
+
+###
+post {{url}}/api/users
 {{json}}
