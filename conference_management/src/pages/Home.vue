@@ -23,23 +23,29 @@
               <i class="el-icon-message"></i>
               用户管理
             </template>
-            <el-menu-item index="1-1">用户列表</el-menu-item>
-            <el-menu-item index="1-2">权限管理</el-menu-item>
+            <el-menu-item index="users">用户列表</el-menu-item>
           </el-submenu>
-          <el-submenu index="2">
+           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-menu"></i>
-              会议管理
+              权限管理
             </template>
-            <el-menu-item index="2-1">会议列表</el-menu-item>
+            <el-menu-item index="roles">角色列表</el-menu-item>
           </el-submenu>
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-menu"></i>
+              会议管理
+            </template>
+            <el-menu-item index="confers">会议列表</el-menu-item>
+          </el-submenu>
+          <el-submenu index="4">
+            <template slot="title">
+              <i class="el-icon-menu"></i>
               文章管理
             </template>
-            <el-menu-item index="3-1">文章列表</el-menu-item>
-            <el-menu-item index="3-2">审核</el-menu-item>
+            <el-menu-item index="papers">文章列表</el-menu-item>
+            <el-menu-item index="review">审核</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
