@@ -1,21 +1,31 @@
-@url=http://localhost:3001
-@json=Content-Type: application/application/json
+@url=http://localhost:4000/
+@json = Content-Type: application/json
+
 ###
 get {{url}}
+
+###
+get {{url}}api/users
+
 
 ###
 post {{url}}
 
 ### 注册
-post {{url}}/api/register
+post {{url}}api/register
 {{json}}
 
 {
-    "userEmail":"admin123@admin.com",
-    "username":"admin123",
+    "username":"user2",
+    "email":"adm123@adm.com",
     "password":"123456",
+    "mobile":"15485625478",
+    "rolelist":["chair", "admin"],
+    "interest":"AI"
 
 }
+###"mobile":"18523425165",
+###"interest_area":"AI"
 
 ### 登录
 post {{url}}/login
