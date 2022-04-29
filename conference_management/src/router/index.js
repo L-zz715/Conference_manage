@@ -27,12 +27,12 @@ const routes = [
     name: 'Home',
     component: Home,
     children:[
-      {
-        path: '/users',
-        name: 'Users',
-        component: Users,
+      // {
+      //   path: '/users',
+      //   name: 'Users',
+      //   component: Users,
     
-      },
+      // },
     ]
   },
 ]

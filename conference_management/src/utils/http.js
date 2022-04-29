@@ -3,12 +3,13 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import baseURL from './baseURL'
 
-const http = {}
+// const http = {}
 
 const instance = axios.create({
     timeout: 5000,
     baseURL
 })
+
 
 //添加请求拦截器
 instance.interceptors.request.use(
@@ -65,4 +66,44 @@ instance.interceptors.response.use(
     }
 )
 
-export default http
+// instance.get = function (url, options) {
+//     return new Promise((resolve, reject) => {
+//         instance
+//             .get(url, options)
+//             .then(response => {
+//                 if (response.code === 0) {
+//                     resolve(response.data)
+//                 } else {
+//                     Message.error({
+//                         message: response.message+"@@@"
+//                     })
+//                     reject(response.message)
+//                 }
+//             })
+//             .catch(e => {
+//                 console.log(e)
+//             })
+//     })
+// }
+
+// instance.post = function (url, data, options) {
+//     return new Promise((resolve, reject) => {
+//         instance
+//             .post(url, data, options)
+//             .then(response => {
+//                 if (response.code === 0) {
+//                     resolve(response.data)
+//                 } else {
+//                     Message.error({
+//                         message: response.message
+//                     })
+//                     reject(response.message)
+//                 }
+//             })
+//             .catch(e => {
+//                 console.log(e)
+//             })
+//     })
+// }
+
+export default instance

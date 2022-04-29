@@ -24,7 +24,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item class="btns">
-          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="primary" @click="loginFuc">登录</el-button>
           <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {login} from '@/api'
+import {login,getAllUser} from '@/api'
 
 export default {
   name: "Login",
@@ -75,8 +75,8 @@ export default {
     };
   },
   methods: {
-    async login() {
-      let data = await login(this.loginForm)
+    async loginFuc() {
+      let {data} = await login(this.loginForm)
       console.log(data)
       // this.$refs.loginFormRef.validate(async (valid) => {
       //   if (!valid) return;

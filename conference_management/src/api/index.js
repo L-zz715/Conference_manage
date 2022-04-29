@@ -1,6 +1,7 @@
 import axios from '@/utils/http'
 import store from '@/store'
 
+
 // export function fetchPermission(){
 //     // 路由权限获取
 //     return axios.get('/api/permission?user=' + store.state.UserToken)
@@ -11,14 +12,16 @@ import store from '@/store'
 //     return axios.get('/api/login?user=' + user)
 // }
 
-export function register(user){
-    return axios.post('/api/register', user)
-}
+// export function register(user){
+//     return axios.post('/api/register', user)
+// }
 
 export function login(user){
-    return axios.post('/api/users',user)
+    return axios.post('login',user)
 }
 
 export function getAllUser(){
-    return axios.get('/api/users')
+    const res = axios.get('users')
+    console.log(res)
+    return axios.get('users')
 }
