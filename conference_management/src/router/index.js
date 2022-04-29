@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/pages/Login'
-import Home from '@/pages/Home'
-import Users from '@/pages/user/Users'
+
+import Login from '@/pages/login'
+import Home from '@/pages/home'
+import NotFound from "@/pages/errorPage/404"
+import Forbidden from "@/pages/errorPage/403"
+import Layout from '@/pages/layout'
 
 Vue.use(VueRouter)
 
+// 初始化路由
 const routes = [
   {
     path: '/',
@@ -31,8 +35,40 @@ const routes = [
       },
     ]
   },
+]
 
-
+// 动态路由
+export const DynamicRoutes = [
+  {
+    path:'',
+    component: Layout,
+    name:'container',
+    // redirect:'home',
+    meta:{
+      requiresAuth:true,
+      name:"首页"
+    },
+    children:[
+      {
+        path:'home',
+        component:Home,
+        name:"home",
+        meta:{
+          //用name进行匹配规则
+          name:"首页",
+          icon:"icon-name"  //显示的图标
+        }
+      }
+    ]
+  },
+  {
+    path:'/403',
+    component:Forbidden
+  },
+  {
+    path:'*',
+    component:NotFound
+  }
 ]
 
 const router = new VueRouter({
