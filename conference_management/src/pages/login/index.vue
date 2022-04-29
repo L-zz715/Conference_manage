@@ -9,9 +9,9 @@
         label-width="25%"
         class="login_form"
       >
-        <el-form-item label="用户：" prop="username">
+        <el-form-item label="邮箱：" prop="email">
           <el-input
-            v-model="loginForm.username"
+            v-model="loginForm.email"
             prefix-icon="el-icon-user-solid"
           >
           </el-input>
@@ -34,21 +34,31 @@
 </template>
 
 <script>
+import {login} from '@/api'
+
 export default {
   name: "Login",
   data() {
+    // 验证邮箱的规则
+    var checkEmail = (rule, value, callback) => {
+      const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+
+      if (regEmail.test(value)) {
+        return callback();
+      }
+
+      callback(new Error("请输入合法的邮箱"));
+    };
     return {
       loginForm: {
-        username: "admin",
+        email: "admin12@adm.com",
         password: "123456",
       },
       loginFormRules: {
-        username: [
-          { required: true, message: "请输入用户名称", trigger: "blur" },
+        email: [
+          { required: true, message: "请输入邮箱", trigger: "blur" },
           {
-            min: 1,
-            max: 15,
-            message: "长度在 1 到 15 个字符",
+            validator: checkEmail,
             trigger: "blur",
           },
         ],
@@ -65,7 +75,9 @@ export default {
     };
   },
   methods: {
-    login() {
+    async login() {
+      let data = await login(this.loginForm)
+      console.log(data)
       // this.$refs.loginFormRef.validate(async (valid) => {
       //   if (!valid) return;
       //   // console.log(this)
@@ -81,7 +93,7 @@ export default {
       //   //保存token
       //   window.sessionStorage.setItem("token", res.data.token);
 
-        this.$router.push("/home");
+        // this.$router.push("/home");
       // });
     },
     resetLoginForm() {

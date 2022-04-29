@@ -1,12 +1,13 @@
 // 封装axios
 import axios from 'axios'
 import { Message } from 'element-ui'
+import baseURL from './baseURL'
 
 const http = {}
 
 const instance = axios.create({
     timeout: 5000,
-    // baseURL
+    baseURL
 })
 
 //添加请求拦截器
