@@ -10,10 +10,7 @@
         class="login_form"
       >
         <el-form-item label="邮箱：" prop="email">
-          <el-input
-            v-model="loginForm.email"
-            prefix-icon="el-icon-user-solid"
-          >
+          <el-input v-model="loginForm.email" prefix-icon="el-icon-user-solid">
           </el-input>
         </el-form-item>
         <el-form-item label="密码：" prop="password">
@@ -34,7 +31,7 @@
 </template>
 
 <script>
-import {login,getAllUser} from '@/api'
+import { login, getAllUser } from "@/api";
 
 export default {
   name: "Login",
@@ -76,32 +73,41 @@ export default {
   },
   methods: {
     async loginFuc() {
-      let {data} = await login(this.loginForm)
-      console.log(data)
-      // this.$refs.loginFormRef.validate(async (valid) => {
-      //   if (!valid) return;
-      //   // console.log(this)
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) return;
 
-      //   const { data: res } = await this.$http.post("login", this.loginForm);
-      //   console.log("sf", res);
-      //   if (res.meta.status !== 200) {
-      //     return this.$message.error("登录失败");
-      //   }
+        let res = await login(this.loginForm);
+        console.log(res);
 
-      //   this.$message.success("登录成功");
+        if (res.meta.status !== 200) {
+          return this.$message.error("登录失败");
+        }
 
-      //   //保存token
-      //   window.sessionStorage.setItem("token", res.data.token);
+        this.$message.success("登录成功");
 
-        // this.$router.push("/home");
-      // });
+        //保存token
+        window.sessionStorage.setItem("token", res.token);
+
+          this.$router.push("/home");
+
+        //   const { data: res } = await this.$http.post("login", this.loginForm);
+        //   console.log("sf", res);
+        //   if (res.meta.status !== 200) {
+        //     return this.$message.error("登录失败");
+        //   }
+
+        //   //保存token
+        //   window.sessionStorage.setItem("token", res.data.token);
+
+      
+      });
     },
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields();
     },
-    loginToHome(){
-      this.$router.push('/home')
-    }
+    loginToHome() {
+      this.$router.push("/home");
+    },
   },
 };
 </script>
