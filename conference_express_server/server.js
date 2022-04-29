@@ -2,7 +2,7 @@ const { User } = require('./models/models')
 
 const express = require('express')
 //导入生成token用的包
-const jwt = require('jsonwebtoken')  
+const jwt = require('jsonwebtoken')
 const keythereum = require("keythereum")
 
 const app = express()
@@ -24,9 +24,9 @@ app.use(express.json())
 
 //从文件中获得储存的密钥
 const address = ''
-const keyObject = keythereum.importFromFile(address, './private/');    
-const privateKey = keythereum.recover('conference management', keyObject); 
-console.log(privateKey.toString('hex')) 
+const keyObject = keythereum.importFromFile(address, './private/');
+const privateKey = keythereum.recover('conference management', keyObject);
+console.log(privateKey.toString('hex'))
 const SECRET = privateKey.toString('hex')
 
 
@@ -44,13 +44,13 @@ app.get('/api/users', async (req, res) => {
 app.post('/api/register', async (req, res) => {
     //判断用户是否已注册
     const hasUser = await User.find().where({
-        email:req.body.email
+        email: req.body.email
     })
 
-    if(hasUser.length > 0){
-        return res.status(403).send({
-            status:403,
-            message:'用户已存在'
+    if (hasUser.length > 0) {
+        return res.send({
+            status: 403,
+            message: '用户已存在'
         })
     }
 
@@ -66,16 +66,21 @@ app.post('/api/register', async (req, res) => {
     res.send(user)
 })
 
-app.post('/api/login', async (req,res)=>{
+app.post('/api/login', async (req, res) => {
     //判断用户是否存在
     const user = await User.findOne({
         email: req.body.email
     })
-    if(!user){
+
+    let meta = {
+        status: 422,
+        message: '用户不存在'
+    }
+
+    if (!user) {
         //用户不存在提交状态码
-        return res.status(422).send({
-            status:422,
-            message:'用户不存在'
+        return res.send({
+            meta: meta
         })
     }
 
@@ -85,10 +90,14 @@ app.post('/api/login', async (req,res)=>{
         user.password
     )
 
-    if(!isPasswordValid){
-        return res.status(422).send({
-            status:422,
-            message:'密码无效'
+    meta = {
+        status: 422,
+        message: '密码无效'
+    }
+
+    if (!isPasswordValid) {
+        return res.send({
+            meta: meta
         })
     }
 
@@ -99,29 +108,29 @@ app.post('/api/login', async (req,res)=>{
         SECRET
     )
 
-    const meta = {
+    meta = {
         status: 200,
-        message:'登录成功'
+        message: '登录成功'
     }
 
     res.send({
         user,
-        meta:meta,
-        token:token
+        meta: meta,
+        token: token
     })
 })
 
 //验证登录中间件
-const authMiddleware = async (req,res,next) =>{ 
+const authMiddleware = async (req, res, next) => {
     const raw = String(req.headers.authorization).split(' ').pop()
     console.log(req.headers)
-    const {id} = jwt.verify(raw, SECRET)    
+    const { id } = jwt.verify(raw, SECRET)
     req.user = await User.findById(id)
-    next() 
+    next()
 }
 
 //获得用户信息
-app.get('/api/profile', authMiddleware, async (req, res) =>{
+app.get('/api/profile', authMiddleware, async (req, res) => {
     res.send(req.user)
 })
 
