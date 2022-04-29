@@ -86,9 +86,14 @@ export default {
         this.$message.success("登录成功");
 
         //保存token
-        window.sessionStorage.setItem("token", res.token);
+        // window.sessionStorage.setItem("token", res.token);
+        let token = res.token
+        let roleList = res.user.rolelist
+        console.log("role",roleList)
+        this.$store.commit("LOGIN_IN", token);
+        this.$store.commit("SET_USERROLELIST", roleList);
 
-          this.$router.push("/home");
+        this.$router.push("/home");
 
         //   const { data: res } = await this.$http.post("login", this.loginForm);
         //   console.log("sf", res);
@@ -98,8 +103,6 @@ export default {
 
         //   //保存token
         //   window.sessionStorage.setItem("token", res.data.token);
-
-      
       });
     },
     resetLoginForm() {
