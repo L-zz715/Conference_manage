@@ -48,7 +48,7 @@ app.post('/api/register', async (req, res) => {
     })
 
     if(hasUser.length > 0){
-        return res.status(403).send({
+        return res.send({
             status:403,
             message:'用户已存在'
         })
@@ -73,7 +73,7 @@ app.post('/api/login', async (req,res)=>{
     })
     if(!user){
         //用户不存在提交状态码
-        return res.status(422).send({
+        return res.send({
             status:422,
             message:'用户不存在'
         })
@@ -86,7 +86,7 @@ app.post('/api/login', async (req,res)=>{
     )
 
     if(!isPasswordValid){
-        return res.status(422).send({
+        return res.send({
             status:422,
             message:'密码无效'
         })
