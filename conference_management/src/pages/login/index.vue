@@ -66,27 +66,30 @@ export default {
   },
   methods: {
     login() {
-      this.$refs.loginFormRef.validate(async (valid) => {
-        if (!valid) return;
-        // console.log(this)
+      // this.$refs.loginFormRef.validate(async (valid) => {
+      //   if (!valid) return;
+      //   // console.log(this)
 
-        const { data: res } = await this.$http.post("login", this.loginForm);
-        console.log("sf", res);
-        if (res.meta.status !== 200) {
-          return this.$message.error("登录失败");
-        }
+      //   const { data: res } = await this.$http.post("login", this.loginForm);
+      //   console.log("sf", res);
+      //   if (res.meta.status !== 200) {
+      //     return this.$message.error("登录失败");
+      //   }
 
-        this.$message.success("登录成功");
+      //   this.$message.success("登录成功");
 
-        //保存token
-        window.sessionStorage.setItem("token", res.data.token);
+      //   //保存token
+      //   window.sessionStorage.setItem("token", res.data.token);
 
         this.$router.push("/home");
-      });
+      // });
     },
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields();
     },
+    loginToHome(){
+      this.$router.push('/home')
+    }
   },
 };
 </script>
