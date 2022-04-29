@@ -16,11 +16,11 @@ post {{url}}api/register
 {{json}}
 
 {
-    "username":"user2",
-    "email":"adm123@adm.com",
+    "username":"admin2",
+    "email":"admin123@adm.com",
     "password":"123456",
     "mobile":"15485625478",
-    "rolelist":["chair", "admin"],
+    "rolelist":["admin"],
     "interest":"AI"
 
 }
@@ -28,8 +28,14 @@ post {{url}}api/register
 ###"interest_area":"AI"
 
 ### 登录
-post {{url}}/login
+post {{url}}api/login
 {{json}}
+
+{
+    "email":"admin122@adm.com",
+    "password":"123456"
+
+}
 
 ###
 post {{url}}/api/users
