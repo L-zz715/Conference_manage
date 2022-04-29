@@ -1,10 +1,18 @@
 export default {
     get UserToken(){
         // 获取存储到本地的token
-        return localStorage.getItem('token')
+        return sessionStorage.getItem('token')
     },
     set UserToken(value){
         // 往本地存储token
-        localStorage.setItem('token', value)
+        sessionStorage.setItem('token', value)
+    },
+    get UserRoleList(){
+        return sessionStorage.getItem('roles')
+    },
+    set UserRoleList(value){
+        sessionStorage.setItem('roles', value.join(","))
+
     }
+
 }
