@@ -1,15 +1,37 @@
 <template>
-  <div>layout</div>
+  <!-- <el-container> -->
+  <div>
+    <Top />
+    <el-container>
+      <SidebarNav class="sidebar" />
+      <Content />
+    </el-container>
+    <!-- </el-container> -->
+  </div>
 </template>
 
 <script>
+import SidebarNav from "./component/sidebar-nav";
+import Top from "./component/top";
+import Content from "./component/content";
 export default {
-    data() {
-        return {}
-    },
-}
+  data() {
+    return {};
+  },
+  components: {
+    SidebarNav,
+    Top,
+    Content,
+  },
+};
 </script>
 
-<style>
+<style scoped>
+.el-container {
+  height: 100%;
+}
 
+div{
+  height: 100%;
+}
 </style>

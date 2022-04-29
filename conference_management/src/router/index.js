@@ -23,6 +23,12 @@ const routes = [
 
   },
   {
+    path: '/layout',
+    name: 'layout',
+    component: Layout,
+
+  },
+  {
     path: '/home',
     name: 'Home',
     component: Home,
