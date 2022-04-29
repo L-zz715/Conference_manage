@@ -93,7 +93,7 @@ export default {
         this.$store.commit("LOGIN_IN", token);
         this.$store.commit("SET_USERROLELIST", roleList);
 
-        this.$router.push("/home");
+        this.$router.replace("/");
 
         //   const { data: res } = await this.$http.post("login", this.loginForm);
         //   console.log("sf", res);
