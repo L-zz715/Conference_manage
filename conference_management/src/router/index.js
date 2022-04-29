@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 
 import Login from '@/pages/login'
 import Home from '@/pages/home'
+import NotFound from "@/pages/errorPage/404"
+import Forbidden from "@/pages/errorPage/403"
+import Layout from '@/pages/layout'
 
 Vue.use(VueRouter)
 
