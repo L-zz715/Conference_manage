@@ -7,7 +7,6 @@ export default{
     },
     SET_USERROLELIST(state, roleList){
         state.UserRoleList = roleList
-        console.log("@@",state.UserRoleList)
     },
     GET_USERROLELIST(state){
         state.UserRoleList = ""

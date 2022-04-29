@@ -77,7 +77,6 @@ export default {
         if (!valid) return;
 
         let res = await login(this.loginForm);
-        console.log(res);
 
         if (res.meta.status !== 200) {
           return this.$message.error("登录失败");
@@ -89,7 +88,6 @@ export default {
         // window.sessionStorage.setItem("token", res.token);
         let token = res.token
         let roleList = res.user.rolelist
-        console.log("role",roleList)
         this.$store.commit("LOGIN_IN", token);
         this.$store.commit("SET_USERROLELIST", roleList);
 
