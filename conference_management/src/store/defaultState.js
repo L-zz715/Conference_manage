@@ -11,7 +11,7 @@ export default {
         return sessionStorage.getItem('roles')
     },
     set UserRoleList(value){
-        sessionStorage.setItem('roles', value.join(","))
+        sessionStorage.setItem('roles', value)
 
     }
 
