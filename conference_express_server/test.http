@@ -97,3 +97,28 @@ post {{url}}api/authorPermiss
     ]
 }
 
+###
+get {{url}}api/reviewerPermiss
+
+
+###
+post {{url}}api/reviewerPermiss
+{{json}}
+
+{
+    "name": "文章管理",
+    "children": [
+        {
+            "name": "文章列表"
+        },
+        {
+            "name": "审核文章"
+        }
+    ]
+}
+
+###
+
+get {{url}}api/permission?role=admin
+
+

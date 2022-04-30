@@ -4,6 +4,7 @@ const express = require('express')
 //导入生成token用的包
 const jwt = require('jsonwebtoken')
 const keythereum = require("keythereum")
+const url = require('url')
 
 const app = express()
 
@@ -364,6 +365,67 @@ app.post('/api/reviewerPermiss', async (req,res)=>{
         meta:meta,
         data:reviewerPermis
     })
+})
+
+app.get('/api/permission', async (req,res)=>{
+
+    const role = url.parse(req.url,true).query.role
+    const meta1 = {
+        status: 403,
+        message: '获取权限失败'
+    }
+    const meta2 = {
+        status: 200,
+        message: '创建权限成功'
+    }
+
+    if(role === 'admin'){
+        const adminPermisList = await AdminPermiss.find()
+        if(!adminPermisList){
+            res.send({meta:meta1})
+        }
+        res.send({
+            meta:meta2,
+            data:adminPermisList
+        })
+
+    }else if(role === 'chair'){
+        const chairPermisList = await ChairPermiss.find()
+        if(!chairPermisList){
+            res.send({meta:meta1})
+        }
+        res.send({
+            meta:meta2,
+            data:chairPermisList
+        })
+    }else if(role === 'author'){
+        const authorPermisList = await AuthorPermiss.find()
+        if(!authorPermisList){
+            res.send({meta:meta1})
+        }
+        res.send({
+            meta:meta2,
+            data:authorPermisList
+        })
+    }else if(role === 'reviewer'){
+        const reviewerPermisList = await ReviewerPermiss.find()
+        if(!reviewerPermisList){
+            res.send({meta:meta1})
+        }
+        res.send({
+            meta:meta2,
+            data:reviewerPermisList
+        })
+    }else{
+        res.send({
+            meta:{
+                status:422,
+                message:'角色不存在'
+            }
+        })
+    }
+
+
 })
 
 app.listen(4000, (err) => {
