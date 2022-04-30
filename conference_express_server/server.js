@@ -1,4 +1,4 @@
-const { User } = require('./models/models')
+const { User, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss } = require('./models/models')
 
 const express = require('express')
 //导入生成token用的包
@@ -132,6 +132,238 @@ const authMiddleware = async (req, res, next) => {
 //获得用户信息
 app.get('/api/profile', authMiddleware, async (req, res) => {
     res.send(req.user)
+})
+
+//获取admin权限
+app.get('/api/adminPermis', async (req, res) => {
+    const adminPermisList = await AdminPermiss.find()
+    let meta = {
+        status: 403,
+        message: '获取权限失败'
+    }
+
+    if(!adminPermisList){
+        return res.send({
+            meta:meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '获取权限成功'
+    }
+
+    res.send({
+        meta:meta,
+        data:adminPermisList
+    })
+})
+
+//给admin添加权限
+app.post('/api/adminPermis', async (req,res)=>{
+
+    const hasAdminPermis = await AdminPermiss.findOne({
+        name: req.body.name
+    })
+
+    let meta = {
+        status: 403,
+        message: '权限已存在'
+    }
+
+    if (hasAdminPermis) {
+        return res.send({
+            meta: meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '创建权限成功'
+    }
+
+    const adminPermis = await AdminPermiss.create({
+        name:req.body.name,
+        children:req.body.children
+    })
+    res.send({
+        meta:meta,
+        data:adminPermis
+    })
+})
+
+//获取chair权限
+app.get('/api/chairPermiss', async (req, res) => {
+    const chairPermisList = await ChairPermiss.find()
+    let meta = {
+        status: 403,
+        message: '获取权限失败'
+    }
+
+    if(!chairPermisList){
+        return res.send({
+            meta:meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '获取权限成功'
+    }
+
+    res.send({
+        meta:meta,
+        data:chairPermisList
+    })
+})
+
+//给chair添加权限
+app.post('/api/chairPermiss', async (req,res)=>{
+
+    const hasChairPermis = await ChairPermiss.findOne({
+        name: req.body.name
+    })
+
+    let meta = {
+        status: 403,
+        message: '权限已存在'
+    }
+
+    if (hasChairPermis) {
+        return res.send({
+            meta: meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '创建权限成功'
+    }
+
+    const chairPermis = await ChairPermiss.create({
+        name:req.body.name,
+        children:req.body.children
+    })
+    res.send({
+        meta:meta,
+        data:chairPermis
+    })
+})
+
+//获取author权限
+app.get('/api/authorPermiss', async (req, res) => {
+    const authorPermisList = await AuthorPermiss.find()
+    let meta = {
+        status: 403,
+        message: '获取权限失败'
+    }
+
+    if(!authorPermisList){
+        return res.send({
+            meta:meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '获取权限成功'
+    }
+
+    res.send({
+        meta:meta,
+        data:authorPermisList
+    })
+})
+
+//给author添加权限
+app.post('/api/authorPermiss', async (req,res)=>{
+
+    const hasAuthorPermis = await AuthorPermiss.findOne({
+        name: req.body.name
+    })
+
+    let meta = {
+        status: 403,
+        message: '权限已存在'
+    }
+
+    if (hasAuthorPermis) {
+        return res.send({
+            meta: meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '创建权限成功'
+    }
+
+    const authorPermis = await AuthorPermiss.create({
+        name:req.body.name,
+        children:req.body.children
+    })
+    res.send({
+        meta:meta,
+        data:authorPermis
+    })
+})
+
+//获取reviewer权限
+app.get('/api/reviewerPermiss', async (req, res) => {
+    const reviewerPermisList = await ReviewerPermiss.find()
+    let meta = {
+        status: 403,
+        message: '获取权限失败'
+    }
+
+    if(!reviewerPermisList){
+        return res.send({
+            meta:meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '获取权限成功'
+    }
+
+    res.send({
+        meta:meta,
+        data:reviewerPermisList
+    })
+})
+
+//给reviewer添加权限
+app.post('/api/reviewerPermiss', async (req,res)=>{
+
+    const hasReviewerPermis = await ReviewerPermiss.findOne({
+        name: req.body.name
+    })
+
+    let meta = {
+        status: 403,
+        message: '权限已存在'
+    }
+
+    if (hasReviewerPermis) {
+        return res.send({
+            meta: meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '创建权限成功'
+    }
+
+    const reviewerPermis = await ReviewerPermiss.create({
+        name:req.body.name,
+        children:req.body.children
+    })
+    res.send({
+        meta:meta,
+        data:reviewerPermis
+    })
 })
 
 app.listen(4000, (err) => {

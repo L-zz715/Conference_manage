@@ -38,5 +38,62 @@ post {{url}}api/login
 }
 
 ###
-post {{url}}/api/users
+get {{url}}api/adminPermis
+
+
+###
+post {{url}}api/adminPermis
 {{json}}
+
+{
+    "name": "文章管理",
+    "children": [
+        {
+            "name": "文章列表"
+        }
+    ]
+}
+
+###
+get {{url}}api/chairPermiss
+
+
+###
+post {{url}}api/chairPermiss
+{{json}}
+
+{
+    "name": "文章管理",
+    "children": [
+        {
+            "name": "文章列表"
+        },
+        {
+            "name": "提交文章"
+        },
+        {
+            "name": "审核分配"
+        }
+    ]
+}
+
+###
+get {{url}}api/authorPermiss
+
+
+###
+post {{url}}api/authorPermiss
+{{json}}
+
+{
+    "name": "文章管理",
+    "children": [
+        {
+            "name": "文章列表"
+        },
+        {
+            "name": "提交文章"
+        }
+    ]
+}
+
