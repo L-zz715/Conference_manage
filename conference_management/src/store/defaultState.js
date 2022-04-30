@@ -13,6 +13,9 @@ export default {
     set UserRoleList(value){
         sessionStorage.setItem('roles', value)
 
-    }
+    },
+    currentRole:''
+
+
 
 }

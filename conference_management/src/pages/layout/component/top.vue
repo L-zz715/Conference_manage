@@ -2,6 +2,7 @@
 <!-- <el-container> -->
   <el-header>
     <span>会议管理系统</span>
+     <el-button @click="testP">test</el-button>
     <el-button type="danger" size="mini" round @click="logout"
       >log out</el-button
     >
@@ -10,6 +11,7 @@
 </template>
 
 <script>
+import {fetchPermission} from "@/api"
 export default {
   data() {
     return {};
@@ -18,6 +20,12 @@ export default {
     logout() {
       this.$router.push("login");
     },
+     async testP(){
+      let res = await fetchPermission()
+      console.log('@',this.$store.state.currentRole)
+      // let res = await axios.get('/api/permission?role=' + this.$store.state.currentRole)
+      console.log('@@@',res)
+    }
   },
 };
 </script>

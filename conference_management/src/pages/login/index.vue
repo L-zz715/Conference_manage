@@ -72,10 +72,11 @@ export default {
     };
   },
   methods: {
-    async loginFuc() {
+    loginFuc() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return;
 
+        //调用封装的login
         let res = await login(this.loginForm);
 
         if (res.meta.status !== 200) {
@@ -90,6 +91,7 @@ export default {
         let roleList = res.user.rolelist
         this.$store.commit("LOGIN_IN", token);
         this.$store.commit("SET_USERROLELIST", roleList);
+        this.$store.commit("SET_CURRENTROLE", roleList[0]);
 
         this.$router.replace("/");
 

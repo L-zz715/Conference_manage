@@ -10,6 +10,12 @@ export default{
     },
     GET_USERROLELIST(state){
         state.UserRoleList = ""
-    }
+    },
+    SET_CURRENTROLE(state, role){
+        state.currentRole = role
+    },
+    GET_CURRENTROLE(state){
+        state.currentRole = ""
+    },
     
 }

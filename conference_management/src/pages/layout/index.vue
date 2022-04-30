@@ -5,6 +5,7 @@
     <el-container>
       <SidebarNav class="sidebar" />
       <Content />
+     
     </el-container>
     <!-- </el-container> -->
   </div>
@@ -23,6 +24,7 @@ export default {
     Top,
     Content,
   },
+ 
 };
 </script>
 
