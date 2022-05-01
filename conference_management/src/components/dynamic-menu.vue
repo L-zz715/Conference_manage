@@ -50,5 +50,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.iconfont{
+  font-size: 18px;
+  color: white;
+  margin-right: 10px;
+}
 </style>

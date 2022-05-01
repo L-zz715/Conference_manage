@@ -25,7 +25,6 @@
           <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
-      <el-button type="primary" round @click="loginToHome">login</el-button>
     </div>
   </div>
 </template>
@@ -96,9 +95,6 @@ export default {
     },
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields();
-    },
-    loginToHome() {
-      this.$router.push("/home");
     },
   },
 };

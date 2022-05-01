@@ -22,7 +22,7 @@ const allRoutes = [
         name:'user',
         meta: {
             name:'用户管理',
-            icon: 'icon-service'
+            icon: 'el-icon-user'
         },
         children:[
             {
@@ -31,7 +31,7 @@ const allRoutes = [
                 name:'user-list',
                 meta: {
                     name:'用户列表',
-                    icon: 'icon-service'
+                    icon: 'el-icon-document'
                 },
             }
         ]
@@ -42,7 +42,7 @@ const allRoutes = [
         name:'role',
         meta: {
             name:'角色管理',
-            icon: 'icon-service'
+            icon: 'el-icon-setting'
         },
         children:[
             {
@@ -51,7 +51,7 @@ const allRoutes = [
                 name:'role-list',
                 meta: {
                     name:'角色列表',
-                    icon: 'icon-service'
+                    icon: 'el-icon-document'
                 },
             }
         ]
@@ -62,7 +62,7 @@ const allRoutes = [
         name:'conference',
         meta: {
             name:'会议管理',
-            icon: 'icon-service'
+            icon: 'el-icon-video-camera'
         },
         children:[
             {
@@ -71,7 +71,7 @@ const allRoutes = [
                 name:'conference-list',
                 meta: {
                     name:'会议列表',
-                    icon: 'icon-service'
+                    icon: 'el-icon-document'
                 },
             }
         ]
@@ -82,7 +82,7 @@ const allRoutes = [
         name:'paper',
         meta: {
             name:'文章管理',
-            icon: 'icon-service'
+            icon: 'el-icon-notebook-1'
         },
         children:[
             {
@@ -91,7 +91,7 @@ const allRoutes = [
                 name:'paper-list',
                 meta: {
                     name:'文章列表',
-                    icon: 'icon-service'
+                    icon: 'el-icon-document'
                 },
             },
             {
@@ -100,7 +100,7 @@ const allRoutes = [
                 name:'paper-submit',
                 meta: {
                     name:'提交文章',
-                    icon: 'icon-service'
+                    icon: 'el-icon-document-checked'
                 },
             },
             {
@@ -109,7 +109,7 @@ const allRoutes = [
                 name:'paper-review-assign',
                 meta: {
                     name:'审核分配',
-                    icon: 'icon-service'
+                    icon: 'el-icon-s-management'
                 },
             },
             {
@@ -118,7 +118,7 @@ const allRoutes = [
                 name:'paper-review-submit',
                 meta: {
                     name:'审核文章',
-                    icon: 'icon-service'
+                    icon: 'el-icon-s-check'
                 },
             }
         ]

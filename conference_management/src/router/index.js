@@ -61,7 +61,7 @@ export const DynamicRoutes = [
         meta:{
           //用name进行匹配规则
           name:"首页",
-          icon:"icon-name"  //显示的图标
+          icon:"el-icon-s-grid"  //显示的图标
         }
       }
     ]
