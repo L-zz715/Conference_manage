@@ -22,25 +22,25 @@ const routes = [
     component: Login,
 
   },
-  {
-    path: '/layout',
-    name: 'layout',
-    component: Layout,
+  // {
+  //   path: '/layout',
+  //   name: 'layout',
+  //   component: Layout,
 
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: Home,
-    children:[
+  // },
+  // {
+  //   path: '/home',
+  //   name: 'Home',
+  //   component: Home,
+  //   children:[
       // {
       //   path: '/users',
       //   name: 'Users',
       //   component: Users,
     
       // },
-    ]
-  },
+    // ]
+  // },
 ]
 
 // 动态路由
@@ -49,7 +49,6 @@ export const DynamicRoutes = [
     path:'',
     component: Layout,
     name:'container',
-    // redirect:'home',
     meta:{
       requiresAuth:true,
       name:"首页"

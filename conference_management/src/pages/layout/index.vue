@@ -1,5 +1,4 @@
 <template>
-  <!-- <el-container> -->
   <div>
     <Top />
     <el-container>
@@ -7,7 +6,6 @@
       <Content />
      
     </el-container>
-    <!-- </el-container> -->
   </div>
 </template>
 

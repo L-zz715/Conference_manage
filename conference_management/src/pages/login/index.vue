@@ -78,31 +78,20 @@ export default {
 
         //调用封装的login
         let res = await login(this.loginForm);
-
         if (res.meta.status !== 200) {
           return this.$message.error("登录失败");
         }
-
         this.$message.success("登录成功");
 
         //保存token
-        // window.sessionStorage.setItem("token", res.token);
         let token = res.token
         let roleList = res.user.rolelist
         this.$store.commit("LOGIN_IN", token);
+        //保存角色信息
         this.$store.commit("SET_USERROLELIST", roleList);
         this.$store.commit("SET_CURRENTROLE", roleList[0]);
 
-        this.$router.replace("/");
-
-        //   const { data: res } = await this.$http.post("login", this.loginForm);
-        //   console.log("sf", res);
-        //   if (res.meta.status !== 200) {
-        //     return this.$message.error("登录失败");
-        //   }
-
-        //   //保存token
-        //   window.sessionStorage.setItem("token", res.data.token);
+        this.$router.replace("/").catch(()=>{});
       });
     },
     resetLoginForm() {

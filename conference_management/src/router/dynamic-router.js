@@ -19,7 +19,7 @@ const allRoutes = [
     {
         path:'/user',
         component: User,
-        name:'user-manage',
+        name:'user',
         meta: {
             name:'用户管理',
             icon: 'icon-service'
@@ -39,7 +39,7 @@ const allRoutes = [
     {
         path:'/role',
         component: Role,
-        name:'role-manage',
+        name:'role',
         meta: {
             name:'角色管理',
             icon: 'icon-service'
@@ -59,7 +59,7 @@ const allRoutes = [
     {
         path:'/conference',
         component: Conference,
-        name:'conference-manage',
+        name:'conference',
         meta: {
             name:'会议管理',
             icon: 'icon-service'
@@ -79,7 +79,7 @@ const allRoutes = [
     {
         path:'/paper',
         component: Paper,
-        name:'paper-manage',
+        name:'paper',
         meta: {
             name:'文章管理',
             icon: 'icon-service'

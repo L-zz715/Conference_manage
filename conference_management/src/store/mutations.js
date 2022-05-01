@@ -8,13 +8,13 @@ export default{
     SET_USERROLELIST(state, roleList){
         state.UserRoleList = roleList
     },
-    GET_USERROLELIST(state){
+    CLEAR_USERROLELIST(state){
         state.UserRoleList = ""
     },
     SET_CURRENTROLE(state, role){
         state.currentRole = role
     },
-    GET_CURRENTROLE(state){
+    CLEAR_CURRENTROLE(state){
         state.currentRole = ""
     },
     

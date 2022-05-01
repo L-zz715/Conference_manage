@@ -7,38 +7,8 @@
       text-color="#fff"
       active-text-color="#409EFF"
       :unique-opened="true"
-      :router="true"
-      :default-active="activePath"
-    >
-      <!-- <el-submenu index="1">
-        <template slot="title">
-          <i class="el-icon-message"></i>
-          用户管理
-        </template>
-        <el-menu-item index="users">用户列表</el-menu-item>
-      </el-submenu>
-      <el-submenu index="2">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          权限管理
-        </template>
-        <el-menu-item index="roles">角色列表</el-menu-item>
-      </el-submenu>
-      <el-submenu index="3">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          会议管理
-        </template>
-        <el-menu-item index="confers">会议列表</el-menu-item>
-      </el-submenu>
-      <el-submenu index="4">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          文章管理
-        </template>
-        <el-menu-item index="papers">文章列表</el-menu-item>
-        <el-menu-item index="review">审核</el-menu-item>
-      </el-submenu> -->
+      :default-active="currentMenu"
+    >  
       <DynamicMenu :menuList="sidebarMenu"></DynamicMenu>
     </el-menu>
   </el-aside>
@@ -46,6 +16,7 @@
 
 <script>
 import DynamicMenu from "@/components/dynamic-menu";
+import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -53,6 +24,9 @@ export default {
       isCollapse: false,
       activePath: "",
     };
+  },
+  computed: {
+    ...mapState("permission", ["sidebarMenu", "currentMenu"]),
   },
   components: {
     DynamicMenu,

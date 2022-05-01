@@ -1,31 +1,27 @@
 <template>
-<!-- <el-container> -->
+  <!-- <el-container> -->
   <el-header>
     <span>会议管理系统</span>
-     <el-button @click="testP">test</el-button>
     <el-button type="danger" size="mini" round @click="logout"
       >log out</el-button
     >
   </el-header>
-<!-- </el-container> -->
+  <!-- </el-container> -->
 </template>
 
 <script>
-import {fetchPermission} from "@/api"
+import { fetchPermission } from "@/api";
 export default {
   data() {
     return {};
   },
   methods: {
     logout() {
-      this.$router.push("login");
+      this.$store.commit("LOGIN_OUT");
+      this.$store.commit("CLEAR_USERROLELIST");
+      window.location.reload();
     },
-     async testP(){
-      let res = await fetchPermission()
-      console.log('@',this.$store.state.currentRole)
-      // let res = await axios.get('/api/permission?role=' + this.$store.state.currentRole)
-      console.log('@@@',res)
-    }
+   
   },
 };
 </script>

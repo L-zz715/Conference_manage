@@ -1,6 +1,5 @@
 <template>
   <el-main>
-      asdfds
     <router-view></router-view>
   </el-main>
 </template>
