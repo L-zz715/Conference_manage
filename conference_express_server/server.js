@@ -132,7 +132,15 @@ const authMiddleware = async (req, res, next) => {
 
 //获得用户信息
 app.get('/api/profile', authMiddleware, async (req, res) => {
-    res.send(req.user)
+    const meta = {
+        status: 200,
+        message: '获得用户信息成功'
+    }
+    res.send({
+        data: req.user,
+        meta: meta,
+
+    })
 })
 
 //获取admin权限
