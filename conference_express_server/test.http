@@ -12,11 +12,11 @@ post {{url}}register
 {{json}}
 
 {
-    "username":"user1",
-    "email":"user123@use.com",
+    "username":"user2",
+    "email":"user233@use.com",
     "password":"123456",
     "mobile":"15485625478",
-    "rolelist":["chair","author"],
+    "rolelist":["chair","reviewer"],
     "interest":"AI"
 
 }
@@ -27,7 +27,7 @@ post {{url}}login
 
 {
     "email":"admin1255@adm.com",
-    "password":"123dsaf56"
+    "password":"123456"
 
 }
 
@@ -118,4 +118,15 @@ get {{url}}permission?role=admin
 ###
 get {{url}}roles
 
+###
+post {{url}}roles
+{{json}}
 
+{
+    "rolename":"reviewer",
+    "description":"Paper reviewer"
+}
+
+###
+get {{url}}profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90
