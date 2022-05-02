@@ -55,6 +55,13 @@ const reviewerPermisSchema = new mongoose.Schema({
 
 const ReviewerPermiss = mongoose.model('ReviewerPermiss', reviewerPermisSchema)
 
+const RoleSchema = new mongoose.Schema({
+    rolename: { type: String, unique: true },
+    description: { type: String },
+})
+
+const Role = mongoose.model('Role', RoleSchema)
+
 // const ConferenceSchema = new mongoose.Schema({
 //     confername:{},
 //     title:{},
@@ -64,6 +71,6 @@ const ReviewerPermiss = mongoose.model('ReviewerPermiss', reviewerPermisSchema)
 //     paperList:[{type}]
 // })
 
-module.exports = { User, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss }
+module.exports = { User, Role, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss }
 
 
