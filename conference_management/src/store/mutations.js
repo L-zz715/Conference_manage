@@ -16,6 +16,7 @@ export default{
     },
     CLEAR_CURRENTROLE(state){
         state.currentRole = ""
+
     },
     
 }
