@@ -9,6 +9,7 @@ export default {
         permissionList:null,
         sidebarMenu:[],// 导航菜单
         currentMenu:'home', // 高亮
+        selectedMenuName:[]
     },
     mutations:{
         SET_PERMISSION(state,routes){
@@ -25,6 +26,9 @@ export default {
         },
         SET_CURRENTMENU(state, selectedMenu){
             state.currentMenu = selectedMenu
+        },
+        SET_SELECTEDMENUNAME(state, selectedMenuNameList){
+            state.selectedMenuName = selectedMenuNameList
         }
     },
     // 异步访问

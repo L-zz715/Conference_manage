@@ -13,14 +13,14 @@
         </template>
         <!-- 调用自己走下面的else获得二级菜单 -->
         <el-menu-item-group>
-          <my-nav :menuList="v.children"></my-nav>
+          <my-nav :menuList="v.children" :firstmenu="v.meta.name"></my-nav>
         </el-menu-item-group>
       </el-submenu>
       <!-- 二级菜单 -->
       <el-menu-item
         :key="v.name"
         :index="v.name"
-        @click="gotoRoute(v.name)"
+        @click="gotoRoute(firstmenu,v.meta.name,v.name)"
         v-else
       >
         <i class="iconfont" :class="v.meta.icon"></i>
@@ -40,11 +40,18 @@ export default {
         return [];
       },
     },
+    firstmenu:{
+      type:String,
+      default:''
+    }
   },
   methods: {
-    gotoRoute(name) {
+    gotoRoute(firstmenu,secondmenu,name) {
+      console.log(firstmenu)
+      const selectedMenu = [firstmenu, secondmenu]
       this.$router.push({ name }).catch(()=>{}); 
       this.$store.commit("permission/SET_CURRENTMENU",name)
+      this.$store.commit("permission/SET_SELECTEDMENUNAME",selectedMenu)
     },
   },
 };
