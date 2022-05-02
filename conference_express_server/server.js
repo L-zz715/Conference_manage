@@ -1,4 +1,4 @@
-const { User, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss } = require('./models/models')
+const { User, Role, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss } = require('./models/models')
 
 const express = require('express')
 //导入生成token用的包
@@ -33,7 +33,7 @@ const SECRET = privateKey.toString('hex')
 
 
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('ok')
 })
 
@@ -368,7 +368,7 @@ app.post('/api/reviewerPermiss', async (req,res)=>{
 })
 
 app.get('/api/permission', async (req,res)=>{
-
+    //解析url 获得传参role的值
     const role = url.parse(req.url,true).query.role
     const meta1 = {
         status: 403,
@@ -426,6 +426,39 @@ app.get('/api/permission', async (req,res)=>{
     }
 
 
+})
+
+app.get('/api/roles', async (req, res)=>{
+    const roles = await Role.find()
+    res.send(roles)
+})
+
+app.post('/api/roles', async (req, res)=>{
+    const hasRole = await Role.findOne({
+        rolename:req.body.rolename
+    })
+    
+    let meta = {
+        status: 403,
+        message: '角色已存在'
+    }
+
+    if(hasRole){
+        res.send({
+            meta:meta,
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '创建角色成功'
+    }
+
+    const role = await Role.create({
+        rolename: req.body.rolename,
+        description: req.body.description
+    })
+    res.send(role)
 })
 
 app.listen(4000, (err) => {
