@@ -12,6 +12,10 @@ router.beforeEach((to,from,next)=>{
         }
     }else{
         if(!store.state.permission.permissionList){
+            store.commit(
+                "SET_CURRENTROLE",
+                window.sessionStorage.getItem("currentRole")
+              )
             store.dispatch("permission/FETCH_PERMISSION").then(() =>{
                 next({
                     path:to.path

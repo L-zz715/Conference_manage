@@ -10,7 +10,7 @@ import Layout from '@/pages/layout'
 Vue.use(VueRouter)
 
 // 初始化路由
-const routes = [
+export const routes = [
   // {
   //   path: '/',
   //   redirect: '/login',

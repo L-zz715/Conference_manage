@@ -89,7 +89,7 @@ export default {
         //保存角色信息
         this.$store.commit("SET_USERROLELIST", roleList);
         this.$store.commit("SET_CURRENTROLE", roleList[0]);
-
+        window.sessionStorage.setItem("currentRole",roleList[0])
         this.$router.replace("/").catch(()=>{});
       });
     },
