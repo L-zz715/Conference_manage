@@ -47,7 +47,6 @@ export default {
   },
   methods: {
     gotoRoute(firstmenu,secondmenu,name) {
-      console.log(firstmenu)
       const selectedMenu = [firstmenu, secondmenu]
       this.$router.push({ name }).catch(()=>{}); 
       this.$store.commit("permission/SET_CURRENTMENU",name)
