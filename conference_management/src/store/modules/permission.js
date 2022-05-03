@@ -9,17 +9,18 @@ export default {
         permissionList: null,
         sidebarMenu: [],// 导航菜单
         currentMenu: 'home', // 高亮
-        selectedMenuName: []
+        selectedMenuName: [],
+        userProfile:null
     },
     mutations: {
         SET_PERMISSION(state, routes) {
-            state.permissionList = routes;
+            state.permissionList = routes
         },
         CLEAR_PERMSSION(state) {
-            state.permissionList = null;
+            state.permissionList = null
         },
         SET_MENU(state, menu) {
-            state.sidebarMenu = menu;
+            state.sidebarMenu = menu
         },
         CLEAR_MENU(state) {
             state.sidebarMenu = []
@@ -29,6 +30,12 @@ export default {
         },
         SET_SELECTEDMENUNAME(state, selectedMenuNameList) {
             state.selectedMenuName = selectedMenuNameList
+        },
+        GET_USERPROFILE(state,userProfile){
+            state.userProfile = userProfile
+        },
+        CLEAR_USERPROFILE(state){
+            state.userProfile = null
         }
     },
     // 异步访问
@@ -36,10 +43,8 @@ export default {
         async FETCH_PERMISSION({ commit, state }) {
            
             let permissionList = await fetchPermission();
-            console.log("zhixingl")
             // 筛选
             let newRoutes = recursionRouter(permissionList.data, allRoutes);
-            // console.log(routes)
             let MainContainer = DynamicRoutes.find(v => v.path === "");
 
             let children = MainContainer.children;

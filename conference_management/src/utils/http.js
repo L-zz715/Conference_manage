@@ -15,9 +15,9 @@ const instance = axios.create({
 instance.interceptors.request.use(
     function (config) {
         // 请求头添加token
-        // if (store.state.UserToken) {
-        //     config.headers.Authorization = store.state.UserToken
-        // }
+        if(window.sessionStorage.getItem('token')){
+            config.headers.Authorization = window.sessionStorage.getItem('token')
+        }
         return config
     },
     function (err) {

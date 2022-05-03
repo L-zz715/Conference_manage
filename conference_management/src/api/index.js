@@ -19,3 +19,8 @@ export function getAllUsers(){
 export function getAllRoles(){
     return axios.get('roles')
 }
+
+export function  getProfile(token){
+    const authTok = token
+    return axios.get('profile', authTok)
+}

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/home' }" @click.native="changeCurrentMenu">首页</el-breadcrumb-item>
       <el-breadcrumb-item>{{ selectedMenuName[0] }}</el-breadcrumb-item>
       <el-breadcrumb-item>{{ selectedMenuName[1] }}</el-breadcrumb-item>
     </el-breadcrumb>
@@ -20,6 +20,9 @@ export default {
     };
   },
   methods:{
+    changeCurrentMenu(){
+      this.$store.commit("permission/SET_CURRENTMENU","home")
+    }
   },
   computed:{
       ...mapState("permission",["selectedMenuName"])
