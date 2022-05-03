@@ -75,10 +75,11 @@
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
+import {getAllUsers} from '@/api'
 export default {
   name: "Users-list",
   components: { Breadcrumb,Search,AddButton },
-  //   data() {
+    data() {
   //       const testUsers = {
   //           username:'addd',
   //           email:'addd123@gmail.com',
@@ -87,18 +88,26 @@ export default {
   //           'role_names':['admin','chair','author'],
   //           'interest_area':'AI'
   //       }
-  //     return {
+      return {
   //       queryInfo: {
   //         query: "",
   //         pagenum: 1, // 当前的页数
   //         pagesize: 10, // 当前每页显示多少条数据
   //       },
-  //       userList: Array(20).fill(testUsers),
+        userList: [],
   //       total: 0,
 
-  //     };
-  //   },
+      }
+    },
+  created(){
+    this.getUserList()
+  },
   methods: {
+    async getUserList(){
+      let res = await getAllUsers()
+      this.userList = res.data
+      console.log('@@@',res)
+    },
     // 根据字段搜索更新显示数据
     searchManyFunc(queryP) {},
     // 改变添加用户对话框的可见
