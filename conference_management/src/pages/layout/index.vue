@@ -13,6 +13,7 @@
 import SidebarNav from "./component/sidebar-nav";
 import Top from "./component/top";
 import Content from "./component/content";
+import {getProfile} from "@/api/index"
 export default {
   data() {
     return {};
@@ -22,6 +23,14 @@ export default {
     Top,
     Content,
   },
+  created(){
+    this.getUserPro()
+  },
+  methods:{
+    async getUserPro(){
+      let res = await getProfile(window.sessionStorage.getItem("token"))
+    }
+  }
  
 };
 </script>

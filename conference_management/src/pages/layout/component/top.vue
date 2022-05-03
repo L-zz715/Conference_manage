@@ -2,7 +2,7 @@
   <!-- <el-container> -->
   <el-header>
     <span class="title">会议管理系统</span>
-    <span class="role_label">你好， </span>
+    <span class="role_label">你好，{{username}} </span>
     <span >用户角色：</span>
     <el-select
       v-model="value"
@@ -22,25 +22,30 @@
 </template>
 
 <script>
-import { fetchPermission } from "@/api";
 import { mapState } from "vuex";
 export default {
   data() {
     return {
       currentUserRoleList: [],
       value: '',
+      username:''
     };
   },
   created() {
     this.getRoleList();
     this.value = this.currentRole
+    this.username = this.userProfile.username
   },
   computed: {
     ...mapState(["UserRoleList", "currentRole"]),
+    ...mapState("permission",["userProfile"])
   },
   methods: {
     getRoleList() {
       this.currentUserRoleList = this.UserRoleList.split(",");
+    },
+    getUserProfile(){
+
     },
     logout() {
       this.$store.commit("LOGIN_OUT");
@@ -75,7 +80,7 @@ export default {
 .el-header .role_label{
   font-size: 18px;
   color: #fff;
-  margin-left: 60%;
+  margin-left: 55%;
 }
 
 .el-button{
