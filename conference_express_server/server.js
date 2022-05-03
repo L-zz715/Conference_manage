@@ -39,7 +39,23 @@ app.get('/api', (req, res) => {
 
 app.get('/api/users', async (req, res) => {
     const users = await User.find()
-    res.send(users)
+    let meta={
+        status:403,
+        message:'获取用户信息失败'
+    }
+    if(!users){
+        res.send({
+            meta:meta
+        })
+    }
+    meta={
+        status:200,
+        message:'获取用户信息成功'
+    }
+    res.send({
+        meta:meta,
+        data:user
+    })
 })
 
 app.post('/api/register', async (req, res) => {
@@ -438,7 +454,24 @@ app.get('/api/permission', async (req,res)=>{
 
 app.get('/api/roles', async (req, res)=>{
     const roles = await Role.find()
-    res.send(roles)
+
+    let meta={
+        status:403,
+        message:'获取角色信息失败'
+    }
+    if(!roles){
+        res.send({
+            meta:meta
+        })
+    }
+    meta={
+        status:200,
+        message:'获取角色信息成功'
+    }
+    res.send({
+        meta:meta,
+        data:roles
+    })
 })
 
 app.post('/api/roles', async (req, res)=>{
