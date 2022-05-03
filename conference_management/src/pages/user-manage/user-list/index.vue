@@ -96,13 +96,13 @@ export default {
     //           'interest_area':'AI'
     //       }
     return {
-      //       queryInfo: {
-      //         query: "",
-      //         pagenum: 1, // 当前的页数
-      //         pagesize: 10, // 当前每页显示多少条数据
-      //       },
+      queryInfo: {
+        query: "",
+        pagenum: 1, // 当前的页数
+        pagesize: 10, // 当前每页显示多少条数据
+      },
       userList: [],
-      //       total: 0,
+      total: 0,
     };
   },
   created() {
@@ -118,7 +118,10 @@ export default {
       this.$message.success(res.meta.message);
     },
     // 根据字段搜索更新显示数据
-    searchManyFunc(queryP) {},
+    searchManyFunc(queryP) {
+      this.queryInfo.query = queryP;
+      this.getUserList();
+    },
     // 改变添加用户对话框的可见
     transAddDialogVisible() {},
   },
