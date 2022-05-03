@@ -14,9 +14,6 @@ export default {
   name: "Breadcrumb",
   data() {
     return {
-      firstNav: "",
-      secNav: "",
-      navList:[]
     };
   },
   methods:{
