@@ -54,7 +54,7 @@ app.get('/api/users', async (req, res) => {
     }
     res.send({
         meta:meta,
-        data:user
+        data:users
     })
 })
 
