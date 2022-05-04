@@ -67,6 +67,9 @@ app.get('/api/users', authMiddleware, async (req, res) => {
         status: 200,
         message: '获取用户信息成功'
     }
+    const userNum = await User.find().where({
+        username: reg
+    }).count()
     // if(req.query.query === ''){
     //     users = await User.find().limit(req.query.pagesize).skip((req.query.pagenum-1)*req.query.pagesize)
     //     res.send({
@@ -80,7 +83,8 @@ app.get('/api/users', authMiddleware, async (req, res) => {
         .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
     res.send({
         meta: meta,
-        data: users
+        data: users,
+        total: userNum
     })
 
     // }
