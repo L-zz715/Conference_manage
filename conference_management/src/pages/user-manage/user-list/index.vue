@@ -110,21 +110,14 @@ export default {
   },
   methods: {
     async getUserList() {
-      const queryo = {
-        query:this.queryInfo.query,
-        pagenum:this.queryInfo.pagenum,
-        pagesize:this.queryInfo.pagesize
-      }
-      console.log(queryo)
       let res = await getUsers({
         params:this.queryInfo
       });
-      console.log(res)
-      // if (res.meta.status !== 200) {
-      //   this.$message.error(res.meta.message);
-      // }
-      // this.userList = res.data;
-      // this.$message.success(res.meta.message);
+      if (res.meta.status !== 200) {
+        this.$message.error(res.meta.message);
+      }
+      this.userList = res.data;
+      this.$message.success(res.meta.message);
     },
     // 根据字段搜索更新显示数据
     searchManyFunc(queryP) {
