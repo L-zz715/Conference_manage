@@ -24,3 +24,7 @@ export function  getProfile(token){
     const authTok = token
     return axios.get('profile', authTok)
 }
+
+export function addUser(userInfo){
+    return axios.post('register',userInfo)
+}

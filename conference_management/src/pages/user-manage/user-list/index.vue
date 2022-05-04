@@ -66,8 +66,73 @@
       </el-table>
 
       <!-- 分页控制 -->
-         <Pagination :getQueryInfo="queryInfo" :totalNum="total" v-on:updateList="selectPageUpdateList"/>
+      <Pagination
+        :getQueryInfo="queryInfo"
+        :totalNum="total"
+        v-on:updateList="selectPageUpdateList"
+      />
     </el-card>
+
+    <!-- 添加用户的对话框 -->
+    <el-dialog
+      title="添加用户"
+      :visible.sync="addDialogVisible"
+      width="50%"
+      @close="addDialogClosed"
+    >
+      <!-- 内容主体区 -->
+      <el-form
+        :model="addForm"
+        :rules="addFormRules"
+        ref="addFormRef"
+        label-width="100px" 
+      >
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="addForm.username"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="addForm.password"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="addForm.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="电话" prop="mobile">
+              <el-input v-model="addForm.mobile"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="角色" prop="rolelist">
+              <el-input v-model="addForm.rolelist"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="兴趣领域" prop="interest">
+              <el-input v-model="addForm.interest"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUserFuc">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -76,19 +141,120 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getUsers } from "@/api";
+import { getUsers, addUser } from "@/api";
 export default {
   name: "Users-list",
   components: { Breadcrumb, Search, AddButton, Pagination },
   data() {
+    // 验证邮箱的规则
+    var checkEmail = (rule, value, callback) => {
+      const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+
+      if (regEmail.test(value)) {
+        return callback();
+      }
+
+      callback(new Error("请输入合法的邮箱"));
+    };
+
+    // 验证手机号的规则
+    var checkMobile = (rule, value, callback) => {
+      // 验证手机号的正则
+      const regMobile =
+        /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      if (regMobile.test(value)) {
+        return callback();
+      }
+
+      callback(new Error("请输入合法的手机号"));
+    };
     return {
-      queryInfo:{
+      queryInfo: {
         query: "",
         pagenum: 1, // 当前的页数
         pagesize: 10, // 当前每页显示多少条数据
       },
       userList: [],
       total: 0,
+      addDialogVisible: false,
+      addForm: {
+        // 添加用户的表单数据
+        username: "",
+        password: "",
+        email: "",
+        mobile: "",
+        rolelist: [],
+        interest: "",
+      },
+      addFormRules: {
+        // 添加表单的验证规则对象
+        username: [
+          {
+            required: true,
+            message: "请输入用户名",
+            trigger: "blur",
+          },
+          {
+            min: 3,
+            max: 10,
+            message: "用户名的长度在3~10",
+            trigger: "blur",
+          },
+        ],
+
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur",
+          },
+          {
+            min: 6,
+            max: 10,
+            message: "密码的长度在6~10",
+            trigger: "blur",
+          },
+        ],
+
+        email: [
+          {
+            required: true,
+            message: "请输入邮箱",
+            trigger: "blur",
+          },
+          {
+            validator: checkEmail,
+            trigger: "blur",
+          },
+        ],
+
+        mobile: [
+          {
+            required: true,
+            message: "请输入手机",
+            trigger: "blur",
+          },
+          {
+            validator: checkMobile,
+            trigger: "blur",
+          },
+        ],
+
+        rolelist: [
+          {
+            required: true,
+            message: "请选择角色",
+            trigger: "blur",
+          },
+        ],
+        interest: [
+          {
+            required: true,
+            message: "请选择兴趣领域",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   created() {
@@ -96,15 +262,15 @@ export default {
   },
   methods: {
     async getUserList() {
-      console.log('zhixl')
-      console.log(this.queryInfo)
       let res = await getUsers({
-        params:this.queryInfo
+        params: this.queryInfo,
       });
+      // console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error(res.meta.message);
       }
       this.userList = res.data;
+      this.total = res.total;
       this.$message.success(res.meta.message);
     },
     // 根据字段搜索更新显示数据
@@ -113,12 +279,19 @@ export default {
       this.getUserList();
     },
     // 改变添加用户对话框的可见
-    transAddDialogVisible() {},
+    transAddDialogVisible() {
+      this.addDialogVisible = !this.addDialogVisible;
+    },
 
-    selectPageUpdateList(newQueryInfo){
-      this.queryInfo = newQueryInfo
-      this.getUserList()
-    }
+    selectPageUpdateList(newQueryInfo) {
+      this.queryInfo = newQueryInfo;
+      this.getUserList();
+    },
+    addUserFuc() {},
+    // 监听添加用户对话框的关闭事件，通过ref引用拿到表单form的dom然后进行重置操作
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields();
+    },
   },
 };
 </script>
@@ -126,5 +299,9 @@ export default {
 <style scoped>
 .el-tag {
   margin: 5px;
+}
+
+.el-form,.dialog-footer{
+  margin-right: 30px;
 }
 </style>
