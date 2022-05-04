@@ -37,8 +37,13 @@ app.get('/api', (req, res) => {
     res.send('ok')
 })
 
+// 根据query值查询user信息
 app.get('/api/users', async (req, res) => {
-    const users = await User.find()
+    
+    let users = await User.find()
+    const queryStr = "^.*" + req.body.query + ".*$"
+    const reg = new RegExp(queryStr)
+
     let meta={
         status:403,
         message:'获取用户信息失败'
@@ -52,10 +57,23 @@ app.get('/api/users', async (req, res) => {
         status:200,
         message:'获取用户信息成功'
     }
-    res.send({
-        meta:meta,
-        data:users
-    })
+    if(req.body.query === ''){
+        res.send({
+            meta:meta,
+            data:users
+        })
+    }else{
+        users = await User.find().where({
+            username:reg
+        })
+        .limit(req.body.pagesize).skip((req.body.pagenum-1)*req.body.pagesize)
+        res.send({
+            meta:meta,
+            data:users
+        })
+        
+    }
+   
 })
 
 app.post('/api/register', async (req, res) => {
