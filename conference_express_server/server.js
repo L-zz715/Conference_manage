@@ -45,8 +45,8 @@ app.get('/api', (req, res) => {
 })
 
 // 根据query值查询user信息
-app.get('/api/users',authMiddleware, async (req, res) => {
-    
+app.get('/api/users', authMiddleware, async (req, res) => {
+
     let users = await User.find()
     // console.log('@@',req.query.query)
     // console.log('@@',req.query.pagenum)
@@ -54,36 +54,41 @@ app.get('/api/users',authMiddleware, async (req, res) => {
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
-    let meta={
-        status:403,
-        message:'获取用户信息失败'
+    let meta = {
+        status: 403,
+        message: '获取用户信息失败'
     }
-    if(!users){
+    if (!users) {
         res.send({
-            meta:meta
+            meta: meta
         })
     }
-    meta={
-        status:200,
-        message:'获取用户信息成功'
+    meta = {
+        status: 200,
+        message: '获取用户信息成功'
     }
-    if(req.query.query === ''){
-        res.send({
-            meta:meta,
-            data:users
-        })
-    }else{
-        users = await User.find().where({
-            username:reg
-        })
-        .limit(req.query.pagesize).skip((req.query.pagenum-1)*req.query.pagesize)
-        res.send({
-            meta:meta,
-            data:users
-        })
-        
-    }
-   
+    const userNum = await User.find().where({
+        username: reg
+    }).count()
+    // if(req.query.query === ''){
+    //     users = await User.find().limit(req.query.pagesize).skip((req.query.pagenum-1)*req.query.pagesize)
+    //     res.send({
+    //         meta:meta,
+    //         data:users
+    //     })
+    // }else{
+    users = await User.find().where({
+        username: reg
+    })
+        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+    res.send({
+        meta: meta,
+        data: users,
+        total: userNum
+    })
+
+    // }
+
 })
 
 app.post('/api/register', async (req, res) => {
@@ -188,9 +193,9 @@ app.get('/api/adminPermis', async (req, res) => {
         message: '获取权限失败'
     }
 
-    if(!adminPermisList){
+    if (!adminPermisList) {
         return res.send({
-            meta:meta
+            meta: meta
         })
     }
 
@@ -200,13 +205,13 @@ app.get('/api/adminPermis', async (req, res) => {
     }
 
     res.send({
-        meta:meta,
-        data:adminPermisList
+        meta: meta,
+        data: adminPermisList
     })
 })
 
 //给admin添加权限
-app.post('/api/adminPermis', async (req,res)=>{
+app.post('/api/adminPermis', async (req, res) => {
 
     const hasAdminPermis = await AdminPermiss.findOne({
         name: req.body.name
@@ -229,12 +234,12 @@ app.post('/api/adminPermis', async (req,res)=>{
     }
 
     const adminPermis = await AdminPermiss.create({
-        name:req.body.name,
-        children:req.body.children
+        name: req.body.name,
+        children: req.body.children
     })
     res.send({
-        meta:meta,
-        data:adminPermis
+        meta: meta,
+        data: adminPermis
     })
 })
 
@@ -246,9 +251,9 @@ app.get('/api/chairPermiss', async (req, res) => {
         message: '获取权限失败'
     }
 
-    if(!chairPermisList){
+    if (!chairPermisList) {
         return res.send({
-            meta:meta
+            meta: meta
         })
     }
 
@@ -258,13 +263,13 @@ app.get('/api/chairPermiss', async (req, res) => {
     }
 
     res.send({
-        meta:meta,
-        data:chairPermisList
+        meta: meta,
+        data: chairPermisList
     })
 })
 
 //给chair添加权限
-app.post('/api/chairPermiss', async (req,res)=>{
+app.post('/api/chairPermiss', async (req, res) => {
 
     const hasChairPermis = await ChairPermiss.findOne({
         name: req.body.name
@@ -287,12 +292,12 @@ app.post('/api/chairPermiss', async (req,res)=>{
     }
 
     const chairPermis = await ChairPermiss.create({
-        name:req.body.name,
-        children:req.body.children
+        name: req.body.name,
+        children: req.body.children
     })
     res.send({
-        meta:meta,
-        data:chairPermis
+        meta: meta,
+        data: chairPermis
     })
 })
 
@@ -304,9 +309,9 @@ app.get('/api/authorPermiss', async (req, res) => {
         message: '获取权限失败'
     }
 
-    if(!authorPermisList){
+    if (!authorPermisList) {
         return res.send({
-            meta:meta
+            meta: meta
         })
     }
 
@@ -316,13 +321,13 @@ app.get('/api/authorPermiss', async (req, res) => {
     }
 
     res.send({
-        meta:meta,
-        data:authorPermisList
+        meta: meta,
+        data: authorPermisList
     })
 })
 
 //给author添加权限
-app.post('/api/authorPermiss', async (req,res)=>{
+app.post('/api/authorPermiss', async (req, res) => {
 
     const hasAuthorPermis = await AuthorPermiss.findOne({
         name: req.body.name
@@ -345,12 +350,12 @@ app.post('/api/authorPermiss', async (req,res)=>{
     }
 
     const authorPermis = await AuthorPermiss.create({
-        name:req.body.name,
-        children:req.body.children
+        name: req.body.name,
+        children: req.body.children
     })
     res.send({
-        meta:meta,
-        data:authorPermis
+        meta: meta,
+        data: authorPermis
     })
 })
 
@@ -362,9 +367,9 @@ app.get('/api/reviewerPermiss', async (req, res) => {
         message: '获取权限失败'
     }
 
-    if(!reviewerPermisList){
+    if (!reviewerPermisList) {
         return res.send({
-            meta:meta
+            meta: meta
         })
     }
 
@@ -374,13 +379,13 @@ app.get('/api/reviewerPermiss', async (req, res) => {
     }
 
     res.send({
-        meta:meta,
-        data:reviewerPermisList
+        meta: meta,
+        data: reviewerPermisList
     })
 })
 
 //给reviewer添加权限
-app.post('/api/reviewerPermiss', async (req,res)=>{
+app.post('/api/reviewerPermiss', async (req, res) => {
 
     const hasReviewerPermis = await ReviewerPermiss.findOne({
         name: req.body.name
@@ -403,18 +408,18 @@ app.post('/api/reviewerPermiss', async (req,res)=>{
     }
 
     const reviewerPermis = await ReviewerPermiss.create({
-        name:req.body.name,
-        children:req.body.children
+        name: req.body.name,
+        children: req.body.children
     })
     res.send({
-        meta:meta,
-        data:reviewerPermis
+        meta: meta,
+        data: reviewerPermis
     })
 })
 
-app.get('/api/permission', async (req,res)=>{
+app.get('/api/permission', async (req, res) => {
     //解析url 获得传参role的值
-    const role = url.parse(req.url,true).query.role
+    const role = url.parse(req.url, true).query.role
     const meta1 = {
         status: 403,
         message: '获取权限失败'
@@ -424,48 +429,48 @@ app.get('/api/permission', async (req,res)=>{
         message: '创建权限成功'
     }
 
-    if(role === 'admin'){
+    if (role === 'admin') {
         const adminPermisList = await AdminPermiss.find()
-        if(!adminPermisList){
-            res.send({meta:meta1})
+        if (!adminPermisList) {
+            res.send({ meta: meta1 })
         }
         res.send({
-            meta:meta2,
-            data:adminPermisList
+            meta: meta2,
+            data: adminPermisList
         })
 
-    }else if(role === 'chair'){
+    } else if (role === 'chair') {
         const chairPermisList = await ChairPermiss.find()
-        if(!chairPermisList){
-            res.send({meta:meta1})
+        if (!chairPermisList) {
+            res.send({ meta: meta1 })
         }
         res.send({
-            meta:meta2,
-            data:chairPermisList
+            meta: meta2,
+            data: chairPermisList
         })
-    }else if(role === 'author'){
+    } else if (role === 'author') {
         const authorPermisList = await AuthorPermiss.find()
-        if(!authorPermisList){
-            res.send({meta:meta1})
+        if (!authorPermisList) {
+            res.send({ meta: meta1 })
         }
         res.send({
-            meta:meta2,
-            data:authorPermisList
+            meta: meta2,
+            data: authorPermisList
         })
-    }else if(role === 'reviewer'){
+    } else if (role === 'reviewer') {
         const reviewerPermisList = await ReviewerPermiss.find()
-        if(!reviewerPermisList){
-            res.send({meta:meta1})
+        if (!reviewerPermisList) {
+            res.send({ meta: meta1 })
         }
         res.send({
-            meta:meta2,
-            data:reviewerPermisList
+            meta: meta2,
+            data: reviewerPermisList
         })
-    }else{
+    } else {
         res.send({
-            meta:{
-                status:422,
-                message:'角色不存在'
+            meta: {
+                status: 422,
+                message: '角色不存在'
             }
         })
     }
@@ -473,41 +478,41 @@ app.get('/api/permission', async (req,res)=>{
 
 })
 
-app.get('/api/roles', async (req, res)=>{
+app.get('/api/roles', async (req, res) => {
     const roles = await Role.find()
 
-    let meta={
-        status:403,
-        message:'获取角色信息失败'
+    let meta = {
+        status: 403,
+        message: '获取角色信息失败'
     }
-    if(!roles){
+    if (!roles) {
         res.send({
-            meta:meta
+            meta: meta
         })
     }
-    meta={
-        status:200,
-        message:'获取角色信息成功'
+    meta = {
+        status: 200,
+        message: '获取角色信息成功'
     }
     res.send({
-        meta:meta,
-        data:roles
+        meta: meta,
+        data: roles
     })
 })
 
-app.post('/api/roles', async (req, res)=>{
+app.post('/api/roles', async (req, res) => {
     const hasRole = await Role.findOne({
-        rolename:req.body.rolename
+        rolename: req.body.rolename
     })
-    
+
     let meta = {
         status: 403,
         message: '角色已存在'
     }
 
-    if(hasRole){
+    if (hasRole) {
         res.send({
-            meta:meta,
+            meta: meta,
         })
     }
 
