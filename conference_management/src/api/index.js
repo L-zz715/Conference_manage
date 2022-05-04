@@ -12,8 +12,8 @@ export function login(user){
     return axios.post('login',user)
 }
 
-export function getAllUsers(){
-    return axios.get('users')
+export function getUsers(params){
+    return axios.get('users',params)
 }
 
 export function getAllRoles(){
