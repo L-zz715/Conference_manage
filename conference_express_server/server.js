@@ -41,7 +41,7 @@ app.get('/api', (req, res) => {
 app.get('/api/users', async (req, res) => {
     
     let users = await User.find()
-    const queryStr = "^.*" + req.body.params.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
     let meta={
@@ -66,7 +66,7 @@ app.get('/api/users', async (req, res) => {
         users = await User.find().where({
             username:reg
         })
-        .limit(req.body.params.pagesize).skip((req.body.params.pagenum-1)*req.body.pagesize)
+        .limit(req.body.pagesize).skip((req.body.pagenum-1)*req.body.pagesize)
         res.send({
             meta:meta,
             data:users
