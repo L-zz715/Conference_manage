@@ -111,9 +111,11 @@ export default {
   methods: {
     async getUserList() {
       let res = await getUsers({
-        params:this.queryInfo
-        });
-      console.log(res);
+        query:this.queryInfo.query,
+        pagenum:this.queryInfo.pagenum,
+        pagesize:this.queryInfo.pagesize
+      });
+      console.log(res)
       // if (res.meta.status !== 200) {
       //   this.$message.error(res.meta.message);
       // }
