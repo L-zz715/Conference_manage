@@ -110,10 +110,14 @@ export default {
   },
   methods: {
     async getUserList() {
-      let res = await getUsers({
+      const queryo = {
         query:this.queryInfo.query,
         pagenum:this.queryInfo.pagenum,
         pagesize:this.queryInfo.pagesize
+      }
+      console.log(queryo)
+      let res = await getUsers({
+        params:this.queryInfo
       });
       console.log(res)
       // if (res.meta.status !== 200) {

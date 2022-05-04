@@ -13,6 +13,10 @@ export function login(user){
 }
 
 export function getUsers(params){
+    const aa = {
+        params:{abdas:"sdfdasf"}
+    }
+    console.log('@@adf',params)
     return axios.get('users',params)
 }
 
