@@ -31,17 +31,27 @@ console.log(privateKey.toString('hex'))
 const SECRET = privateKey.toString('hex')
 
 
-
+//验证登录中间件
+const authMiddleware = async (req, res, next) => {
+    const raw = String(req.headers.authorization).split(' ').pop()
+    console.log(req.headers)
+    const { id } = jwt.verify(raw, SECRET)
+    req.user = await User.findById(id)
+    next()
+}
 
 app.get('/api', (req, res) => {
     res.send('ok')
 })
 
 // 根据query值查询user信息
-app.get('/api/users', async (req, res) => {
+app.get('/api/users',authMiddleware, async (req, res) => {
     
     let users = await User.find()
-    const queryStr = "^.*" + req.body.query + ".*$"
+    // console.log('@@',req.query.query)
+    // console.log('@@',req.query.pagenum)
+    // console.log('@@',req.query.pagesize)
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     let meta={
@@ -57,7 +67,7 @@ app.get('/api/users', async (req, res) => {
         status:200,
         message:'获取用户信息成功'
     }
-    if(req.body.query === ''){
+    if(req.query.query === ''){
         res.send({
             meta:meta,
             data:users
@@ -66,7 +76,7 @@ app.get('/api/users', async (req, res) => {
         users = await User.find().where({
             username:reg
         })
-        .limit(req.body.pagesize).skip((req.body.pagenum-1)*req.body.pagesize)
+        .limit(req.query.pagesize).skip((req.query.pagenum-1)*req.query.pagesize)
         res.send({
             meta:meta,
             data:users
@@ -155,14 +165,7 @@ app.post('/api/login', async (req, res) => {
     })
 })
 
-//验证登录中间件
-const authMiddleware = async (req, res, next) => {
-    const raw = String(req.headers.authorization).split(' ').pop()
-    console.log(req.headers)
-    const { id } = jwt.verify(raw, SECRET)
-    req.user = await User.findById(id)
-    next()
-}
+
 
 //获得用户信息
 app.get('/api/profile', authMiddleware, async (req, res) => {
