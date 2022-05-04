@@ -7,12 +7,12 @@ get {{url}}
 ###
 get {{url}}users
 {{json}}
+
 {
-    "params":{
-        "query":"a",
-        "pagenum":1,
-        "pagesize":7
-    }
+    "query":"a",
+    "pagenum":1,
+    "pagesize":7
+    
 }
 
 
