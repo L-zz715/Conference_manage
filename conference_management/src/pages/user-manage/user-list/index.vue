@@ -82,7 +82,7 @@
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
-import { getAllUsers } from "@/api";
+import { getUsers } from "@/api";
 export default {
   name: "Users-list",
   components: { Breadcrumb, Search, AddButton },
@@ -96,7 +96,7 @@ export default {
     //           'interest_area':'AI'
     //       }
     return {
-      queryInfo: {
+      queryInfo:{
         query: "",
         pagenum: 1, // 当前的页数
         pagesize: 10, // 当前每页显示多少条数据
@@ -110,7 +110,9 @@ export default {
   },
   methods: {
     async getUserList() {
-      let res = await getAllUsers();
+      let res = await getUsers({
+        params:this.queryInfo
+      });
       if (res.meta.status !== 200) {
         this.$message.error(res.meta.message);
       }
