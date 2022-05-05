@@ -85,7 +85,7 @@
         :model="addForm"
         :rules="addFormRules"
         ref="addFormRef"
-        label-width="100px" 
+        label-width="100px"
       >
         <el-row :gutter="20">
           <el-col :span="12">
@@ -116,12 +116,28 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="角色" prop="rolelist">
-              <el-input v-model="addForm.rolelist"></el-input>
+              <el-checkbox-group v-model="addForm.rolelist">
+                <el-checkbox
+                  v-for="(item, i) in allRoleList"
+                  :key="i"
+                  :label="item"
+                ></el-checkbox>
+                <!-- <el-checkbox label="复选框 B"></el-checkbox>
+                <el-checkbox label="复选框 C"></el-checkbox> -->
+              </el-checkbox-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="兴趣领域" prop="interest">
-              <el-input v-model="addForm.interest"></el-input>
+              <el-select v-model="addForm.interest" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -142,9 +158,13 @@ import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
 import { getUsers, addUser } from "@/api";
+import { mapState } from "vuex";
 export default {
   name: "Users-list",
   components: { Breadcrumb, Search, AddButton, Pagination },
+  computed: {
+    ...mapState("permission", ["allRoleList"]),
+  },
   data() {
     // 验证邮箱的规则
     var checkEmail = (rule, value, callback) => {
@@ -255,6 +275,24 @@ export default {
           },
         ],
       },
+       options: [{
+          value: '人工智能',
+          label: '人工智能'
+        }, {
+          value: '物联网',
+          label: '物联网'
+        }, {
+          value: '大数据',
+          label: '大数据'
+        }, {
+          value: '信息安全',
+          label: '信息安全'
+        }, {
+          value: '云计算',
+          label: '云计算'
+        }],
+        value: ''
+      
     };
   },
   created() {
@@ -287,7 +325,13 @@ export default {
       this.queryInfo = newQueryInfo;
       this.getUserList();
     },
-    addUserFuc() {},
+    addUserFuc() {
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return;
+        const res = await addUser(this.addForm)
+        console.log(res)
+      })
+    },
     // 监听添加用户对话框的关闭事件，通过ref引用拿到表单form的dom然后进行重置操作
     addDialogClosed() {
       this.$refs.addFormRef.resetFields();
@@ -301,7 +345,8 @@ export default {
   margin: 5px;
 }
 
-.el-form,.dialog-footer{
+.el-form,
+.dialog-footer {
   margin-right: 30px;
 }
 </style>
