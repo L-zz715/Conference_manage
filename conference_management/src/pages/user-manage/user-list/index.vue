@@ -95,7 +95,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
-              <el-input v-model="addForm.password"></el-input>
+              <el-input v-model="addForm.password" type="password"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -275,24 +275,29 @@ export default {
           },
         ],
       },
-       options: [{
-          value: '人工智能',
-          label: '人工智能'
-        }, {
-          value: '物联网',
-          label: '物联网'
-        }, {
-          value: '大数据',
-          label: '大数据'
-        }, {
-          value: '信息安全',
-          label: '信息安全'
-        }, {
-          value: '云计算',
-          label: '云计算'
-        }],
-        value: ''
-      
+      options: [
+        {
+          value: "人工智能",
+          label: "人工智能",
+        },
+        {
+          value: "物联网",
+          label: "物联网",
+        },
+        {
+          value: "大数据",
+          label: "大数据",
+        },
+        {
+          value: "信息安全",
+          label: "信息安全",
+        },
+        {
+          value: "云计算",
+          label: "云计算",
+        },
+      ],
+      value: "",
     };
   },
   created() {
@@ -328,9 +333,17 @@ export default {
     addUserFuc() {
       this.$refs.addFormRef.validate(async (valid) => {
         if (!valid) return;
-        const res = await addUser(this.addForm)
-        console.log(res)
-      })
+        const res = await addUser(this.addForm);
+        console.log(res);
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+        this.$message.success(res.meta.message);
+        // 隐藏用户对话框
+        this.addDialogVisible = false;
+        // 重置用户列表
+        this.getUserList();
+      });
     },
     // 监听添加用户对话框的关闭事件，通过ref引用拿到表单form的dom然后进行重置操作
     addDialogClosed() {
