@@ -37,6 +37,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
+              @click="showEditDialog(scope.row.id)"
             ></el-button>
             <!-- 删除按钮 -->
             <!-- <DeleteButton
@@ -122,8 +123,6 @@
                   :key="i"
                   :label="item"
                 ></el-checkbox>
-                <!-- <el-checkbox label="复选框 B"></el-checkbox>
-                <el-checkbox label="复选框 C"></el-checkbox> -->
               </el-checkbox-group>
             </el-form-item>
           </el-col>
@@ -149,6 +148,62 @@
         <el-button type="primary" @click="addUserFuc">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 修改用户的对话框 -->
+    <el-dialog
+      title="修改用户信息"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
+      <!-- 内容主体区 -->
+      <el-form
+        :model="editForm"
+        :rules="editFormRules"
+        ref="editFormRef"
+        label-width="70px"
+      >
+        <el-form-item label="用户名">
+          <el-input v-model="editForm.username" :disabled="true"></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+
+        <el-form-item label="电话" prop="mobile">
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+
+        <el-form-item label="角色" prop="rolelist">
+          <el-checkbox-group v-model="editForm.rolelist">
+            <el-checkbox
+              v-for="(item, i) in allRoleList"
+              :key="i"
+              :label="item"
+            ></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+
+        <el-form-item label="兴趣领域" prop="interest">
+          <el-select v-model="editForm.interest" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <!-- 底部区域 -->
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,7 +212,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getUsers, addUser } from "@/api";
+import { getUsers, addUser, modifyUser } from "@/api";
 import { mapState } from "vuex";
 export default {
   name: "Users-list",
@@ -298,6 +353,38 @@ export default {
         },
       ],
       value: "",
+      editDialogVisible: false,
+      editForm: {
+        // 查询用户信息添加进来
+      },
+      editFormRules: {
+        mobile: [
+          {
+            required: true,
+            message: "请输入手机",
+            trigger: "blur",
+          },
+          {
+            validator: checkMobile,
+            trigger: "blur",
+          },
+        ],
+
+        rolelist: [
+          {
+            required: true,
+            message: "请选择角色",
+            trigger: "blur",
+          },
+        ],
+        interest: [
+          {
+            required: true,
+            message: "请选择兴趣领域",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   created() {
@@ -316,20 +403,25 @@ export default {
       this.total = res.total;
       this.$message.success(res.meta.message);
     },
+
     // 根据字段搜索更新显示数据
     searchManyFunc(queryP) {
       this.queryInfo.query = queryP;
       this.getUserList();
     },
+
     // 改变添加用户对话框的可见
     transAddDialogVisible() {
       this.addDialogVisible = !this.addDialogVisible;
     },
 
+    // 更新分页信息
     selectPageUpdateList(newQueryInfo) {
       this.queryInfo = newQueryInfo;
       this.getUserList();
     },
+
+    // 添加用户
     addUserFuc() {
       this.$refs.addFormRef.validate(async (valid) => {
         if (!valid) return;
@@ -345,10 +437,27 @@ export default {
         this.getUserList();
       });
     },
+
     // 监听添加用户对话框的关闭事件，通过ref引用拿到表单form的dom然后进行重置操作
     addDialogClosed() {
       this.$refs.addFormRef.resetFields();
     },
+
+    // 展示编辑用户对话框
+    async showEditDialog(userId) {
+      const user = await modifyUser
+      this.editDialogVisible = true
+    },
+
+    // 监听编辑用户对话框的关闭事件，通过ref引用拿到表单form的dom然后进行重置操作
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
+    },
+
+    // 修改用户
+    editUserInfo(){
+
+    }
   },
 };
 </script>

@@ -28,3 +28,11 @@ export function  getProfile(token){
 export function addUser(userInfo){
     return axios.post('register',userInfo)
 }
+
+export function modifyUser(userId,userInfo){
+    return axios.put(`users${userId}`, userInfo)
+}
+
+export function searchUser(userId){
+    return axios.get(`users${userId}`)
+}
