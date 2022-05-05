@@ -113,7 +113,14 @@ app.post('/api/register', async (req, res) => {
         interest: req.body.interest,
 
     })
-    res.send(user)
+    const meta = {
+        status:200,
+        message:'创建用户成功'
+    }
+    res.send({
+        meta:meta,
+        data:user
+    })
 })
 
 app.post('/api/login', async (req, res) => {
