@@ -30,9 +30,9 @@ export function addUser(userInfo){
 }
 
 export function modifyUser(userId,userInfo){
-    return axios.put(`users${userId}`, userInfo)
+    return axios.put(`users/${userId}`, userInfo)
 }
 
 export function searchUser(userId){
-    return axios.get(`users${userId}`)
+    return axios.get(`users/${userId}`)
 }

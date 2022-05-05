@@ -30,14 +30,14 @@
         </el-table-column>
         <el-table-column prop="interest" label="兴趣领域"> </el-table-column>
         <el-table-column label="操作" width="180px">
-          <template>
+          <template slot-scope="scope">
             <!-- {{scope.row}} -->
             <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
             <el-button
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row.id)"
+              @click="showEditDialog(scope.row._id)"
             ></el-button>
             <!-- 删除按钮 -->
             <!-- <DeleteButton
@@ -161,14 +161,14 @@
         :model="editForm"
         :rules="editFormRules"
         ref="editFormRef"
-        label-width="70px"
+        label-width="100px"
       >
         <el-form-item label="用户名">
           <el-input v-model="editForm.username" :disabled="true"></el-input>
         </el-form-item>
 
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editForm.email"></el-input>
+          <el-input v-model="editForm.email" :disabled="true"></el-input>
         </el-form-item>
 
         <el-form-item label="电话" prop="mobile">
@@ -212,7 +212,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getUsers, addUser, modifyUser } from "@/api";
+import { getUsers, addUser, modifyUser, searchUser } from "@/api";
 import { mapState } from "vuex";
 export default {
   name: "Users-list",
@@ -395,13 +395,11 @@ export default {
       let res = await getUsers({
         params: this.queryInfo,
       });
-      // console.log(res)
       if (res.meta.status !== 200) {
         this.$message.error(res.meta.message);
       }
       this.userList = res.data;
       this.total = res.total;
-      this.$message.success(res.meta.message);
     },
 
     // 根据字段搜索更新显示数据
@@ -426,7 +424,6 @@ export default {
       this.$refs.addFormRef.validate(async (valid) => {
         if (!valid) return;
         const res = await addUser(this.addForm);
-        console.log(res);
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }
@@ -445,8 +442,14 @@ export default {
 
     // 展示编辑用户对话框
     async showEditDialog(userId) {
-      const user = await modifyUser
-      this.editDialogVisible = true
+      const res = await searchUser(userId);
+
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.message);
+      }
+
+      this.editForm = res.data;
+      this.editDialogVisible = true;
     },
 
     // 监听编辑用户对话框的关闭事件，通过ref引用拿到表单form的dom然后进行重置操作
@@ -455,9 +458,28 @@ export default {
     },
 
     // 修改用户
-    editUserInfo(){
+    editUserInfo() {
+      this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) return;
 
-    }
+        const res = await modifyUser(this.editForm._id, {
+          mobile: this.editForm.mobile,
+          rolelist: this.editForm.rolelist,
+          interest: this.editForm.interest,
+        });
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+
+        // 隐藏用户对话框
+        this.editDialogVisible = false;
+        this.$message.success(res.meta.message);
+
+        // 重置用户列表
+        this.getUserList();
+      });
+    },
   },
 };
 </script>

@@ -85,13 +85,13 @@ export default {
             const res = await getAllRoles()
             const roleObjList = res.data
             commit("SET_ROLEOBJLIST",roleObjList)
-            console.log(roleObjList)
+    
             let allRoleList = []
             roleObjList.forEach(item => {
                 allRoleList.push(item.rolename)
             });
             commit("SET_ALLROLELIST",allRoleList)
-            console.log(allRoleList)
+ 
             allRoleList = []
         }
 
