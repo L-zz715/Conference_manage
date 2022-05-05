@@ -83,18 +83,18 @@ export default {
         this.$message.success("登录成功");
 
         //保存token
-        let token = res.token
-        let roleList = res.user.rolelist
+        let token = res.token;
+        let roleList = res.user.rolelist;
         this.$store.commit("LOGIN_IN", token);
         //保存角色信息
 
         this.$store.commit("SET_USERROLELIST", roleList);
         this.$store.commit("SET_CURRENTROLE", roleList[0]);
-        window.sessionStorage.setItem("currentRole",roleList[0])
+        window.sessionStorage.setItem("currentRole", roleList[0]);
         //保存用户信息
-        let res2 = await getProfile(token)
-        this.$store.commit("permission/GET_USERPROFILE",res2.data)
-        this.$router.replace("/").catch(()=>{});
+        // let res2 = await getProfile(token);
+        // store.commit("permission/SET_USERPROFILE", res2.data);
+        this.$router.replace("/").catch(() => {});
       });
     },
     resetLoginForm() {

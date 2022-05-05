@@ -1,31 +1,36 @@
 import router from "./index"
 import store from "@/store/index"
 
-router.beforeEach((to,from,next)=>{
-    if(!store.state.UserToken){
-        if(to.matched.length > 0 && !to.matched.some(record => record.meta.requiresAuth)){
+router.beforeEach((to, from, next) => {
+    if (!store.state.UserToken) {
+        if (to.matched.length > 0 && !to.matched.some(record => record.meta.requiresAuth)) {
             next()
-        }else{
+        } else {
             next({
-                path:'/login'
+                path: '/login'
             })
         }
-    }else{
-        if(!store.state.permission.permissionList){
+    } else {
+        if (!store.state.permission.permissionList) {
             store.commit(
                 "SET_CURRENTROLE",
                 window.sessionStorage.getItem("currentRole")
-              )
-            store.dispatch("permission/FETCH_PERMISSION").then(() =>{
+            )
+
+
+            store.dispatch("permission/FETCH_PERMISSION").then(() => {
+                //储存可能被多次使用的role数据
+                store.dispatch("permission/GET_ROLELIST_FROMOBJ")
                 next({
-                    path:to.path
+                    path: to.path
                 })
+
             })
-        }else{
+        } else {
             // store存在权限
-            if(to.path !== "/login"){
+            if (to.path !== "/login") {
                 next();
-            }else{
+            } else {
                 next(from.fullPath)
             }
         }
