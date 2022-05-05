@@ -116,12 +116,12 @@ app.post('/api/register', async (req, res) => {
 
     })
     const meta = {
-        status:200,
-        message:'创建用户成功'
+        status: 200,
+        message: '创建用户成功'
     }
     res.send({
-        meta:meta,
-        data:user
+        meta: meta,
+        data: user
     })
 })
 
@@ -194,47 +194,47 @@ app.get('/api/profile', authMiddleware, async (req, res) => {
 })
 
 // 查询用户by id
-app.get('/api/users/:id', async (req, res) =>{
+app.get('/api/users/:id', async (req, res) => {
     const user = await User.findById(req.params.id)
-    
+
     let meta = {
         status: 403,
-        message:'用户不存在'
+        message: '用户不存在'
     }
-    if(!user){
+    if (!user) {
         res.send({
-            meta:meta
+            meta: meta
         })
     }
 
     meta = {
         status: 200,
-        message:'获得用户信息成功'
+        message: '获得用户信息成功'
     }
 
     res.send({
-        meta:meta,
-        data:user
+        meta: meta,
+        data: user
     })
 
 })
 
 // 修改用户
-app.put('/api/users/:id', async(req,res)=>{
+app.put('/api/users/:id', async (req, res) => {
     const user = await User.findById(req.params.id)
 
     let meta = {
         status: 403,
-        message:'用户不存在'
+        message: '用户不存在'
     }
-    if(!user){
+    if (!user) {
         res.send({
-            meta:meta
+            meta: meta
         })
     }
     meta = {
         status: 200,
-        message:'修改用户信息成功'
+        message: '修改用户信息成功'
     }
     console.log(user)
     user.mobile = req.body.mobile
@@ -242,8 +242,29 @@ app.put('/api/users/:id', async(req,res)=>{
     user.interest = req.body.interest
     await user.save()
     res.send({
-        meta:meta,
-        data:user
+        meta: meta,
+        data: user
+    })
+})
+
+// 删除用户
+app.delete('/api/users/:id', async (req, res) => {
+    const user = await User.findById(req.params.id);
+    const meta = {
+        status: 403,
+        message: '用户不存在'
+    }
+    if (!user) {
+        res.send({
+            meta: meta
+        })
+    }
+    await user.remove();
+    res.send({
+        meta: {
+            status: 200,
+            message: '删除用户成功'
+        }
     })
 })
 
