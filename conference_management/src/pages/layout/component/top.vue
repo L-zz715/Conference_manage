@@ -55,6 +55,7 @@ export default {
     },
     changeCurrentRole(role) {
       window.sessionStorage.setItem("currentRole", role);
+      this.$router.push('/home')
       window.location.reload();
     },
   },
