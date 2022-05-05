@@ -40,6 +40,12 @@
               @click="showEditDialog(scope.row._id)"
             ></el-button>
             <!-- 删除按钮 -->
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="removeUserById(scope.row._id)"
+            ></el-button>
             <!-- <DeleteButton
             :usePath="toPath"
             :rowId="scope.row.id"
@@ -212,7 +218,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getUsers, addUser, modifyUser, searchUser } from "@/api";
+import { getUsers, addUser, modifyUser, searchUser, deleteUser } from "@/api";
 import { mapState } from "vuex";
 export default {
   name: "Users-list",
@@ -479,6 +485,29 @@ export default {
         // 重置用户列表
         this.getUserList();
       });
+    },
+
+    // 删除用户
+    removeUserById(userId) {
+      // 弹窗询问是否删除数据
+      this.$confirm("此操作将永久删除该" + "用户" + ", 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          const res = await deleteUser(userId);
+
+          if (res.meta.status !== 200) {
+            return this.$message.error("删除" + "用户" + "失败");
+          }
+          this.$message.success("删除" + "用户" + "成功");
+          // 重置用户列表
+          this.getUserList();
+        })
+        .catch(() => {
+          return this.$message.info("已取消删除");
+        });
     },
   },
 };
