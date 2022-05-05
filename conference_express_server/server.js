@@ -40,6 +40,7 @@ const authMiddleware = async (req, res, next) => {
     next()
 }
 
+// 测试
 app.get('/api', (req, res) => {
     res.send('ok')
 })
@@ -91,6 +92,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 
 })
 
+// 注册用户
 app.post('/api/register', async (req, res) => {
     //判断用户是否已注册
     const hasUser = await User.find().where({
@@ -123,6 +125,7 @@ app.post('/api/register', async (req, res) => {
     })
 })
 
+// 登录
 app.post('/api/login', async (req, res) => {
     //判断用户是否存在
     const user = await User.findOne({
@@ -177,9 +180,7 @@ app.post('/api/login', async (req, res) => {
     })
 })
 
-
-
-//获得用户信息
+// 获得用户信息
 app.get('/api/profile', authMiddleware, async (req, res) => {
     const meta = {
         status: 200,
@@ -192,7 +193,35 @@ app.get('/api/profile', authMiddleware, async (req, res) => {
     })
 })
 
-//获取admin权限
+// 修改用户
+app.put('/api/users/:id', async(req,res)=>{
+    const user = await User.findById(req.params.id)
+
+    let meta = {
+        status: 403,
+        message:'用户不存在'
+    }
+    if(!user){
+        res.send({
+            meta:meta
+        })
+    }
+    meta = {
+        status: 200,
+        message:'修改用户信息成功'
+    }
+    console.log(user)
+    user.mobile = req.body.mobile
+    user.rolelist = req.body.rolelist
+    user.interest = req.body.interest
+    await user.save()
+    res.send({
+        meta:meta,
+        data:user
+    })
+})
+
+// 获取admin权限
 app.get('/api/adminPermis', async (req, res) => {
     const adminPermisList = await AdminPermiss.find()
     let meta = {
@@ -217,7 +246,7 @@ app.get('/api/adminPermis', async (req, res) => {
     })
 })
 
-//给admin添加权限
+// 给admin添加权限
 app.post('/api/adminPermis', async (req, res) => {
 
     const hasAdminPermis = await AdminPermiss.findOne({
@@ -250,7 +279,7 @@ app.post('/api/adminPermis', async (req, res) => {
     })
 })
 
-//获取chair权限
+// 获取chair权限
 app.get('/api/chairPermiss', async (req, res) => {
     const chairPermisList = await ChairPermiss.find()
     let meta = {
@@ -275,7 +304,7 @@ app.get('/api/chairPermiss', async (req, res) => {
     })
 })
 
-//给chair添加权限
+// 给chair添加权限
 app.post('/api/chairPermiss', async (req, res) => {
 
     const hasChairPermis = await ChairPermiss.findOne({
@@ -308,7 +337,7 @@ app.post('/api/chairPermiss', async (req, res) => {
     })
 })
 
-//获取author权限
+// 获取author权限
 app.get('/api/authorPermiss', async (req, res) => {
     const authorPermisList = await AuthorPermiss.find()
     let meta = {
@@ -333,7 +362,7 @@ app.get('/api/authorPermiss', async (req, res) => {
     })
 })
 
-//给author添加权限
+// 给author添加权限
 app.post('/api/authorPermiss', async (req, res) => {
 
     const hasAuthorPermis = await AuthorPermiss.findOne({
@@ -366,7 +395,7 @@ app.post('/api/authorPermiss', async (req, res) => {
     })
 })
 
-//获取reviewer权限
+// 获取reviewer权限
 app.get('/api/reviewerPermiss', async (req, res) => {
     const reviewerPermisList = await ReviewerPermiss.find()
     let meta = {
@@ -391,7 +420,7 @@ app.get('/api/reviewerPermiss', async (req, res) => {
     })
 })
 
-//给reviewer添加权限
+// 给reviewer添加权限
 app.post('/api/reviewerPermiss', async (req, res) => {
 
     const hasReviewerPermis = await ReviewerPermiss.findOne({
@@ -424,6 +453,7 @@ app.post('/api/reviewerPermiss', async (req, res) => {
     })
 })
 
+// 根据参数判断返回的权限
 app.get('/api/permission', async (req, res) => {
     //解析url 获得传参role的值
     const role = url.parse(req.url, true).query.role
@@ -485,6 +515,7 @@ app.get('/api/permission', async (req, res) => {
 
 })
 
+// 获得角色列表
 app.get('/api/roles', async (req, res) => {
     const roles = await Role.find()
 
@@ -507,6 +538,7 @@ app.get('/api/roles', async (req, res) => {
     })
 })
 
+// 添加角色
 app.post('/api/roles', async (req, res) => {
     const hasRole = await Role.findOne({
         rolename: req.body.rolename
@@ -535,6 +567,7 @@ app.post('/api/roles', async (req, res) => {
     res.send(role)
 })
 
+// 监听4000端口
 app.listen(4000, (err) => {
     if (!err) {
         console.log('服务器启动了 http://localhost:4000')
