@@ -36,3 +36,7 @@ export function modifyUser(userId,userInfo){
 export function searchUser(userId){
     return axios.get(`users/${userId}`)
 }
+
+export function deleteUser(userId){
+    return axios.delete(`users/${userId}`)
+}
