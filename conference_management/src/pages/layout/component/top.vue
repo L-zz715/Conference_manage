@@ -35,7 +35,6 @@ export default {
   created() {
     this.getRoleList();
     this.value = this.currentRole;
-    console.log('@@',this.userProfile)
     this.username = this.userProfile.username;
   },
   computed: {
