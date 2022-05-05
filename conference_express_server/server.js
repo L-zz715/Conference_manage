@@ -193,6 +193,32 @@ app.get('/api/profile', authMiddleware, async (req, res) => {
     })
 })
 
+// 查询用户by id
+app.get('/api/users/:id', async (req, res) =>{
+    const user = await User.findById(req.params.id)
+    
+    let meta = {
+        status: 403,
+        message:'用户不存在'
+    }
+    if(!user){
+        res.send({
+            meta:meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message:'获得用户信息成功'
+    }
+
+    res.send({
+        meta:meta,
+        data:user
+    })
+
+})
+
 // 修改用户
 app.put('/api/users/:id', async(req,res)=>{
     const user = await User.findById(req.params.id)
