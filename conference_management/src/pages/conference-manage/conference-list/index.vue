@@ -78,25 +78,23 @@ export default {
   mounted() {},
   methods: {
     async getConfersList() {
-        await getAllConfers({
-        params: this.queryInfo,
-      });
-
-    //   if (this.currentRole === "admin") {
-    //     let res = await getAllConfers();
-    //     console.log(res);
-    //     if (res.meta.status !== 200) {
-    //       return this.$message.error(res.meta.message);
-    //     }
-    //     this.conferList = res.data;
-    //   } else {
-    //     let res = await getAttendConfers(this.userProfile.username);
-    //     console.log(res);
-    //     if (res.meta.status !== 200) {
-    //       return this.$message.error(res.meta.message);
-    //     }
-    //     this.conferList = res.data;
-    //   }
+      if (this.currentRole === "admin") {
+        let res = await getAllConfers({
+          params: this.queryInfo,
+        });
+        console.log(res);
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+        this.conferList = res.data;
+      } else {
+        let res = await getAttendConfers(this.userProfile.username);
+        console.log(res);
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+        this.conferList = res.data;
+      }
     },
     searchManyFunc() {},
     transAddDialogVisible() {},
