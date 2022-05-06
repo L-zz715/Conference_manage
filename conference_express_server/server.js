@@ -650,7 +650,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
 })
 
 // 获取会议列表 是否参会者 根据参会者名字判断
-app.get('/api/conference/:name', async (req, res) => {
+app.get('/api/conference/:name', authMiddleware, async (req, res) => {
     const conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]})
     let meta = {
         status: 403,
@@ -661,13 +661,27 @@ app.get('/api/conference/:name', async (req, res) => {
             meta: meta
         })
     }
+
+    const queryStr = "^.*" + req.query.query + ".*$"
+    const reg = new RegExp(queryStr)
+
+    const conferNum = await Conference.find().where({
+        confername: reg
+    }).count()
+
+    conferences = await Conference.find().where({
+        confername: reg
+    })
+        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+
     meta = {
         status: 200,
         message: '获取会议信息成功'
     }
     res.send({
         meta: meta,
-        data: conferences
+        data: conferences,
+        total: conferNum
     })
 })
 
