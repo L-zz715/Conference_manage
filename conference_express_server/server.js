@@ -652,6 +652,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
 // 获取会议列表 是否参会者 根据参会者名字判断
 app.get('/api/conference/:name', authMiddleware, async (req, res) => {
     let conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]})
+    console.log(conferences)
     let meta = {
         status: 403,
         message: '获取会议信息失败'
