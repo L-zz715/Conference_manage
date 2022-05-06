@@ -614,39 +614,39 @@ app.post('/api/roles', async (req, res) => {
 // 获取会议列表
 app.get('/api/conference', authMiddleware, async (req, res) => {
     let conferences = await Conference.find()
-    console.log(req)
-    // let meta = {
-    //     status: 403,
-    //     message: '获取会议信息失败'
-    // }
-    // if (!conferences) {
-    //     res.send({
-    //         meta: meta
-    //     })
-    // }
-    // const queryStr = "^.*" + req.body.query + ".*$"
-    // const reg = new RegExp(queryStr)
+    // console.log(req)
+    let meta = {
+        status: 403,
+        message: '获取会议信息失败'
+    }
+    if (!conferences) {
+        res.send({
+            meta: meta
+        })
+    }
+    const queryStr = "^.*" + req.query.query + ".*$"
+    const reg = new RegExp(queryStr)
 
-    // const conferNum = await Conference.find().where({
-    //     confername: reg
-    // }).count()
+    const conferNum = await Conference.find().where({
+        confername: reg
+    }).count()
 
-    // conferences = await Conference.find().where({
-    //     confername: reg
-    // })
-    //     .limit(req.body.pagesize).skip((req.body.pagenum - 1) * req.body.pagesize)
+    conferences = await Conference.find().where({
+        confername: reg
+    })
+        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
     
 
-    // meta = {
-    //     status: 200,
-    //     message: '获取会议信息成功'
-    // }
+    meta = {
+        status: 200,
+        message: '获取会议信息成功'
+    }
 
-    // res.send({
-    //     meta: meta,
-    //     data: conferences,
-    //     total: conferNum
-    // })
+    res.send({
+        meta: meta,
+        data: conferences,
+        total: conferNum
+    })
 })
 
 // 获取会议列表 是否参会者 根据参会者名字判断
