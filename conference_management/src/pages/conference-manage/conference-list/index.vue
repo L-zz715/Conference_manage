@@ -82,7 +82,7 @@ export default {
         let res = await getAllConfers({
           params: this.queryInfo,
         });
-        console.log(res);
+        // console.log(res);
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }
@@ -91,7 +91,7 @@ export default {
         let res = await getAttendConfers(this.userProfile.username,{
           params: this.queryInfo,
         });
-        console.log("@@",res);
+        // console.log("@@",res);
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }
