@@ -46,28 +46,6 @@
               size="mini"
               @click="removeUserById(scope.row._id)"
             ></el-button>
-            <!-- <DeleteButton
-            :usePath="toPath"
-            :rowId="scope.row.id"
-            deleteObj="用户"
-            deleteCaption=""
-            v-on:updateList="getUserList"
-          /> -->
-
-            <!-- 分配角色按钮   @click="setRole(scope.row)"-->
-            <!-- <el-tooltip
-            class="item"
-            effect="dark"
-            content="分配角色"
-            placement="top"
-            :enterable="false"
-          >
-            <el-button
-              type="warning"
-              icon="el-icon-setting"
-              size="mini"
-            ></el-button>
-          </el-tooltip> -->
           </template>
         </el-table-column>
       </el-table>
