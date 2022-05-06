@@ -65,6 +65,11 @@ export default {
   data() {
     return {
       conferList: [],
+      queryInfo: {
+        query: "",
+        pagenum: 1, // 当前的页数
+        pagesize: 10, // 当前每页显示多少条数据
+      },
     };
   },
   created() {
@@ -73,21 +78,25 @@ export default {
   mounted() {},
   methods: {
     async getConfersList() {
-      if (this.currentRole === "admin") {
-        let res = await getAllConfers();
-        console.log(res);
-        if (res.meta.status !== 200) {
-          return this.$message.error(res.meta.message);
-        }
-        this.conferList = res.data;
-      } else {
-        let res = await getAttendConfers(this.userProfile.username);
-        console.log(res);
-        if (res.meta.status !== 200) {
-          return this.$message.error(res.meta.message);
-        }
-        this.conferList = res.data;
-      }
+        await getAllConfers({
+        params: this.queryInfo,
+      });
+
+    //   if (this.currentRole === "admin") {
+    //     let res = await getAllConfers();
+    //     console.log(res);
+    //     if (res.meta.status !== 200) {
+    //       return this.$message.error(res.meta.message);
+    //     }
+    //     this.conferList = res.data;
+    //   } else {
+    //     let res = await getAttendConfers(this.userProfile.username);
+    //     console.log(res);
+    //     if (res.meta.status !== 200) {
+    //       return this.$message.error(res.meta.message);
+    //     }
+    //     this.conferList = res.data;
+    //   }
     },
     searchManyFunc() {},
     transAddDialogVisible() {},
