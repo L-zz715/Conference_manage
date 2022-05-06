@@ -48,11 +48,11 @@ export function deleteUser(userId) {
 }
 
 // 获得所有会议列表
-export function getAllConfers() {
-    return axios.get('conference')
+export function getAllConfers(params) {
+    return axios.get('conference',params)
 }
 
 // 获得当前用户参与的会议的列表
-export function getAttendConfers(username) {
-    return axios.get(`conference/${username}`)
+export function getAttendConfers(username,params) {
+    return axios.get(`conference/${username}`,params)
 }
