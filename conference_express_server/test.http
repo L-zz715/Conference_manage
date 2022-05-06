@@ -151,6 +151,17 @@ post {{url}}roles
 
 ###
 get {{url}}conference
+{{json}}
+
+{
+    "query":"一",
+    "pagenum":1,
+    "pagesize":7
+    
+}
+
+###
+get {{url}}conference/user2
 
 ###
 post {{url}}conference
@@ -158,10 +169,11 @@ post {{url}}conference
 
 {
     "confername": "5月第一次会议",
-    "title": "讨论最新项目进展",
-    "topic": "人工智能",
-    "chairname": "user2",
-    "date": "2022-05-06 13:30:41"
+    "title": "4月数据",
+    "topic": "大数据",
+    "chairname": "user8",
+    "date": "2022-05-05 11:30",
+    "attendPpl": ["user2","user4"]
 }
 
 ###

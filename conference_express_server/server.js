@@ -71,13 +71,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
     const userNum = await User.find().where({
         username: reg
     }).count()
-    // if(req.query.query === ''){
-    //     users = await User.find().limit(req.query.pagesize).skip((req.query.pagenum-1)*req.query.pagesize)
-    //     res.send({
-    //         meta:meta,
-    //         data:users
-    //     })
-    // }else{
+ 
     users = await User.find().where({
         username: reg
     })
@@ -88,7 +82,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
         total: userNum
     })
 
-    // }
+
 
 })
 
@@ -618,32 +612,46 @@ app.post('/api/roles', async (req, res) => {
 })
 
 // 获取会议列表
-app.get('/api/conference', async (req, res) => {
-    const conferences = await Conference.find()
+app.get('/api/conference', authMiddleware, async (req, res) => {
+    let conferences = await Conference.find()
+    console.log(req)
+    // let meta = {
+    //     status: 403,
+    //     message: '获取会议信息失败'
+    // }
+    // if (!conferences) {
+    //     res.send({
+    //         meta: meta
+    //     })
+    // }
+    // const queryStr = "^.*" + req.body.query + ".*$"
+    // const reg = new RegExp(queryStr)
 
-    let meta = {
-        status: 403,
-        message: '获取会议信息失败'
-    }
-    if (!conferences) {
-        res.send({
-            meta: meta
-        })
-    }
-    meta = {
-        status: 200,
-        message: '获取会议信息成功'
-    }
-    res.send({
-        meta: meta,
-        data: conferences
-    })
+    // const conferNum = await Conference.find().where({
+    //     confername: reg
+    // }).count()
+
+    // conferences = await Conference.find().where({
+    //     confername: reg
+    // })
+    //     .limit(req.body.pagesize).skip((req.body.pagenum - 1) * req.body.pagesize)
+    
+
+    // meta = {
+    //     status: 200,
+    //     message: '获取会议信息成功'
+    // }
+
+    // res.send({
+    //     meta: meta,
+    //     data: conferences,
+    //     total: conferNum
+    // })
 })
 
 // 获取会议列表 是否参会者 根据参会者名字判断
 app.get('/api/conference/:name', async (req, res) => {
     const conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]})
-    console.log(conferences)
     let meta = {
         status: 403,
         message: '获取会议信息失败'
