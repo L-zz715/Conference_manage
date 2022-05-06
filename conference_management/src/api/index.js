@@ -1,46 +1,58 @@
 import axios from '@/utils/http'
 import store from '@/store'
 
-
-export function fetchPermission(){
-    // 路由权限获取(根据登录用户角色)
+// 路由权限获取(根据登录用户角色)
+export function fetchPermission() {
     return axios.get('permission?role=' + store.state.currentRole)
 }
 
-export function getRoleRights(role){
+// 获得选中的角色的权限列表
+export function getRoleRights(role) {
     return axios.get('permission?role=' + role)
 }
 
-export function login(user){
-    // 登录用户角色获取
-    return axios.post('login',user)
+// 登录用户角色获取
+export function login(user) {
+    return axios.post('login', user)
 }
 
-export function getUsers(params){
-    return axios.get('users',params)
+// 根据查询字段获得用户列表
+export function getUsers(params) {
+    return axios.get('users', params)
 }
 
-export function getAllRoles(){
+export function getAllRoles() {
     return axios.get('roles')
 }
 
-export function  getProfile(token){
+// 获得登入用户信息
+export function getProfile(token) {
     const authTok = token
     return axios.get('profile', authTok)
 }
 
-export function addUser(userInfo){
-    return axios.post('register',userInfo)
+export function addUser(userInfo) {
+    return axios.post('register', userInfo)
 }
 
-export function modifyUser(userId,userInfo){
+export function modifyUser(userId, userInfo) {
     return axios.put(`users/${userId}`, userInfo)
 }
 
-export function searchUser(userId){
+export function searchUser(userId) {
     return axios.get(`users/${userId}`)
 }
 
-export function deleteUser(userId){
+export function deleteUser(userId) {
     return axios.delete(`users/${userId}`)
+}
+
+// 获得所有会议列表
+export function getAllConfers() {
+    return axios.get('conference')
+}
+
+// 获得当前用户参与的会议的列表
+export function getAttendConfers(username) {
+    return axios.get(`conference/${username}`)
 }
