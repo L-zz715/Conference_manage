@@ -88,8 +88,10 @@ export default {
         }
         this.conferList = res.data;
       } else {
-        let res = await getAttendConfers(this.userProfile.username);
-        console.log(res);
+        let res = await getAttendConfers(this.userProfile.username,{
+          params: this.queryInfo,
+        });
+        console.log("@@",res);
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }

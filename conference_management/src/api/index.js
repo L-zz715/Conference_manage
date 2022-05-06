@@ -53,6 +53,6 @@ export function getAllConfers(params) {
 }
 
 // 获得当前用户参与的会议的列表
-export function getAttendConfers(username) {
-    return axios.get(`conference/${username}`)
+export function getAttendConfers(username,params) {
+    return axios.get(`conference/${username}`,params)
 }
