@@ -7,6 +7,10 @@ export function fetchPermission(){
     return axios.get('permission?role=' + store.state.currentRole)
 }
 
+export function getRoleRights(role){
+    return axios.get('permission?role=' + role)
+}
+
 export function login(user){
     // 登录用户角色获取
     return axios.post('login',user)

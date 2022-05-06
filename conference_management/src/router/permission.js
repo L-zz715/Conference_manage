@@ -12,14 +12,14 @@ router.beforeEach((to, from, next) => {
         }
     } else {
         if (!store.state.permission.permissionList) {
+            // 储存目前用户的角色
             store.commit(
                 "SET_CURRENTROLE",
                 window.sessionStorage.getItem("currentRole")
             )
 
-
             store.dispatch("permission/FETCH_PERMISSION").then(() => {
-                //储存可能被多次使用的role数据
+                // 储存可能被多次使用的role数据
                 store.dispatch("permission/GET_ROLELIST_FROMOBJ")
                 next({
                     path: to.path

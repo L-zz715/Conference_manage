@@ -50,6 +50,7 @@ export default {
       this.$store.commit("LOGIN_OUT");
       this.$store.commit("CLEAR_USERROLELIST");
       this.$store.commit("CLEAR_CURRENTROLE");
+      window.sessionStorage.clear()
       window.location.reload();
     },
     changeCurrentRole(role) {
