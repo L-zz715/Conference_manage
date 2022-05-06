@@ -666,11 +666,11 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
-    const conferNum = await Conference.find().where({
+    const conferNum = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]}).where({
         confername: reg
     }).count()
 
-    conferences = await Conference.find().where({
+    conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]}).where({
         confername: reg
     })
         .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
