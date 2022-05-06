@@ -21,12 +21,12 @@ post {{url}}register
 {{json}}
 
 {
-    "username":"user2",
-    "email":"user233@use.com",
+    "username":"user8",
+    "email":"user2ad3@use.com",
     "password":"123456",
-    "mobile":"15485625478",
+    "mobile":"15485624878",
     "rolelist":["chair","reviewer"],
-    "interest":"AI"
+    "interest":"人工智能"
 
 }
 
@@ -38,6 +38,19 @@ post {{url}}login
     "email":"admin1255@adm.com",
     "password":"123456"
 
+}
+
+###
+get {{url}}users/626c17ef962c3f2544fcfd2d
+
+###
+put {{url}}users/626c17ef962c3f2544fcfd2d
+{{json}}
+
+{
+    "mobile":17452145687,
+    "rolelist":["chair","reviewer"],
+    "interest":"云计算"
 }
 
 ###
@@ -134,6 +147,21 @@ post {{url}}roles
 {
     "rolename":"reviewer",
     "description":"Paper reviewer"
+}
+
+###
+get {{url}}conference
+
+###
+post {{url}}conference
+{{json}}
+
+{
+    "confername": "5月第一次会议",
+    "title": "讨论最新项目进展",
+    "topic": "人工智能",
+    "chairname": "user2",
+    "date": "2022-05-06 13:30:41"
 }
 
 ###

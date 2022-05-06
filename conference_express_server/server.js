@@ -1,4 +1,4 @@
-const { User, Role, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss } = require('./models/models')
+const { User, Role, Conference, Paper, Review, AdminPermiss, ChairPermiss, AuthorPermiss, ReviewerPermiss } = require('./models/models')
 
 const express = require('express')
 //导入生成token用的包
@@ -562,7 +562,7 @@ app.get('/api/permission', async (req, res) => {
 
 })
 
-// 获得角色列表
+// 获取角色列表
 app.get('/api/roles', async (req, res) => {
     const roles = await Role.find()
 
@@ -597,7 +597,7 @@ app.post('/api/roles', async (req, res) => {
     }
 
     if (hasRole) {
-        res.send({
+        return res.send({
             meta: meta,
         })
     }
@@ -611,7 +611,91 @@ app.post('/api/roles', async (req, res) => {
         rolename: req.body.rolename,
         description: req.body.description
     })
-    res.send(role)
+    res.send({
+        meta: meta,
+        data: role
+    })
+})
+
+// 获取会议列表
+app.get('/api/conference', async (req, res) => {
+    const conferences = await Conference.find()
+
+    let meta = {
+        status: 403,
+        message: '获取会议信息失败'
+    }
+    if (!conferences) {
+        res.send({
+            meta: meta
+        })
+    }
+    meta = {
+        status: 200,
+        message: '获取会议信息成功'
+    }
+    res.send({
+        meta: meta,
+        data: conferences
+    })
+})
+
+// 获取会议列表 是否参会者 根据参会者名字判断
+app.get('/api/conference/:name', async (req, res) => {
+    const conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]})
+    console.log(conferences)
+    let meta = {
+        status: 403,
+        message: '获取会议信息失败'
+    }
+    if (!conferences) {
+        res.send({
+            meta: meta
+        })
+    }
+    meta = {
+        status: 200,
+        message: '获取会议信息成功'
+    }
+    res.send({
+        meta: meta,
+        data: conferences
+    })
+})
+
+
+// 添加会议
+app.post('/api/conference', async (req, res) => {
+
+    const date = new Date(req.body.date)
+    // 解决时差问题
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    // 判断是否主席在同个时间创建的会议
+    const hasConference = await Conference.findOne({ $and: [{ chairname: req.body.chairname }, { date: date }] })
+    if (hasConference) {
+        return res.send({
+            meta: {
+                status: 403,
+                message: '会议时间冲突，请在其他时间创建会议'
+            }
+        })
+    }
+
+    const conference = await Conference.create({
+        confername: req.body.confername,
+        title: req.body.title,
+        topic: req.body.topic,
+        chairname: req.body.chairname,
+        date: date,
+        attendPpl:req.body.attendPpl
+    })
+    res.send({
+        meta: {
+            status: 200,
+            message: '创建会议成功'
+        },
+        data: conference
+    })
 })
 
 // 监听4000端口
