@@ -15,6 +15,28 @@ export default {
 
     },
     currentRole:'',
+    interestOptions: [
+        {
+          value: "人工智能",
+          label: "人工智能",
+        },
+        {
+          value: "物联网",
+          label: "物联网",
+        },
+        {
+          value: "大数据",
+          label: "大数据",
+        },
+        {
+          value: "信息安全",
+          label: "信息安全",
+        },
+        {
+          value: "云计算",
+          label: "云计算",
+        },
+      ],
 
 
 
