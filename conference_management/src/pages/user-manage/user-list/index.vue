@@ -112,9 +112,9 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="兴趣领域" prop="interest">
-              <el-select v-model="addForm.interest" placeholder="请选择">
+              <el-select v-model="addForm.interest" placeholder="请选择"  style=" width: 100%">
                 <el-option
-                  v-for="item in options"
+                  v-for="item in interestOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -170,12 +170,13 @@
         </el-form-item>
 
         <el-form-item label="兴趣领域" prop="interest">
-          <el-select v-model="editForm.interest" placeholder="请选择">
+          <el-select v-model="editForm.interest" placeholder="请选择"  style=" width: 100%">
             <el-option
-              v-for="item in options"
+              v-for="item in interestOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              
             >
             </el-option>
           </el-select>
@@ -203,6 +204,7 @@ export default {
   components: { Breadcrumb, Search, AddButton, Pagination },
   computed: {
     ...mapState("permission", ["allRoleList"]),
+    ...mapState(["interestOptions"])
   },
   data() {
     // 验证邮箱的规则
@@ -314,28 +316,6 @@ export default {
           },
         ],
       },
-      options: [
-        {
-          value: "人工智能",
-          label: "人工智能",
-        },
-        {
-          value: "物联网",
-          label: "物联网",
-        },
-        {
-          value: "大数据",
-          label: "大数据",
-        },
-        {
-          value: "信息安全",
-          label: "信息安全",
-        },
-        {
-          value: "云计算",
-          label: "云计算",
-        },
-      ],
       value: "",
       editDialogVisible: false,
       editForm: {

@@ -6,7 +6,7 @@ import {
   Button, Form, FormItem, Message, Input, Container, Header, Aside, Main, Menu, Submenu, MenuItem,MenuItemGroup,
   Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Switch, Tooltip, Pagination,
   Dialog, MessageBox, Tag, Tree, Select, Option, Cascader, Alert, Tabs, TabPane, Steps, Step, CheckboxGroup, Checkbox,
-  Upload, Timeline, TimelineItem,Popconfirm
+  Upload, Timeline, TimelineItem,Popconfirm,DatePicker
 } from 'element-ui'
 
 Vue.use(Button)
@@ -48,6 +48,7 @@ Vue.use(Upload)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(Popconfirm)
+Vue.use(DatePicker)
 
 // Message 要进行全局挂载  $message 是个自定义属性
 Vue.prototype.$message = Message

@@ -21,6 +21,10 @@ export function getUsers(params) {
     return axios.get('users', params)
 }
 
+export function getAllUsers(){
+    return axios.get('allusers')
+}
+
 export function getAllRoles() {
     return axios.get('roles')
 }
@@ -55,4 +59,9 @@ export function getAllConfers(params) {
 // 获得当前用户参与的会议的列表
 export function getAttendConfers(username,params) {
     return axios.get(`conference/${username}`,params)
+}
+
+// 创建会议
+export function addConference(params){
+    return axios.post('conference', params)
 }
