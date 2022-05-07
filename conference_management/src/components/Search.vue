@@ -5,7 +5,7 @@
       class="input-with-select"
       @clear="searchContent"
       clearable
-      v-model="searchQuery"
+      v-model.trim="searchQuery"
     >  
       <el-button slot="append" icon="el-icon-search" @click="searchContent">
       </el-button>
