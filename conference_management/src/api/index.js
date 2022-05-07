@@ -65,3 +65,13 @@ export function getAttendConfers(username,params) {
 export function addConference(params){
     return axios.post('conference', params)
 }
+
+// 修改会议
+export function editConference(conferId,params){
+    return axios.put(`conference/${conferId}`,params)
+}
+
+// 获取会议 by id
+export function searchConferencer(conferId) {
+    return axios.get(`aconference/${conferId}`)
+}
