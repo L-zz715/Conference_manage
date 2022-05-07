@@ -779,6 +779,33 @@ app.put('/api/conference/:id', async (req, res) => {
 })
 
 
+// 查询会议by id
+app.get('/api/conference/:id', async (req, res) => {
+    const conference = await Conference.findById(req.params.id)
+
+    let meta = {
+        status: 403,
+        message: '用户不存在'
+    }
+    if (!conference) {
+        res.send({
+            meta: meta
+        })
+    }
+
+    meta = {
+        status: 200,
+        message: '获得用户信息成功'
+    }
+
+    res.send({
+        meta: meta,
+        data: conference
+    })
+
+})
+
+
 // 监听4000端口
 app.listen(4000, (err) => {
     if (!err) {
