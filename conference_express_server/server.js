@@ -708,8 +708,8 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
 // 添加会议
 app.post('/api/conference', async (req, res) => {
 
-    const date = new Date(req.body.date)
     // 解决时差问题
+    const date = new Date(req.body.date)
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
     // 判断是否主席在同个时间创建的会议
     const hasConference = await Conference.findOne({ $and: [{ chairname: req.body.chairname }, { date: date }] })
@@ -750,11 +750,12 @@ app.put('/api/conference/:id', async (req, res) => {
             }
         })
     }
-    const date = new Date(req.body.date)
-    console.log(date)
+    
+    // console.log(date)
     // 解决时差问题
+    const date = new Date(req.body.date)
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-    console.log(date)
+    // console.log(date)
 
     const hasConference = await Conference.findOne({ $and: [{ chairname: conference.chairname }, { date: date }] })
     if (hasConference) {
