@@ -21,6 +21,10 @@ export function getUsers(params) {
     return axios.get('users', params)
 }
 
+export function getAllUsers(){
+    return axios.get('users')
+}
+
 export function getAllRoles() {
     return axios.get('roles')
 }

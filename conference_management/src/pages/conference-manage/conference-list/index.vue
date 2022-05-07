@@ -125,7 +125,7 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in options2"
+                  v-for="item in usernameList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -151,7 +151,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getAllConfers, getAttendConfers } from "@/api";
+import { getAllConfers, getAttendConfers, getAllUsers } from "@/api";
 import { mapState } from "vuex";
 
 export default {
@@ -245,7 +245,7 @@ export default {
           },
         ],
       },
-      options2: [],
+      usernameList: [],
     };
   },
   created() {
@@ -280,14 +280,26 @@ export default {
       this.queryInfo.query = queryP;
       this.getConfersList();
     },
-    transAddDialogVisible() {
+    async transAddDialogVisible() {
+      let res = await getAllUsers()
+      console.log("@@@",res)
+      if(res.meta.status !== 200){
+        this.message.error(res.meta.message)
+      }
+      res.data.forEach(item => {
+        if(!item.username.include('admin')){
+        this.usernameList.push(item.username)
+        }
+      });
       this.addDialogVisible = !this.addDialogVisible;
     },
     selectPageUpdateList(newQueryInfo) {
       this.queryInfo = newQueryInfo;
       this.getConfersList();
     },
-    addDialogClosed() {},
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields();
+    },
     addConferFuc(){}
   },
 };
