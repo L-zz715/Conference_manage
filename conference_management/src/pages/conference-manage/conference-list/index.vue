@@ -24,23 +24,23 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
-          <!-- <template slot-scope="scope"> -->
-          <!-- {{scope.row}} -->
-          <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
-          <!-- <el-button
+          <template slot-scope="scope">
+            <!-- {{scope.row}} -->
+            <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
+            <el-button
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row._id)"
-            ></el-button> -->
-          <!-- 删除按钮 -->
-          <!-- <el-button
+              @click="showEditDialog(scope.row)"
+            ></el-button>
+            <!-- 删除按钮 -->
+            <!-- <el-button
               type="danger"
               icon="el-icon-delete"
               size="mini"
               @click="removeUserById(scope.row._id)"
             ></el-button> -->
-          <!-- </template> -->
+          </template>
         </el-table-column>
       </el-table>
 
@@ -143,6 +143,79 @@
         <el-button type="primary" @click="addConferFuc">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 修改会议的对话框 -->
+    <el-dialog
+      title="修改用户信息"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
+      <!-- 内容主体区 -->
+      <el-form
+        :model="editForm"
+        :rules="editFormRules"
+        ref="editFormRef"
+        label-width="100px"
+      >
+        <el-form-item label="会议名称" prop="confername">
+          <el-input v-model="editForm.confername"></el-input>
+        </el-form-item>
+
+        <el-form-item label="主题" prop="title">
+          <el-input v-model="editForm.title"></el-input>
+        </el-form-item>
+
+        <el-form-item label="领域" prop="topic">
+          <el-select
+            v-model="editForm.topic"
+            placeholder="请选择"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in interestOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="会议日期" prop="date">
+          <el-date-picker
+            v-model="editForm.date"
+            type="datetime"
+            placeholder="选择日期时间"
+            style="width: 100%"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="与会人员" prop="attendPpl">
+          <el-select
+            v-model="editForm.attendPpl"
+            multiple
+            placeholder="请选择"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="(item, i) in usernameList"
+              :key="i"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editConferInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -156,6 +229,7 @@ import {
   getAttendConfers,
   getAllUsers,
   addConference,
+  editConference,
 } from "@/api";
 import { mapState } from "vuex";
 
@@ -250,6 +324,78 @@ export default {
         ],
       },
       usernameList: [],
+      editDialogVisible: false,
+      editForm: {
+        // 创建会议的表单数据
+        confername: "",
+        title: "",
+        topic: "",
+        chairname: "",
+        date: "",
+        attendPpl: [],
+      },
+      editFormRules: {
+        confername: [
+          {
+            required: true,
+            message: "请输入会议名称",
+            trigger: "blur",
+          },
+          {
+            min: 2,
+            max: 15,
+            message: "用户名的长度在2~15",
+            trigger: "blur",
+          },
+        ],
+        title: [
+          {
+            required: true,
+            message: "请输入会议主题",
+            trigger: "blur",
+          },
+          {
+            min: 2,
+            max: 15,
+            message: "用户名的长度在2~15",
+            trigger: "blur",
+          },
+        ],
+        topic: [
+          {
+            required: true,
+            message: "请选择领域",
+            trigger: "blur",
+          },
+        ],
+        chairname: [
+          {
+            required: true,
+            message: "请输入会议名称",
+            trigger: "blur",
+          },
+          {
+            min: 2,
+            max: 15,
+            message: "用户名的长度在2~15",
+            trigger: "blur",
+          },
+        ],
+        date: [
+          {
+            required: true,
+            message: "请选择会议日期",
+            trigger: "blur",
+          },
+        ],
+        attendPPl: [
+          {
+            required: true,
+            message: "请选择与会人员",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   created() {
@@ -320,6 +466,48 @@ export default {
         this.addDialogVisible = false;
         this.getConfersList();
       });
+    },
+    editDialogClosed() {
+      this.usernameList = [];
+      this.$refs.editFormRef.resetFields();
+    },
+    editConferInfo() {
+      this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) return;
+        const res = await editConference(this.editForm._id, {
+          confername: this.editForm.confername,
+          title: this.editForm.title,
+          topic: this.editForm.topic,
+          date: this.editForm.date,
+          attendPpl: this.editForm.attendPpl,
+        });
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+
+        this.editDialogVisible = false;
+        this.$message.success(res.meta.message);
+        this.getConfersList();
+      });
+    },
+
+    // 展示编辑会议对话框
+    async showEditDialog(confer) {
+      let res = await getAllUsers();
+      console.log("@@@", res);
+      if (res.meta.status !== 200) {
+        this.message.error(res.meta.message);
+      }
+      res.data.forEach((item) => {
+        if (!item.username.includes("admin")) {
+          console.log(item);
+          this.usernameList.push(item.username);
+        }
+      });
+
+      console.log(confer);
+      this.editForm = confer;
+      this.editDialogVisible = true;
     },
   },
 };
