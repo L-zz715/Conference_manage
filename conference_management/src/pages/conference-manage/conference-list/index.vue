@@ -69,12 +69,12 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="会议名称" prop="confername">
-              <el-input v-model="addForm.confername"></el-input>
+              <el-input v-model.trim="addForm.confername"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="主题" prop="title">
-              <el-input v-model="addForm.title"></el-input>
+              <el-input v-model.trim="addForm.title"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -159,11 +159,11 @@
         label-width="100px"
       >
         <el-form-item label="会议名称" prop="confername">
-          <el-input v-model="editForm.confername"></el-input>
+          <el-input v-model.trim="editForm.confername"></el-input>
         </el-form-item>
 
         <el-form-item label="主题" prop="title">
-          <el-input v-model="editForm.title"></el-input>
+          <el-input v-model.trim="editForm.title"></el-input>
         </el-form-item>
 
         <el-form-item label="领域" prop="topic">
