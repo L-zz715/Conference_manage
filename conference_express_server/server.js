@@ -86,6 +86,27 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 
 })
 
+// 获得所有用户信息
+app.get('/api/users',authMiddleware, async (req, res) =>{
+    let users = await User.find()
+    if (!users) {
+        res.send({
+            meta: {
+                status: 403,
+                message: '获取用户信息失败'
+            }
+        })
+    }
+    res.send({
+        meta: {
+            status: 200,
+            message: '获取用户信息成功'
+        },
+        data: users,
+    })
+
+})
+
 // 注册用户
 app.post('/api/register', async (req, res) => {
     //判断用户是否已注册
