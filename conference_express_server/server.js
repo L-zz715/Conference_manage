@@ -27,14 +27,14 @@ app.use(express.json())
 const address = ''
 const keyObject = keythereum.importFromFile(address, './private/');
 const privateKey = keythereum.recover('conference management', keyObject);
-console.log(privateKey.toString('hex'))
+
 const SECRET = privateKey.toString('hex')
 
 
 //验证登录中间件
 const authMiddleware = async (req, res, next) => {
     const raw = String(req.headers.authorization).split(' ').pop()
-    console.log(req.headers)
+
     const { id } = jwt.verify(raw, SECRET)
     req.user = await User.findById(id)
     next()
@@ -47,11 +47,8 @@ app.get('/api', (req, res) => {
 
 // 根据query值查询user信息
 app.get('/api/users', authMiddleware, async (req, res) => {
-
     let users = await User.find()
-    // console.log('@@',req.query.query)
-    // console.log('@@',req.query.pagenum)
-    // console.log('@@',req.query.pagesize)
+
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
@@ -71,7 +68,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
     const userNum = await User.find().where({
         username: reg
     }).count()
- 
+
     users = await User.find().where({
         username: reg
     })
@@ -87,9 +84,9 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 })
 
 // 获得所有用户信息
-app.get('/api/allusers',authMiddleware, async (req, res) =>{
+app.get('/api/allusers', authMiddleware, async (req, res) => {
     let users = await User.find()
-    console.log("@@@@",users)
+
     if (!users) {
         res.send({
             meta: {
@@ -252,7 +249,7 @@ app.put('/api/users/:id', async (req, res) => {
         status: 200,
         message: '修改用户信息成功'
     }
-    console.log(user)
+
     user.mobile = req.body.mobile
     user.rolelist = req.body.rolelist
     user.interest = req.body.interest
@@ -636,7 +633,7 @@ app.post('/api/roles', async (req, res) => {
 // 获取会议列表
 app.get('/api/conference', authMiddleware, async (req, res) => {
     let conferences = await Conference.find()
-    // console.log(req)
+
     let meta = {
         status: 403,
         message: '获取会议信息失败'
@@ -657,7 +654,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
         confername: reg
     })
         .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
-    
+
 
     meta = {
         status: 200,
@@ -673,8 +670,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
 
 // 获取会议列表 是否参会者 根据参会者名字判断
 app.get('/api/conference/:name', authMiddleware, async (req, res) => {
-    let conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]})
-    console.log(conferences)
+    let conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
     let meta = {
         status: 403,
         message: '获取会议信息失败'
@@ -688,11 +684,11 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
-    const conferNum = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]}).where({
+    const conferNum = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] }).where({
         confername: reg
     }).count()
 
-    conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]}).where({
+    conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] }).where({
         confername: reg
     })
         .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
@@ -732,7 +728,7 @@ app.post('/api/conference', async (req, res) => {
         topic: req.body.topic,
         chairname: req.body.chairname,
         date: date,
-        attendPpl:req.body.attendPpl
+        attendPpl: req.body.attendPpl
     })
     res.send({
         meta: {
@@ -742,6 +738,46 @@ app.post('/api/conference', async (req, res) => {
         data: conference
     })
 })
+
+// 修改会议
+app.put('/api/conference/:id', async (req, res) => {
+    const conference = await Conference.findById(req.params.id)
+    if (!conference) {
+        res.send({
+            meta: {
+                status: 403,
+                message: '会议不存在'
+            }
+        })
+    }
+    const date = new Date(req.body.date)
+    // 解决时差问题
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+
+    const hasConference = await Conference.findOne({ $and: [{ chairname: conference.chairname }, { date: date }] })
+    if (hasConference) {
+        return res.send({
+            meta: {
+                status: 403,
+                message: '会议时间冲突，请修改会议时间'
+            }
+        })
+    }
+    conference.confername = req.body.confername,
+        conference.title = req.body.title,
+        conference.topic = req.body.topic,
+        conference.date = date,
+        conference.attendPpl = req.body.attendPpl
+    await conference.save()
+    res.send({
+        meta: {
+            status: 200,
+            message: '修改会议信息成功'
+        },
+        data: conference
+    })
+})
+
 
 // 监听4000端口
 app.listen(4000, (err) => {
