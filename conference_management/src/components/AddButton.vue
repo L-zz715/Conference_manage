@@ -1,7 +1,7 @@
 <template>
   <el-col :span="4">
     <el-button type="primary"
-    :disabled="curRole !== 'chair'"
+    :disabled="curRole !== 'chair' && curRole !== 'admin'"
     @click="openDialog()"
       >
       {{caption}}</el-button
@@ -12,7 +12,7 @@
 <script>
 export default {
   name: "AddButton",
-  props:['caption','curRole'],
+  props:["caption","curRole"],
   data() {
     return {
       openDialog(){
