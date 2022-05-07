@@ -7,7 +7,7 @@
       <el-row :gutter="20">
         <!-- 绑定自定义事件 -->
         <Search v-on:searchMany="searchManyFunc" />
-        <AddButton caption="创建会议" v-on:addDialog="transAddDialogVisible" />
+        <AddButton caption="创建会议" v-on:addDialog="transAddDialogVisible" :curRole="currentRole"/>
       </el-row>
 
       <!-- 会议列表区 -->
@@ -28,7 +28,7 @@
             <!-- {{scope.row}} -->
             <!-- 修改按钮  -->
             <el-button
-              :disabled="(scope.row.chairname !== userProfile.username  && !userProfile.username.includes('admin')) || currentRole !== 'chair'"
+              :disabled="(scope.row.chairname !== userProfile.username  && !userProfile.username.includes('admin')) || (currentRole !== 'chair' && currentRole !== 'admin')"
               type="primary"
               icon="el-icon-edit"
               size="mini"
