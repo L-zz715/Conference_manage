@@ -87,7 +87,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 })
 
 // 获得所有用户信息
-app.get('/api/users',async (req, res) =>{
+app.get('/api/allusers',authMiddleware, async (req, res) =>{
     let users = await User.find()
     console.log("@@@@",users)
     if (!users) {
