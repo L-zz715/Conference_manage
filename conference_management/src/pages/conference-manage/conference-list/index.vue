@@ -99,7 +99,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="主席姓名" prop="chairname">
-              <el-input v-model="addForm.chairname"></el-input>
+              <el-input v-model="addForm.chairname" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -125,10 +125,10 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in usernameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="(item, i) in usernameList"
+                  :key="i"
+                  :label="item"
+                  :value="item"
                 >
                 </el-option>
               </el-select>
@@ -151,7 +151,12 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getAllConfers, getAttendConfers, getAllUsers } from "@/api";
+import {
+  getAllConfers,
+  getAttendConfers,
+  getAllUsers,
+  addConference,
+} from "@/api";
 import { mapState } from "vuex";
 
 export default {
@@ -159,10 +164,9 @@ export default {
   components: { Breadcrumb, Search, AddButton, Pagination },
   computed: {
     ...mapState("permission", ["userProfile"]),
-    ...mapState(["currentRole","interestOptions"]),
+    ...mapState(["currentRole", "interestOptions"]),
   },
-  mounted(){
-  },
+  mounted() {},
   data() {
     return {
       conferList: [],
@@ -281,16 +285,18 @@ export default {
       this.getConfersList();
     },
     async transAddDialogVisible() {
-      let res = await getAllUsers()
-      console.log("@@@",res)
-      if(res.meta.status !== 200){
-        this.message.error(res.meta.message)
+      let res = await getAllUsers();
+      console.log("@@@", res);
+      if (res.meta.status !== 200) {
+        this.message.error(res.meta.message);
       }
-      res.data.forEach(item => {
-        if(!item.username.include('admin')){
-        this.usernameList.push(item.username)
+      res.data.forEach((item) => {
+        if (!item.username.includes("admin")) {
+          console.log(item);
+          this.usernameList.push(item.username);
         }
       });
+      this.addForm.chairname = this.userProfile.username;
       this.addDialogVisible = !this.addDialogVisible;
     },
     selectPageUpdateList(newQueryInfo) {
@@ -298,9 +304,23 @@ export default {
       this.getConfersList();
     },
     addDialogClosed() {
+      this.usernameList = [];
       this.$refs.addFormRef.resetFields();
     },
-    addConferFuc(){}
+    async addConferFuc() {
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return;
+        const res = await addConference(this.addForm);
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+        this.$message.success(res.meta.message);
+
+        this.addDialogVisible = false;
+        this.getConfersList();
+      });
+    },
   },
 };
 </script>
