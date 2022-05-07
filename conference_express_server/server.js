@@ -780,12 +780,12 @@ app.put('/api/conference/:id', async (req, res) => {
 
 
 // 查询会议by id
-app.get('/api/conference/:id', async (req, res) => {
+app.get('/api/aconference/:id', async (req, res) => {
     const conference = await Conference.findById(req.params.id)
 
     let meta = {
         status: 403,
-        message: '用户不存在'
+        message: '会议不存在'
     }
     if (!conference) {
         res.send({
@@ -795,7 +795,7 @@ app.get('/api/conference/:id', async (req, res) => {
 
     meta = {
         status: 200,
-        message: '获得用户信息成功'
+        message: '获得会议信息成功'
     }
 
     res.send({
