@@ -752,7 +752,7 @@ app.put('/api/conference/:id', async (req, res) => {
     }
     const date = new Date(req.body.date)
     // 解决时差问题
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    // date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
 
     const hasConference = await Conference.findOne({ $and: [{ chairname: conference.chairname }, { date: date }] })
     if (hasConference) {
