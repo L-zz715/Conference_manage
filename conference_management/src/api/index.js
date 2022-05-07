@@ -70,3 +70,8 @@ export function addConference(params){
 export function editConference(conferId,params){
     return axios.put(`conference/${conferId}`,params)
 }
+
+// 获取会议 by id
+export function searchConferencer(conferId) {
+    return axios.get(`conference/${conferId}`)
+}

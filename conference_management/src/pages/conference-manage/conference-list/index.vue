@@ -31,7 +31,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row)"
+              @click="showEditDialog(scope.row._id)"
             ></el-button>
             <!-- 删除按钮 -->
             <!-- <el-button
@@ -230,6 +230,7 @@ import {
   getAllUsers,
   addConference,
   editConference,
+  searchConferencer
 } from "@/api";
 import { mapState } from "vuex";
 
@@ -492,9 +493,9 @@ export default {
     },
 
     // 展示编辑会议对话框
-    async showEditDialog(confer) {
+    async showEditDialog(conferId) {
       let res = await getAllUsers();
-      console.log("@@@", res);
+      // console.log("@@@", res);
       if (res.meta.status !== 200) {
         this.message.error(res.meta.message);
       }
@@ -504,17 +505,22 @@ export default {
           this.usernameList.push(item.username);
         }
       });
-      this.editForm = confer;
-      const dt = new Date(this.editForm.date);
-      // 解决时差问题
-      dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
-      const y = dt.getFullYear();
-      const m = (dt.getMonth() + 1 + "").padStart(2, "0");
-      const d = (dt.getDate() + "").padStart(2, "0");
-      const hh = (dt.getHours() + "").padStart(2, "0");
-      const mm = (dt.getMinutes() + "").padStart(2, "0");
-      const ss = (dt.getSeconds() + "").padStart(2, "0");
-      this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+      console.log(conferId)
+      let conferRes = await searchConferencer(conferId)
+      console.log(conferRes)
+      // this.editForm = conferRes.data;
+
+      // const dt = new Date(this.editForm.date);
+      // // 解决时差问题
+      // dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
+      // const y = dt.getFullYear();
+      // const m = (dt.getMonth() + 1 + "").padStart(2, "0");
+      // const d = (dt.getDate() + "").padStart(2, "0");
+      // const hh = (dt.getHours() + "").padStart(2, "0");
+      // const mm = (dt.getMinutes() + "").padStart(2, "0");
+      // const ss = (dt.getSeconds() + "").padStart(2, "0");
+      // this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+
       this.editDialogVisible = true;
     },
   },
