@@ -73,5 +73,5 @@ export function editConference(conferId,params){
 
 // 获取会议 by id
 export function searchConferencer(conferId) {
-    return axios.get(`conference/${conferId}`)
+    return axios.get(`aconference/${conferId}`)
 }

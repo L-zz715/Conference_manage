@@ -230,7 +230,7 @@ import {
   getAllUsers,
   addConference,
   editConference,
-  searchConferencer
+  searchConferencer,
 } from "@/api";
 import { mapState } from "vuex";
 
@@ -475,6 +475,21 @@ export default {
     editConferInfo() {
       this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return;
+        
+        console.log(this.editForm.date);
+        const dt = new Date(this.editForm.date);
+
+        // 解决时差问题
+        // dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+        const y = dt.getFullYear();
+        const m = (dt.getMonth() + 1 + "").padStart(2, "0");
+        const d = (dt.getDate() + "").padStart(2, "0");
+        const hh = (dt.getHours() + "").padStart(2, "0");
+        const mm = (dt.getMinutes() + "").padStart(2, "0");
+        const ss = (dt.getSeconds() + "").padStart(2, "0");
+        this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+        console.log(this.editForm.date);
+
         const res = await editConference(this.editForm._id, {
           confername: this.editForm.confername,
           title: this.editForm.title,
@@ -505,21 +520,21 @@ export default {
           this.usernameList.push(item.username);
         }
       });
-      console.log(conferId)
-      let conferRes = await searchConferencer(conferId)
-      console.log(conferRes)
-      // this.editForm = conferRes.data;
+      console.log(conferId);
+      let conferRes = await searchConferencer(conferId);
+      console.log(conferRes);
+      this.editForm = conferRes.data;
 
-      // const dt = new Date(this.editForm.date);
-      // // 解决时差问题
-      // dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
-      // const y = dt.getFullYear();
-      // const m = (dt.getMonth() + 1 + "").padStart(2, "0");
-      // const d = (dt.getDate() + "").padStart(2, "0");
-      // const hh = (dt.getHours() + "").padStart(2, "0");
-      // const mm = (dt.getMinutes() + "").padStart(2, "0");
-      // const ss = (dt.getSeconds() + "").padStart(2, "0");
-      // this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+      const dt = new Date(this.editForm.date);
+      // 解决时差问题
+      dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
+      const y = dt.getFullYear();
+      const m = (dt.getMonth() + 1 + "").padStart(2, "0");
+      const d = (dt.getDate() + "").padStart(2, "0");
+      const hh = (dt.getHours() + "").padStart(2, "0");
+      const mm = (dt.getMinutes() + "").padStart(2, "0");
+      const ss = (dt.getSeconds() + "").padStart(2, "0");
+      this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
 
       this.editDialogVisible = true;
     },
