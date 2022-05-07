@@ -26,8 +26,9 @@
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <!-- {{scope.row}} -->
-            <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
+            <!-- 修改按钮  -->
             <el-button
+              :disabled="(scope.row.chairname !== userProfile.username  && !userProfile.username.includes('admin')) || currentRole !== 'chair'"
               type="primary"
               icon="el-icon-edit"
               size="mini"
