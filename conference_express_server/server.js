@@ -27,14 +27,14 @@ app.use(express.json())
 const address = ''
 const keyObject = keythereum.importFromFile(address, './private/');
 const privateKey = keythereum.recover('conference management', keyObject);
-console.log(privateKey.toString('hex'))
+
 const SECRET = privateKey.toString('hex')
 
 
 //验证登录中间件
 const authMiddleware = async (req, res, next) => {
     const raw = String(req.headers.authorization).split(' ').pop()
-    console.log(req.headers)
+
     const { id } = jwt.verify(raw, SECRET)
     req.user = await User.findById(id)
     next()
@@ -47,11 +47,8 @@ app.get('/api', (req, res) => {
 
 // 根据query值查询user信息
 app.get('/api/users', authMiddleware, async (req, res) => {
-
     let users = await User.find()
-    // console.log('@@',req.query.query)
-    // console.log('@@',req.query.pagenum)
-    // console.log('@@',req.query.pagesize)
+
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
@@ -89,7 +86,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 // 获得所有用户信息
 app.get('/api/allusers',authMiddleware, async (req, res) =>{
     let users = await User.find()
-    console.log("@@@@",users)
+
     if (!users) {
         res.send({
             meta: {
@@ -252,7 +249,7 @@ app.put('/api/users/:id', async (req, res) => {
         status: 200,
         message: '修改用户信息成功'
     }
-    console.log(user)
+
     user.mobile = req.body.mobile
     user.rolelist = req.body.rolelist
     user.interest = req.body.interest
@@ -636,7 +633,7 @@ app.post('/api/roles', async (req, res) => {
 // 获取会议列表
 app.get('/api/conference', authMiddleware, async (req, res) => {
     let conferences = await Conference.find()
-    // console.log(req)
+
     let meta = {
         status: 403,
         message: '获取会议信息失败'
@@ -674,7 +671,6 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
 // 获取会议列表 是否参会者 根据参会者名字判断
 app.get('/api/conference/:name', authMiddleware, async (req, res) => {
     let conferences = await Conference.find({$or:[{chairname:req.params.name},{attendPpl:{$elemMatch:{$eq:req.params.name}}}]})
-    console.log(conferences)
     let meta = {
         status: 403,
         message: '获取会议信息失败'
