@@ -668,7 +668,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
     })
 })
 
-// 获取会议列表 是否参会者 根据参会者名字判断
+// 获取会议列表 是否参会者 根据参会者名字判断，传参用来判断返回分页和search
 app.get('/api/conference/:name', authMiddleware, async (req, res) => {
     let conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
     let meta = {
@@ -676,7 +676,7 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
         message: '获取会议信息失败'
     }
     if (!conferences) {
-        res.send({
+        return res.send({
             meta: meta
         })
     }
@@ -701,6 +701,28 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
         meta: meta,
         data: conferences,
         total: conferNum
+    })
+})
+
+// 获取会议信息只根据参会者姓名
+app.get('/api/conferences/:name', authMiddleware, async (req, res) => {
+    let conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
+
+    if (!conferences) {
+        return res.send({
+            meta: {
+                status: 403,
+                message: '获取会议信息失败'
+            }
+        })
+    }
+
+    req.send({
+        meta:{
+            status: 200,
+            message: '获取会议信息成功'
+        },
+        data:conferences
     })
 })
 
@@ -828,6 +850,60 @@ app.delete('/api/conference/:id', async (req, res) => {
         }
     })
 })
+
+// 获取所有文章
+app.get('/api/allpaper',async (req,res)=>{
+    const paper = await Paper.find()
+    if(!paper){
+        return res.send({
+            meta:{
+                status:403,
+                message:'获取文章列表失败'
+            }
+        })
+    }
+    res.send({
+        meta:{
+            status:200,
+            message:'获取文章列表成功'
+        },
+        data:paper
+    })
+})
+
+// 添加文章
+app.post('/api/paper/:conferId',async(req,res)=>{
+   
+    const hasPaper = await Paper.findOne({ $and: [{ title: req.body.title }, { authorName: req.body.authorName }] })
+    if(hasPaper){
+        return res.send({
+            meta:{
+                status:403,
+                message:'已上传过该文章，请重新上传'
+            }
+        })
+    }
+    const paper = await Paper.create({
+        title: req.body.title,
+        authorName: req.body.authorName,
+        topic: req.body.topic,
+        content: req.body.content,
+    })
+
+    const conference = await Conference.findById(req.params.conferId)
+    conference.paperList.push(paper)
+    await conference.save()
+    const paperSend = await Paper.findOne({ $and: [{ title: req.body.title }, { authorName: req.body.authorName }] }).populate('conferences')
+    res.send({
+        meta:{
+            status:200,
+            message:'添加文章成功'
+        },
+        data:paperSend
+    })
+})
+
+// 分配
 
 
 // 监听4000端口
