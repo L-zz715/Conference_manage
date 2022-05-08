@@ -1,7 +1,7 @@
 <template>
   <el-col :span="4">
     <el-button type="primary"
-    :disabled="curRole !== 'chair' && curRole !== 'admin'"
+    :disabled="curRole !== 'chair' && curRole !== 'admin' && caption === '创建会议'"
     @click="openDialog()"
       >
       {{caption}}</el-button
