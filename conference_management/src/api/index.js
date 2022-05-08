@@ -72,6 +72,12 @@ export function editConference(conferId,params){
 }
 
 // 获取会议 by id
-export function searchConferencer(conferId) {
+export function searchConference(conferId) {
     return axios.get(`aconference/${conferId}`)
+}
+
+// 删除会议 by id
+export function deleteConference(conferId){
+    return axios.delete(`conference/${conferId}`)
+
 }
