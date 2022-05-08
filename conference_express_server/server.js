@@ -853,7 +853,7 @@ app.delete('/api/conference/:id', async (req, res) => {
 
 // 获取所有文章
 app.get('/api/allpaper',async (req,res)=>{
-    const paper = await Paper.find()
+    const paper = await Paper.find().populate('conferences')
     if(!paper){
         return res.send({
             meta:{
@@ -883,9 +883,9 @@ app.post('/api/paper/:conferId',async(req,res)=>{
             }
         })
     }
-    console.log(req.body)
-    console.log(req.query)
-    console.log(req.params)
+    // console.log(req.body)
+    // console.log(req.query)
+    // console.log(req.params)
     const paper = await Paper.create({
         title: req.body.title,
         authorName: req.body.authorName,
