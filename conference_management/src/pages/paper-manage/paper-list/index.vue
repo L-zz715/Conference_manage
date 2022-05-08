@@ -17,24 +17,24 @@
         <el-table-column prop="title" label="标题"> </el-table-column>
         <el-table-column prop="authorName" label="作者姓名"> </el-table-column>
         <el-table-column prop="topic" label="领域"> </el-table-column>
-        <el-table-column label="领域"> 
-            <template slot-scope="scope">
-                {{scope.row.conferences[0].confername}}
-            </template>
+        <el-table-column label="领域">
+          <template slot-scope="scope">
+            {{ scope.row.conferences[0].confername }}
+          </template>
         </el-table-column>
 
         <el-table-column label="操作" width="180px">
           <!-- <template slot-scope="scope"> -->
-            <!-- {{scope.row}} -->
-            <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
-            <!-- <el-button
+          <!-- {{scope.row}} -->
+          <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
+          <!-- <el-button
               type="primary"
               icon="el-icon-edit"
               size="mini"
               @click="showEditDialog(scope.row._id)"
             ></el-button> -->
-            <!-- 删除按钮 -->
-            <!-- <el-button
+          <!-- 删除按钮 -->
+          <!-- <el-button
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -52,36 +52,49 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import {getAllPaper} from '@/api'
+import { getAllPaper,getPapers } from "@/api";
 export default {
   name: "Papers-list",
   components: { Breadcrumb, Search, AddButton, Pagination },
   data() {
     return {
-        paperList:[]
+      paperList: [],
+      queryInfo: {
+        query: "",
+        pagenum: 1, // 当前的页数
+        pagesize: 10, // 当前每页显示多少条数据
+      },
+      total: 0,
+      addDialogVisible: false,
     };
   },
-  created(){
-      this.getPapersFunc()
+  created() {
+    this.getPapersFunc();
   },
   mounted() {},
-  methods:{
-      async getPapersFunc(){
-          const res = await getAllPaper()
-          console.log(res.data[0].conferences[0].confername)
-          if(res.meta.status !== 200){
-              this.$message.error(res.meta.message)
-          }
-          this.$message.success(res.meta.message)
-          this.paperList = res.data
-      },
-      searchManyFunc(){
-
-      },
-      transAddDialogVisible(){
-
+  methods: {
+    async getPapersFunc() {
+      const res = await getPapers({
+        params: this.queryInfo,
+      });
+      console.log(res.data[0].conferences[0].confername);
+      if (res.meta.status !== 200) {
+        this.$message.error(res.meta.message);
       }
-  }
+      this.$message.success(res.meta.message);
+      this.paperList = res.data;
+    },
+    searchManyFunc(queryP) {
+        console.log(queryP)
+      this.queryInfo.query = queryP;
+        console.log(this.queryInfo.query)
+
+      this.getPapersFunc();
+    },
+    transAddDialogVisible() {
+      this.addDialogVisible = !this.addDialogVisible;
+    },
+  },
 };
 </script>
 

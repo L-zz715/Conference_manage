@@ -86,3 +86,8 @@ export function deleteConference(conferId){
 export function getAllPaper(){
     return axios.get('allpaper')
 }
+
+// 获取文章 同过查询在所有文章里查找
+export function getPapers(params){
+    return axios.get('paper',params)
+}
