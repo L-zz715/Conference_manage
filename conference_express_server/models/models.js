@@ -84,6 +84,8 @@ const paperSchema = new mongoose.Schema({
     title: { type: String },
     authorName: { type: String },
     topic: { type: String },
+    content: { type: String },
+    hasReviewed: { type: Boolean },
     reviewList: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Review' }]
 }, {
     toJSON: { virtuals: true }  //就可以用json格式取出
