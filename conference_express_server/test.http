@@ -177,5 +177,17 @@ post {{url}}conference
 }
 
 ###
+put {{url}}conference/62764366914a587448e4ec6c
+{{json}}
+
+{
+    "confername": "新5月会议",
+    "title": "上旬数据",
+    "topic": "大数据",
+    "date": "2022-05-05 11:30",
+    "attendPpl": ["user2","user4"]
+}
+
+###
 get {{url}}profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90
