@@ -947,6 +947,35 @@ app.post('/api/paper/:conferId', async (req, res) => {
 
 // 分配
 
+// 删除文章
+app.delete('/api/apaper/:id',async(req,res)=>{
+    const paper = await Paper.findById(req.params.id).populate('conferences');
+    const meta = {
+        status: 403,
+        message: '文章不存在'
+    }
+    if (!paper) {
+        return res.send({
+            meta: meta
+        })
+    }
+
+    // 获得含有此文章的会议
+    const conference = await Conference.findOne().where({paperList:{ $elemMatch: { $eq: paper._id } }})
+    // 会议删除此文章
+    let index = conference.paperList.indexOf(paper._id)
+    conference.paperList.splice(index,1)
+    await conference.save()
+    // 在paper 数据库删除文章
+    await paper.remove();
+    res.send({
+        meta: {
+            status: 200,
+            message: '删除文章成功'
+        }
+    })
+})
+
 
 // 监听4000端口
 app.listen(4000, (err) => {
