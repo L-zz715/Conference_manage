@@ -70,8 +70,8 @@ const reviewSchema = new mongoose.Schema({
     toJSON: { virtuals: true }  //就可以用json格式取出
 })
 
-reviewSchema.virtual('reviews', {
-    ref: 'Review',
+reviewSchema.virtual('papers', {
+    ref: 'Paper',
     localField: '_id',
     foreignField: 'reviewList',
     justOne: false  //表示返回的不是一条，是个数组
@@ -85,14 +85,13 @@ const paperSchema = new mongoose.Schema({
     authorName: { type: String },
     topic: { type: String },
     content: { type: String },
-    hasReviewed: { type: Boolean },
-    reviewList: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Review' }]
+    reviewList: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Review' , maxlength: 3}]
 }, {
     toJSON: { virtuals: true }  //就可以用json格式取出
 })
 
-paperSchema.virtual('papers', {
-    ref: 'Paper',
+paperSchema.virtual('conferences', {
+    ref: 'Conference',
     localField: '_id',
     foreignField: 'paperList',
     justOne: false  //表示返回的不是一条，是个数组
