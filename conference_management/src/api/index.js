@@ -81,3 +81,8 @@ export function deleteConference(conferId){
     return axios.delete(`conference/${conferId}`)
 
 }
+
+// 获取所有文章
+export function getAllPaper(){
+    return axios.get('allpaper')
+}
