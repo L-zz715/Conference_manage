@@ -7,7 +7,7 @@
       <el-row :gutter="20">
         <!-- 绑定自定义事件 -->
         <Search v-on:searchMany="searchManyFunc" />
-        <AddButton caption="添加用户" v-on:addDialog="transAddDialogVisible" />
+        <AddButton caption="添加文章" v-on:addDialog="transSubmitRoute" />
       </el-row>
 
       <!-- 用户列表区 -->
@@ -24,23 +24,23 @@
         </el-table-column>
 
         <el-table-column label="操作" width="180px">
-          <!-- <template slot-scope="scope"> -->
+          <template slot-scope="scope">
           <!-- {{scope.row}} -->
           <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
-          <!-- <el-button
+          <el-button
               type="primary"
               icon="el-icon-edit"
               size="mini"
               @click="showEditDialog(scope.row._id)"
-            ></el-button> -->
+            ></el-button>
           <!-- 删除按钮 -->
-          <!-- <el-button
+          <el-button
               type="danger"
               icon="el-icon-delete"
               size="mini"
-              @click="removeUserById(scope.row._id)"
-            ></el-button> -->
-          <!-- </template> -->
+              @click="removePaperById(scope.row._id)"
+            ></el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -53,6 +53,7 @@ import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
 import { getAllPaper, getPapers } from "@/api";
+import { mapState } from "vuex";
 export default {
   name: "Papers-list",
   components: { Breadcrumb, Search, AddButton, Pagination },
@@ -77,20 +78,27 @@ export default {
       const res = await getPapers({
         params: this.queryInfo,
       });
- 
-        if (res.meta.status !== 200) {
-          this.$message.error(res.meta.message);
-        }
-        this.$message.success(res.meta.message);
-        this.paperList = res.data;
+
+      if (res.meta.status !== 200) {
+        this.$message.error(res.meta.message);
+      }
+      this.$message.success(res.meta.message);
+      this.paperList = res.data;
     },
     searchManyFunc(queryP) {
       this.queryInfo.query = queryP;
 
       this.getPapersFunc();
     },
-    transAddDialogVisible() {
-      this.addDialogVisible = !this.addDialogVisible;
+    transSubmitRoute() {
+      this.$store.commit("permission/SET_CURRENTMENU","paper-submit") ;
+      this.$router.push("paperSubmit");
+    },
+    showEditDialog(paperId){
+
+    },
+    removePaperById(paperId){
+        
     },
   },
 };
