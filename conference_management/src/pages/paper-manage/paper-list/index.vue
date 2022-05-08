@@ -17,6 +17,12 @@
         <el-table-column prop="title" label="标题"> </el-table-column>
         <el-table-column prop="authorName" label="作者姓名"> </el-table-column>
         <el-table-column prop="topic" label="领域"> </el-table-column>
+        <el-table-column label="领域"> 
+            <template slot-scope="scope">
+                {{scope.row.conferences[0].confername}}
+            </template>
+        </el-table-column>
+
         <el-table-column label="操作" width="180px">
           <!-- <template slot-scope="scope"> -->
             <!-- {{scope.row}} -->
@@ -62,6 +68,7 @@ export default {
   methods:{
       async getPapersFunc(){
           const res = await getAllPaper()
+          console.log(res.data[0].conferences[0].confername)
           if(res.meta.status !== 200){
               this.$message.error(res.meta.message)
           }
