@@ -81,3 +81,13 @@ export function deleteConference(conferId){
     return axios.delete(`conference/${conferId}`)
 
 }
+
+// 获取所有文章
+export function getAllPaper(){
+    return axios.get('allpaper')
+}
+
+// 获取文章 同过查询在所有文章里查找
+export function getPapers(params){
+    return axios.get('paper',params)
+}
