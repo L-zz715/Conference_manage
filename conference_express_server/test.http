@@ -196,13 +196,15 @@ post {{url}}paper/62766348027201abd3eb41f9
 {{json}}
 
 {
-    "title": "asdf",
+    "title": "a阿大asdfsadf撒f",
     "authorName": "user4",
     "topic": "物联网",
-    "content": "asfddsfasdf"
+    "content": "asfddvacvdf"
 }
 
 
+###
+delete {{url}}apaper/6277e9041ea414f54d4d4865
 
 
 ###
