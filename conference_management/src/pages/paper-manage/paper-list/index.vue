@@ -19,7 +19,7 @@
         <el-table-column prop="topic" label="领域"> </el-table-column>
         <el-table-column label="领域">
           <template slot-scope="scope">
-            {{ scope.row.conferences[0].confername }}
+            <!-- {{ scope.row.conferences[0].confername }} -->
           </template>
         </el-table-column>
 
@@ -52,7 +52,7 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getAllPaper,getPapers } from "@/api";
+import { getAllPaper, getPapers } from "@/api";
 export default {
   name: "Papers-list",
   components: { Breadcrumb, Search, AddButton, Pagination },
@@ -77,17 +77,16 @@ export default {
       const res = await getPapers({
         params: this.queryInfo,
       });
-      console.log(res.data[0].conferences[0].confername);
-      if (res.meta.status !== 200) {
-        this.$message.error(res.meta.message);
-      }
-      this.$message.success(res.meta.message);
-      this.paperList = res.data;
+      console.log(res.data[0]);
+      //   
+      //   if (res.meta.status !== 200) {
+      //     this.$message.error(res.meta.message);
+      //   }
+      //   this.$message.success(res.meta.message);
+      //   this.paperList = res.data;
     },
     searchManyFunc(queryP) {
-        console.log(queryP)
       this.queryInfo.query = queryP;
-        console.log(this.queryInfo.query)
 
       this.getPapersFunc();
     },
