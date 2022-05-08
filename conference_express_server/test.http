@@ -189,5 +189,22 @@ put {{url}}conference/62764366914a587448e4ec6c
 }
 
 ###
+get {{url}}allpaper
+
+###
+post {{url}}paper/62766348027201abd3eb41f9
+{{json}}
+
+{
+    "title": "asdf",
+    "authorName": "user4",
+    "topic": "物联网",
+    "content": "asfddsfasdf"
+}
+
+
+
+
+###
 get {{url}}profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90
