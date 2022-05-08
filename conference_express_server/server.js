@@ -891,7 +891,7 @@ app.get('/api/paper', authMiddleware, async(req,res) =>{
         papername: reg
     }).count()
 
-    conferences = await Paper.find().where({
+    papers = await Paper.find().where({
         title: reg
     })
         .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
@@ -901,7 +901,7 @@ app.get('/api/paper', authMiddleware, async(req,res) =>{
         status: 200,
         message: '获取会议信息成功'
     }
-
+    console.log(papers)
     res.send({
         meta: meta,
         data: papers,
