@@ -883,6 +883,9 @@ app.post('/api/paper/:conferId',async(req,res)=>{
             }
         })
     }
+    console.log(req.body)
+    console.log(req.query)
+    console.log(req.params)
     const paper = await Paper.create({
         title: req.body.title,
         authorName: req.body.authorName,
