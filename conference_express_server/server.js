@@ -871,6 +871,44 @@ app.get('/api/allpaper',async (req,res)=>{
     })
 })
 
+// 根据query获取文章
+app.get('/api/paper', authMiddleware, async(req,res) =>{
+    let papers = await Paper.find().populate('conferences')
+
+    let meta = {
+        status: 403,
+        message: '获取会议信息失败'
+    }
+    if (!papers) {
+        res.send({
+            meta: meta
+        })
+    }
+    const queryStr = "^.*" + req.query.query + ".*$"
+    const reg = new RegExp(queryStr)
+
+    const paperNum = await Paper.find().where({
+        papername: reg
+    }).count()
+
+    conferences = await Paper.find().where({
+        title: reg
+    })
+        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+
+
+    meta = {
+        status: 200,
+        message: '获取会议信息成功'
+    }
+
+    res.send({
+        meta: meta,
+        data: papers,
+        total: paperNum
+    })
+})
+
 // 添加文章
 app.post('/api/paper/:conferId',async(req,res)=>{
    
