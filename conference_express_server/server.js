@@ -813,7 +813,7 @@ app.delete('/api/conference/:id', async (req, res) => {
     const conference = await Conference.findById(req.params.id);
     const meta = {
         status: 403,
-        message: '用户不存在'
+        message: '会议不存在'
     }
     if (!conference) {
         res.send({
@@ -824,7 +824,7 @@ app.delete('/api/conference/:id', async (req, res) => {
     res.send({
         meta: {
             status: 200,
-            message: '删除用户成功'
+            message: '删除会议成功'
         }
     })
 })
