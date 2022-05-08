@@ -19,7 +19,7 @@
         <el-table-column prop="topic" label="领域"> </el-table-column>
         <el-table-column label="领域">
           <template slot-scope="scope">
-            <!-- {{ scope.row.conferences[0].confername }} -->
+            {{ scope.row.conferences[0].confername }}
           </template>
         </el-table-column>
 
@@ -77,13 +77,12 @@ export default {
       const res = await getPapers({
         params: this.queryInfo,
       });
-      console.log(res.data[0]);
-      //   
-      //   if (res.meta.status !== 200) {
-      //     this.$message.error(res.meta.message);
-      //   }
-      //   this.$message.success(res.meta.message);
-      //   this.paperList = res.data;
+ 
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.message);
+        }
+        this.$message.success(res.meta.message);
+        this.paperList = res.data;
     },
     searchManyFunc(queryP) {
       this.queryInfo.query = queryP;
