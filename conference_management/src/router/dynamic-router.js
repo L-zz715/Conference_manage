@@ -104,15 +104,6 @@ const allRoutes = [
                 },
             },
             {
-                path:'reviewAssign',
-                component: ReviewAssign,
-                name:'paper-review-assign',
-                meta: {
-                    name:'审核分配',
-                    icon: 'el-icon-s-management'
-                },
-            },
-            {
                 path:'reviewSubmit',
                 component: ReviewSubmit,
                 name:'paper-review-submit',
