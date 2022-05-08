@@ -718,11 +718,11 @@ app.get('/api/conferences/:name', authMiddleware, async (req, res) => {
     }
 
     req.send({
-        meta:{
+        meta: {
             status: 200,
             message: '获取会议信息成功'
         },
-        data:conferences
+        data: conferences
     })
 })
 
@@ -772,7 +772,7 @@ app.put('/api/conference/:id', async (req, res) => {
             }
         })
     }
-    
+
     // console.log(date)
     // 解决时差问题
     const date = new Date(req.body.date)
@@ -852,27 +852,27 @@ app.delete('/api/conference/:id', async (req, res) => {
 })
 
 // 获取所有文章
-app.get('/api/allpaper',async (req,res)=>{
+app.get('/api/allpaper', async (req, res) => {
     const paper = await Paper.find().populate('conferences')
-    if(!paper){
+    if (!paper) {
         return res.send({
-            meta:{
-                status:403,
-                message:'获取文章列表失败'
+            meta: {
+                status: 403,
+                message: '获取文章列表失败'
             }
         })
     }
     res.send({
-        meta:{
-            status:200,
-            message:'获取文章列表成功'
+        meta: {
+            status: 200,
+            message: '获取文章列表成功'
         },
-        data:paper
+        data: paper
     })
 })
 
 // 根据query获取文章
-app.get('/api/paper', authMiddleware, async(req,res) =>{
+app.get('/api/paper', authMiddleware, async (req, res) => {
     let papers = await Paper.find().populate('conferences')
 
     let meta = {
@@ -889,12 +889,13 @@ app.get('/api/paper', authMiddleware, async(req,res) =>{
 
     const paperNum = await Paper.find().where({
         papername: reg
-    }).count()
+    }).populate('conferences').count()
 
     papers = await Paper.find().where({
         title: reg
-    })
-        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+    }).populate('conferences')
+        .limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
 
 
     meta = {
@@ -910,14 +911,14 @@ app.get('/api/paper', authMiddleware, async(req,res) =>{
 })
 
 // 添加文章
-app.post('/api/paper/:conferId',async(req,res)=>{
-   
+app.post('/api/paper/:conferId', async (req, res) => {
+
     const hasPaper = await Paper.findOne({ $and: [{ title: req.body.title }, { authorName: req.body.authorName }] })
-    if(hasPaper){
+    if (hasPaper) {
         return res.send({
-            meta:{
-                status:403,
-                message:'已上传过该文章，请重新上传'
+            meta: {
+                status: 403,
+                message: '已上传过该文章，请重新上传'
             }
         })
     }
@@ -936,11 +937,11 @@ app.post('/api/paper/:conferId',async(req,res)=>{
     await conference.save()
     const paperSend = await Paper.findOne({ $and: [{ title: req.body.title }, { authorName: req.body.authorName }] }).populate('conferences')
     res.send({
-        meta:{
-            status:200,
-            message:'添加文章成功'
+        meta: {
+            status: 200,
+            message: '添加文章成功'
         },
-        data:paperSend
+        data: paperSend
     })
 })
 
