@@ -7,7 +7,11 @@
       <el-row :gutter="20">
         <!-- 绑定自定义事件 -->
         <Search v-on:searchMany="searchManyFunc" />
-        <AddButton caption="创建会议" v-on:addDialog="transAddDialogVisible" :curRole="currentRole"/>
+        <AddButton
+          caption="创建会议"
+          v-on:addDialog="transAddDialogVisible"
+          :curRole="currentRole"
+        />
       </el-row>
 
       <!-- 会议列表区 -->
@@ -28,19 +32,28 @@
             <!-- {{scope.row}} -->
             <!-- 修改按钮  -->
             <el-button
-              :disabled="(scope.row.chairname !== userProfile.username  && !userProfile.username.includes('admin')) || (currentRole !== 'chair' && currentRole !== 'admin')"
+              :disabled="
+                (scope.row.chairname !== userProfile.username &&
+                  !userProfile.username.includes('admin')) ||
+                (currentRole !== 'chair' && currentRole !== 'admin')
+              "
               type="primary"
               icon="el-icon-edit"
               size="mini"
               @click="showEditDialog(scope.row._id)"
             ></el-button>
             <!-- 删除按钮 -->
-            <!-- <el-button
+            <el-button
+              :disabled="
+                (scope.row.chairname !== userProfile.username &&
+                  !userProfile.username.includes('admin')) ||
+                (currentRole !== 'chair' && currentRole !== 'admin')
+              "
               type="danger"
               icon="el-icon-delete"
               size="mini"
-              @click="removeUserById(scope.row._id)"
-            ></el-button> -->
+              @click="removeConferById(scope.row._id)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -231,7 +244,8 @@ import {
   getAllUsers,
   addConference,
   editConference,
-  searchConferencer,
+  searchConference,
+  deleteConference,
 } from "@/api";
 import { mapState } from "vuex";
 
@@ -476,7 +490,7 @@ export default {
     editConferInfo() {
       this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return;
-        
+
         console.log(this.editForm.date);
         const dt = new Date(this.editForm.date);
 
@@ -522,7 +536,7 @@ export default {
         }
       });
       console.log(conferId);
-      let conferRes = await searchConferencer(conferId);
+      let conferRes = await searchConference(conferId);
       console.log(conferRes);
       this.editForm = conferRes.data;
 
@@ -538,6 +552,26 @@ export default {
       this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
 
       this.editDialogVisible = true;
+    },
+    async removeConferById(conferId) {
+      this.$confirm("此操作将永久删除该" + "会议" + ", 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          const res = await deleteConference(conferId);
+
+          if (res.meta.status !== 200) {
+            return this.$message.error("删除" + "会议" + "失败");
+          }
+          this.$message.success("删除" + "会议" + "成功");
+
+          this.getConfersList();
+        })
+        .catch(() => {
+          return this.$message.info("已取消删除");
+        });
     },
   },
 };
