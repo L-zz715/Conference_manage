@@ -91,3 +91,8 @@ export function getAllPaper(){
 export function getPapers(params){
     return axios.get('paper',params)
 }
+
+// 删除文章
+export function deletePaper(paperId){
+    return axios.delete(`apaper/${paperId}`)
+}
