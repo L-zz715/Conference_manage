@@ -35,6 +35,7 @@
             ></el-button>
             <!-- 删除按钮 -->
             <el-button
+            :disabled="currentRole !== 'admin' && currentRole !== 'author'"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -145,7 +146,7 @@ export default {
     this.getPapersFunc();
   },
   computed: {
-    ...mapState(["interestOptions"]),
+    ...mapState(["interestOptions","currentRole"]),
     ...mapState("permission", ["userProfile"]),
   },
   mounted() {},
