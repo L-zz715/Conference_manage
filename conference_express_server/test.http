@@ -192,20 +192,31 @@ put {{url}}conference/62764366914a587448e4ec6c
 get {{url}}allpaper
 
 ###
-post {{url}}paper/62766348027201abd3eb41f9
+post {{url}}paper/62751bbcfac70265ebf60f62
 {{json}}
 
 {
-    "title": "a阿大asdfsadf撒f",
-    "authorName": "user4",
+    "title": "asd",
+    "authorName": "user5",
     "topic": "物联网",
-    "content": "asfddvacvdf"
+    "content": "asfdfasfasdfasdfcvdf"
 }
 
 
 ###
-delete {{url}}apaper/6277e9041ea414f54d4d4865
+delete {{url}}apaper/
 
+###
+get {{url}}paper/6278c814db05343a14b47483
+
+###
+put {{url}}paper/6278c814db05343a14b47483
+{{json}}
+
+{
+    "title":"asdxccvvvvvv",
+    "topic":"云计算"
+}
 
 ###
 get {{url}}profile
