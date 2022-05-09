@@ -910,6 +910,54 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
     })
 })
 
+// 根据id获得文章
+app.get('/api/paper/:id', async (req, res) => {
+    console.log(req.params)
+    let paper = await Paper.findById(req.params.id)
+    console.log(paper)
+    if(!paper){
+        return res.send({
+            meta:{
+                status:403,
+                message:'文章不存在'
+            }
+        })
+    }
+
+    res.send({
+        meta:{
+            status:200,
+            message:'获取文章成功'
+        },
+        data:paper
+    })
+})
+
+// 修改文章
+app.put('/api/paper/:paperId', async(req,res)=>{
+    let paper = await Paper.findById(req.params.paperId)
+    if(!paper){
+        return res.send({
+            meta:{
+                status:403,
+                message:'文章不存在'
+            }
+        })
+    }
+
+    paper.title = req.body.title
+    paper.topic = req.body.topic
+    await paper.save()
+    
+    res.send({
+        meta:{
+            status:200,
+            message:'修改文章成功'
+        },
+        data:paper
+    })
+})
+
 // 添加文章
 app.post('/api/paper/:conferId', async (req, res) => {
 
@@ -944,6 +992,8 @@ app.post('/api/paper/:conferId', async (req, res) => {
         data: paperSend
     })
 })
+
+
 
 // 分配
 
