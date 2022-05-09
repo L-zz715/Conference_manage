@@ -877,7 +877,7 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
 
     let meta = {
         status: 403,
-        message: '获取会议信息失败'
+        message: '获取文章信息失败'
     }
     if (!papers) {
         res.send({
@@ -900,13 +900,61 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
 
     meta = {
         status: 200,
-        message: '获取会议信息成功'
+        message: '获取文章信息成功'
     }
     console.log(papers)
     res.send({
         meta: meta,
         data: papers,
         total: paperNum
+    })
+})
+
+// 根据id获得文章
+app.get('/api/paper/:id', async (req, res) => {
+    console.log(req.params)
+    let paper = await Paper.findById(req.params.id)
+    console.log(paper)
+    if(!paper){
+        return res.send({
+            meta:{
+                status:403,
+                message:'文章不存在'
+            }
+        })
+    }
+
+    res.send({
+        meta:{
+            status:200,
+            message:'获取文章成功'
+        },
+        data:paper
+    })
+})
+
+// 修改文章
+app.put('/api/paper/:paperId', async(req,res)=>{
+    let paper = await Paper.findById(req.params.paperId)
+    if(!paper){
+        return res.send({
+            meta:{
+                status:403,
+                message:'文章不存在'
+            }
+        })
+    }
+
+    paper.title = req.body.title
+    paper.topic = req.body.topic
+    await paper.save()
+    
+    res.send({
+        meta:{
+            status:200,
+            message:'修改文章成功'
+        },
+        data:paper
     })
 })
 
@@ -944,8 +992,6 @@ app.post('/api/paper/:conferId', async (req, res) => {
         data: paperSend
     })
 })
-
-// 分配
 
 // 删除文章
 app.delete('/api/apaper/:id',async(req,res)=>{
