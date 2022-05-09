@@ -92,6 +92,16 @@ export function getPapers(params){
     return axios.get('paper',params)
 }
 
+// 获取文章 by id
+export function searchPaper(paperId) {
+    return axios.get(`paper/${paperId}`)
+}
+
+// 修改文章
+export function editPaper(paperId, params){
+    return axios.put(`paper/${paperId}`,params)
+}
+
 // 删除文章
 export function deletePaper(paperId){
     return axios.delete(`apaper/${paperId}`)

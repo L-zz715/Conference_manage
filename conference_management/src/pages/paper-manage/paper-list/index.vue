@@ -45,9 +45,9 @@
       </el-table>
     </el-card>
 
-     <!-- 修改用户的对话框 -->
+    <!-- 修改用户的对话框 -->
     <el-dialog
-      title="修改用户信息"
+      title="修改文章信息"
       :visible.sync="editDialogVisible"
       width="50%"
       @close="editDialogClosed"
@@ -64,21 +64,27 @@
         </el-form-item>
 
         <el-form-item label="作者姓名" prop="authorName">
-          <el-input v-model.trim="editForm.authorName" :disabled="!userProfile.username.includes('admin')"></el-input>
+          <el-input
+            v-model.trim="editForm.authorName"
+            :disabled="!userProfile.username.includes('admin')"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="领域" prop="topic">
-           <el-select v-model="addForm.interest" placeholder="请选择"  style=" width: 100%">
-                <el-option
-                  v-for="item in interestOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
+          <el-select
+            v-model="editForm.topic"
+            placeholder="请选择"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in interestOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
-
       </el-form>
       <!-- 底部区域 -->
 
@@ -87,7 +93,6 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
@@ -96,7 +101,13 @@ import Breadcrumb from "@/components/Breadcrumb.vue";
 import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getAllPaper, getPapers, deletePaper } from "@/api";
+import {
+  getAllPaper,
+  getPapers,
+  deletePaper,
+  editPaper,
+  searchPaper,
+} from "@/api";
 import { mapState } from "vuex";
 export default {
   name: "Papers-list",
@@ -118,7 +129,7 @@ export default {
             required: true,
             message: "请输入标题",
             trigger: "blur",
-          }
+          },
         ],
         topic: [
           {
@@ -133,9 +144,9 @@ export default {
   created() {
     this.getPapersFunc();
   },
-  computed:{
+  computed: {
     ...mapState(["interestOptions"]),
-    ...mapState("permission",["userProfile"])
+    ...mapState("permission", ["userProfile"]),
   },
   mounted() {},
   methods: {
@@ -147,7 +158,6 @@ export default {
       if (res.meta.status !== 200) {
         this.$message.error(res.meta.message);
       }
-      this.$message.success(res.meta.message);
       this.paperList = res.data;
     },
 
@@ -163,7 +173,39 @@ export default {
       this.$router.push("paperSubmit");
     },
 
-    showEditDialog(paperId) {},
+    async showEditDialog(paperId) {
+      const res = await searchPaper(paperId);
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.message);
+      }
+      this.editForm = res.data;
+      this.editDialogVisible = true;
+    },
+
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
+    },
+
+    editUserInfo() {
+      this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) return;
+        const res = await editPaper(this.editForm._id, {
+          title: this.editForm.title,
+          authorName: this.editForm.authorName,
+          topic: this.editForm.topic,
+        });
+        console.log(res)
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+
+        this.editDialogVisible = false;
+        this.$message.success(res.meta.message);
+
+        this.getPapersFunc();
+      });
+    },
 
     // 删除paper
     removePaperById(paperId) {
