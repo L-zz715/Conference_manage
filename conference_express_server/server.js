@@ -877,7 +877,7 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
 
     let meta = {
         status: 403,
-        message: '获取会议信息失败'
+        message: '获取文章信息失败'
     }
     if (!papers) {
         res.send({
@@ -900,7 +900,7 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
 
     meta = {
         status: 200,
-        message: '获取会议信息成功'
+        message: '获取文章信息成功'
     }
     console.log(papers)
     res.send({
@@ -992,10 +992,6 @@ app.post('/api/paper/:conferId', async (req, res) => {
         data: paperSend
     })
 })
-
-
-
-// 分配
 
 // 删除文章
 app.delete('/api/apaper/:id',async(req,res)=>{
