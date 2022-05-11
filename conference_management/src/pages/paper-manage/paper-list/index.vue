@@ -7,7 +7,9 @@
       <el-row :gutter="20">
         <!-- 绑定自定义事件 -->
         <Search v-on:searchMany="searchManyFunc" />
-        <AddButton caption="添加文章" v-on:addDialog="transSubmitRoute" />
+        <el-button type="primary" @click="transSubmitRoute" :disabled="currentRole !== 'author'"
+          >添加文章
+        </el-button>
       </el-row>
 
       <!-- 用户列表区 -->
@@ -28,6 +30,7 @@
             <!-- {{scope.row}} -->
             <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
             <el-button
+            :disabled="currentRole !== 'admin' && currentRole !== 'author'"
               type="primary"
               icon="el-icon-edit"
               size="mini"
@@ -35,7 +38,7 @@
             ></el-button>
             <!-- 删除按钮 -->
             <el-button
-            :disabled="currentRole !== 'admin' && currentRole !== 'author'"
+              :disabled="currentRole !== 'admin' && currentRole !== 'author'"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -146,7 +149,7 @@ export default {
     this.getPapersFunc();
   },
   computed: {
-    ...mapState(["interestOptions","currentRole"]),
+    ...mapState(["interestOptions", "currentRole"]),
     ...mapState("permission", ["userProfile"]),
   },
   mounted() {},
@@ -195,7 +198,7 @@ export default {
           authorName: this.editForm.authorName,
           topic: this.editForm.topic,
         });
-        console.log(res)
+        console.log(res);
 
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
