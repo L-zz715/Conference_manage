@@ -717,7 +717,7 @@ app.get('/api/conferences/:name', authMiddleware, async (req, res) => {
         })
     }
 
-    req.send({
+    res.send({
         meta: {
             status: 200,
             message: '获取会议信息成功'
