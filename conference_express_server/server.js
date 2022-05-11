@@ -906,6 +906,41 @@ app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
     })
 })
 
+// 根据会议名，query获取文章列表
+app.get('/api/papers/:conferName', authMiddleware, async (req,res) =>{
+    let papers = await Paper.find().where({conferences: {confername:req.params.conferName}}).populate('conferences')
+    if (!papers) {
+        return res.send({
+            meta: {
+                status: 403,
+                message: '获取文章信息失败'
+            }
+        })
+    }
+    const queryStr = "^.*" + req.query.query + ".*$"
+    const reg = new RegExp(queryStr)
+
+    const paperNum = await Paper.find({conferences: {confername:req.params.conferName}}).where({
+        papername: reg
+    }).count()
+
+    papers = await Paper.find({conferences: {confername:req.params.conferName}}).where({
+        title: reg
+    }).populate('conferences')
+        .limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
+
+    console.log(papers)
+    res.send({
+        meta: {
+            status: 200,
+            message: '获取文章信息成功'
+        },
+        data: papers,
+        total: paperNum
+    })
+})
+
 // 根据query获取所有文章
 app.get('/api/paper', authMiddleware, async (req, res) => {
     let papers = await Paper.find().populate('conferences')
