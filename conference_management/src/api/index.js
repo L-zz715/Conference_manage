@@ -87,11 +87,6 @@ export function deleteConference(conferId){
 
 }
 
-// 获取所有文章
-export function getAllPaper(){
-    return axios.get('allpaper')
-}
-
 // 获取文章 同过查询在所有文章里查找
 export function getPapers(params){
     return axios.get('paper',params)
@@ -100,11 +95,6 @@ export function getPapers(params){
 // 获取文章 根据作者名
 export function getPapersByAuthor(authorName,params){
     return axios.get(`papers/${authorName}`,params)
-}
-
-// 获取文章 根据会议主席名
-export function getPapersByConfer(chairName,params){
-    return axios.get(`cpapers/${chairName}`,params)
 }
 
 // 获取文章 by id

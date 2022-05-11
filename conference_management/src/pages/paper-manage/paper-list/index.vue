@@ -158,11 +158,9 @@ export default {
   mounted() {},
   methods: {
     async getPapersFunc() {
-      let res = {};
-
       // 根据不同的角色显示不同的文章列表
       if (this.currentRole === "admin") {
-        res = await getPapers({
+        const res = await getPapers({
           params: this.queryInfo,
         });
 
@@ -173,7 +171,7 @@ export default {
 
       } else if (this.currentRole === "chair") {
         let papers = [];
-        res = await getPapers({
+        const res = await getPapers({
           params: this.queryInfo,
         });
 
@@ -188,7 +186,7 @@ export default {
 
       } else {
         // 根据作者名（用户名）获得文章列表
-        res = await getPapersByAuthor(this.userProfile.username, {
+        const res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
         });
 
