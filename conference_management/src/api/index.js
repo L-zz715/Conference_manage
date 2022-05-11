@@ -97,6 +97,11 @@ export function getPapers(params){
     return axios.get('paper',params)
 }
 
+// 获取文章 根据作者名
+export function getPapersByAuthor(authorName,params){
+    return axios.get(`papers/${authorName}`,params)
+}
+
 // 获取文章 by id
 export function searchPaper(paperId) {
     return axios.get(`paper/${paperId}`)
