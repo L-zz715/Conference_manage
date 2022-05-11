@@ -161,24 +161,46 @@ export default {
   methods: {
     async getPapersFunc() {
       let res = {};
+
       if (this.currentRole === "admin") {
         res = await getPapers({
           params: this.queryInfo,
         });
+
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.message);
+        }
+        this.paperList = res.data;
       } else if (this.currentRole === "chair") {
-        res = await getPapersByConfer(this.userProfile.username, {
+        let papers = [];
+        res = await getPapers({
           params: this.queryInfo,
         });
+        console.log(res);
+
+        res.data.forEach((item) => {
+          if (item.conferences[0].chairname === this.userProfile.username) {
+            papers.push(item);
+          }
+          // console.log(item.conferences[0].chairname)
+        });
+        console.log(papers);
+        this.paperList = papers;
       } else {
         res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
         });
+
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.message);
+        }
+        this.paperList = res.data;
       }
 
-      if (res.meta.status !== 200) {
-        this.$message.error(res.meta.message);
-      }
-      this.paperList = res.data;
+      // if (res.meta.status !== 200) {
+      //   this.$message.error(res.meta.message);
+      // }
+      // this.paperList = res.data;
     },
 
     searchManyFunc(queryP) {
