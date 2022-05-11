@@ -871,7 +871,42 @@ app.get('/api/allpaper', async (req, res) => {
     })
 })
 
-// 根据query获取文章
+// 根据作者名(用户)，query获取文章列表
+app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
+    let papers = await Paper.find().where({authorName: req.params.userName}).populate('conferences')
+    if (!papers) {
+        return res.send({
+            meta: {
+                status: 403,
+                message: '获取文章信息失败'
+            }
+        })
+    }
+    const queryStr = "^.*" + req.query.query + ".*$"
+    const reg = new RegExp(queryStr)
+
+    const paperNum = await Paper.find({authorName: req.params.userName}).where({
+        papername: reg
+    }).count()
+
+    papers = await Paper.find({authorName: req.params.userName}).where({
+        title: reg
+    }).populate('conferences')
+        .limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
+
+    console.log(papers)
+    res.send({
+        meta: {
+            status: 200,
+            message: '获取文章信息成功'
+        },
+        data: papers,
+        total: paperNum
+    })
+})
+
+// 根据query获取所有文章
 app.get('/api/paper', authMiddleware, async (req, res) => {
     let papers = await Paper.find().populate('conferences')
 
@@ -880,7 +915,7 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
         message: '获取文章信息失败'
     }
     if (!papers) {
-        res.send({
+        return res.send({
             meta: meta
         })
     }
