@@ -7,7 +7,10 @@
       <el-row :gutter="20">
         <!-- 绑定自定义事件 -->
         <Search v-on:searchMany="searchManyFunc" />
-        <el-button type="primary" @click="transSubmitRoute" :disabled="currentRole !== 'author'"
+        <el-button
+          type="primary"
+          @click="transSubmitRoute"
+          :disabled="currentRole !== 'author'"
           >添加文章
         </el-button>
       </el-row>
@@ -30,7 +33,7 @@
             <!-- {{scope.row}} -->
             <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
             <el-button
-            :disabled="currentRole !== 'admin' && currentRole !== 'author'"
+              :disabled="currentRole !== 'admin' && currentRole !== 'author'"
               type="primary"
               icon="el-icon-edit"
               size="mini"
@@ -108,6 +111,7 @@ import Pagination from "@/components/Pagination.vue";
 import {
   getAllPaper,
   getPapers,
+  getPapersByAuthor,
   deletePaper,
   editPaper,
   searchPaper,
@@ -155,9 +159,16 @@ export default {
   mounted() {},
   methods: {
     async getPapersFunc() {
-      const res = await getPapers({
-        params: this.queryInfo,
-      });
+      let res = {}
+      if (this.userProfile.username.includes("admin")) {
+        res = await getPapers({
+          params: this.queryInfo,
+        });
+      } else {
+        res = await getPapersByAuthor(this.userProfile.username, {
+          params: this.queryInfo,
+        });
+      }
 
       if (res.meta.status !== 200) {
         this.$message.error(res.meta.message);
