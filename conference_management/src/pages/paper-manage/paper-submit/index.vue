@@ -7,6 +7,7 @@
       <el-form
         ref="addFormRef"
         :model="addForm"
+        :rules="addFormRules"
         label-width="80px"
         style="width: 95%"
       >
@@ -16,7 +17,7 @@
 
         <!-- :disabled="!userProfile.username.includes('admin')" -->
         <el-form-item label="作者姓名: " prop="authorName">
-          <el-input v-model.trim="addForm.authorName"></el-input>
+          <el-input v-model.trim="addForm.authorName" disabled></el-input>
         </el-form-item>
 
         <el-form-item label="领域" prop="topic">
@@ -35,7 +36,7 @@
           </el-select>
         </el-form-item>
 
-         <el-form-item label="会议" prop="conferId">
+        <el-form-item label="会议" prop="conferId">
           <el-select
             v-model="addForm.conferId"
             placeholder="请选择"
@@ -50,16 +51,25 @@
             </el-option>
           </el-select>
         </el-form-item>
-
+        <el-form-item label="内容" prop="content">
+          <!-- 富文本编辑器 -->
+          <quill-editor v-model="addForm.content"></quill-editor>
+        </el-form-item>
       </el-form>
+
+      <div class="submit-footer">
+        <el-button @click="cacelSubmit">取 消</el-button>
+        <el-button type="primary" @click="submitPaper">确 定</el-button>
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import { getAttConferList } from "@/api";
+import { getAttConferList, addPaper } from "@/api";
 import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -67,9 +77,40 @@ export default {
         title: "",
         authorName: "",
         topic: "",
-        conferId:""
+        conferId: "",
+        content: "",
       },
-      conferNameList:[],
+      addFormRules: {
+        title: [
+          {
+            required: true,
+            message: "请输入标题",
+            trigger: "blur",
+          },
+        ],
+        topic: [
+          {
+            required: true,
+            message: "请选择领域",
+            trigger: "blur",
+          },
+        ],
+        conferId: [
+          {
+            required: true,
+            message: "请选择会议",
+            trigger: "blur",
+          },
+        ],
+        content: [
+          {
+            required: true,
+            message: "请输入内容",
+            trigger: "blur",
+          },
+        ],
+      },
+      conferNameList: [],
     };
   },
   components: { Breadcrumb },
@@ -84,17 +125,39 @@ export default {
   methods: {
     async getConferlists() {
       let res = await getAttConferList(this.userProfile.username);
-      console.log(res);
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.message);
       }
-      res.data.forEach(item => {
-          this.conferNameList.push({
-              conferId:item._id,
-              confername:item.confername
-              })
+      res.data.forEach((item) => {
+        this.conferNameList.push({
+          conferId: item._id,
+          confername: item.confername,
+        });
       });
-      console.log(this.conferNameList)
+      this.addForm.authorName = this.userProfile.username;
+    },
+    cacelSubmit() {
+      this.$refs.addFormRef.resetFields();
+      this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
+      this.$router.push("list");
+    },
+    submitPaper() {
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return;
+        let res = await addPaper(this.addForm.conferId, {
+          title: this.addForm.title,
+          authorName: this.addForm.authorName,
+          topic: this.addForm.topic,
+          content: this.addForm.content,
+        });
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+
+        this.$message.success(res.meta.message);
+        this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
+        this.$router.push("list");
+      });
     },
   },
 };
@@ -104,5 +167,14 @@ export default {
 .el-form {
   margin-top: 15px;
   font-size: 12px;
+}
+
+.submit-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.submit-footer .el-button {
+  margin-right: 30px;
 }
 </style>

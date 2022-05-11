@@ -102,6 +102,11 @@ export function searchPaper(paperId) {
     return axios.get(`paper/${paperId}`)
 }
 
+// 添加文字
+export function addPaper(conferId,params){
+    return axios.post(`paper/${conferId}`,params)
+}
+
 // 修改文章
 export function editPaper(paperId, params){
     return axios.put(`paper/${paperId}`,params)
