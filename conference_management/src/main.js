@@ -6,8 +6,17 @@ import './router/permission'
 import '@/assets/css/global.css'
 import './plugins/element.js'
 
+// 导入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+// 导入富文本编辑器对应的样式
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
 
 Vue.config.productionTip = false
+
+// 将富文本编辑器注册为可用的组件
+Vue.use(VueQuillEditor /* { default global options } */)
 
 // 定义全局时间过滤器
 Vue.filter('dateFormat', function (originVal) {
