@@ -166,7 +166,9 @@ export default {
           params: this.queryInfo,
         });
       } else if (this.currentRole === "chair") {
-        res = await getPapersByConfer();
+        res = await getPapersByConfer(this.userProfile.username, {
+          params: this.queryInfo,
+        });
       } else {
         res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
