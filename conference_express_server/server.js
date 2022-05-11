@@ -873,7 +873,7 @@ app.get('/api/allpaper', async (req, res) => {
 
 // 根据作者名(用户)，query获取文章列表
 app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
-    let papers = await Paper.find().where({authorName: req.params.userName}).populate('conferences')
+    let papers = await Paper.find({authorName: req.params.userName}).populate('conferences')
     if (!papers) {
         return res.send({
             meta: {
