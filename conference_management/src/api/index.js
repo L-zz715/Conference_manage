@@ -56,9 +56,14 @@ export function getAllConfers(params) {
     return axios.get('conference',params)
 }
 
-// 获得当前用户参与的会议的列表
+// 获得当前用户参与的会议的列表 通过用户名和查询字段对象筛选
 export function getAttendConfers(username,params) {
     return axios.get(`conference/${username}`,params)
+}
+
+// 获得当前用户参与的会议 只通过用户名
+export function getAttConferList(username) {
+    return axios.get(`conferences/${username}`)
 }
 
 // 创建会议
