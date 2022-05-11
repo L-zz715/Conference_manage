@@ -109,7 +109,6 @@ import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
 import {
-  getAllPaper,
   getPapers,
   getPapersByAuthor,
   deletePaper,
@@ -159,21 +158,50 @@ export default {
   mounted() {},
   methods: {
     async getPapersFunc() {
-      let res = {}
-      if (this.userProfile.username.includes("admin")) {
+      let res = {};
+
+      // 根据不同的角色显示不同的文章列表
+      if (this.currentRole === "admin") {
         res = await getPapers({
           params: this.queryInfo,
         });
+
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.message);
+        }
+        this.paperList = res.data;
+
+      } else if (this.currentRole === "chair") {
+        let papers = [];
+        res = await getPapers({
+          params: this.queryInfo,
+        });
+
+        // 判断此用户创建的会议，只显示属于此用户创建的会议的文章列表
+        res.data.forEach((item) => {
+          if (item.conferences[0].chairname === this.userProfile.username) {
+            papers.push(item);
+          }
+
+        });
+        this.paperList = papers;
+
       } else {
+        // 根据作者名（用户名）获得文章列表
         res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
         });
+
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.message);
+        }
+        this.paperList = res.data;
       }
 
-      if (res.meta.status !== 200) {
-        this.$message.error(res.meta.message);
-      }
-      this.paperList = res.data;
+      // if (res.meta.status !== 200) {
+      //   this.$message.error(res.meta.message);
+      // }
+      // this.paperList = res.data;
     },
 
     searchManyFunc(queryP) {
