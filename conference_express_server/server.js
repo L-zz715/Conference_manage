@@ -873,7 +873,7 @@ app.get('/api/allpaper', async (req, res) => {
 
 // 根据作者名(用户)，query获取文章列表
 app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
-    let papers = await Paper.find().where({authorName: req.params.userName}).populate('conferences')
+    let papers = await Paper.find({authorName: req.params.userName}).populate('conferences')
     if (!papers) {
         return res.send({
             meta: {
@@ -908,7 +908,7 @@ app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
 
 // 根据会议名，query获取文章列表
 app.get('/api/cpapers/:chairname', authMiddleware, async (req,res) =>{
-    let papers = await Paper.find().where({conferences: {chairname:req.params.chairname}}).populate('conferences')
+    let papers = await Paper.find().populate('conferences').where({conferences: {chairname:req.params.chairname}})
     if (!papers) {
         return res.send({
             meta: {
@@ -920,13 +920,13 @@ app.get('/api/cpapers/:chairname', authMiddleware, async (req,res) =>{
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
-    const paperNum = await Paper.find({conferences: {chairname:req.params.chairname}}).where({
-        papername: reg
-    }).count()
-
-    papers = await Paper.find({conferences: {chairname:req.params.chairname}}).where({
+    const paperNum = await Paper.find().populate('conferences').where({$and:[{
         title: reg
-    }).populate('conferences')
+    },{conferences: {chairname:req.params.chairname}}]}).count()
+
+    papers = await Paper.find().populate('conferences').where({$and:[{
+        title: reg
+    },{conferences: {chairname:req.params.chairname}}]})
         .limit(req.query.pagesize)
         .skip((req.query.pagenum - 1) * req.query.pagesize)
 
