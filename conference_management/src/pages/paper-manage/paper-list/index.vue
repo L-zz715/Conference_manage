@@ -109,10 +109,8 @@ import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
 import {
-  getAllPaper,
   getPapers,
   getPapersByAuthor,
-  getPapersByConfer,
   deletePaper,
   editPaper,
   searchPaper,
@@ -162,6 +160,7 @@ export default {
     async getPapersFunc() {
       let res = {};
 
+      // 根据不同的角色显示不同的文章列表
       if (this.currentRole === "admin") {
         res = await getPapers({
           params: this.queryInfo,
@@ -171,22 +170,24 @@ export default {
           this.$message.error(res.meta.message);
         }
         this.paperList = res.data;
+
       } else if (this.currentRole === "chair") {
         let papers = [];
         res = await getPapers({
           params: this.queryInfo,
         });
-        console.log(res);
 
+        // 判断此用户创建的会议，只显示属于此用户创建的会议的文章列表
         res.data.forEach((item) => {
           if (item.conferences[0].chairname === this.userProfile.username) {
             papers.push(item);
           }
-          // console.log(item.conferences[0].chairname)
+
         });
-        console.log(papers);
         this.paperList = papers;
+
       } else {
+        // 根据作者名（用户名）获得文章列表
         res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
         });
