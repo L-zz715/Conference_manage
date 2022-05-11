@@ -219,5 +219,15 @@ put {{url}}paper/6278c80adb05343a14b4747c
 }
 
 ###
+get {{url}}cpapers/user2
+{{json}}
+
+{
+    "query":"",
+    "pagenum":1,
+    "pagesize":7
+}
+
+###
 get {{url}}profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90
