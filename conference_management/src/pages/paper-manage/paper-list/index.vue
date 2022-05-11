@@ -112,6 +112,7 @@ import {
   getAllPaper,
   getPapers,
   getPapersByAuthor,
+  getPapersByConfer,
   deletePaper,
   editPaper,
   searchPaper,
@@ -159,11 +160,13 @@ export default {
   mounted() {},
   methods: {
     async getPapersFunc() {
-      let res = {}
-      if (this.userProfile.username.includes("admin")) {
+      let res = {};
+      if (this.currentRole === "admin") {
         res = await getPapers({
           params: this.queryInfo,
         });
+      } else if (this.currentRole === "chair") {
+        res = await getPapersByConfer();
       } else {
         res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
