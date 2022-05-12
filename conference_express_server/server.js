@@ -1063,8 +1063,7 @@ app.delete('/api/apaper/:id', async (req, res) => {
 //   reviewList: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Review' , maxlength: 3}]
 
 // 获得需要评论的文章列表
-app.get('/api/rpapers/:reviewerName', authMiddleware, async (req, res) => {
-    console.log(req.user)
+app.get('/api/rpapers/:reviewerName', async (req, res) => {
     const reviews = await Review.find().where({ reviewerName: req.params.reviewerName })
     // 获得给定评论者的评论id列表
     let reviewsIdList = []
@@ -1073,14 +1072,14 @@ app.get('/api/rpapers/:reviewerName', authMiddleware, async (req, res) => {
     })
     // console.log(reviewsIdList)
 
-    const queryStr = "^.*" + req.query.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
     // 获得拥有上述列表中评论的文章列表
     const paperlist = await Paper.find({ reviewList: { $in: reviewsIdList } }).where({
         title: reg
-    }).populate('conferences').limit(req.query.pagesize)
-        .skip((req.query.pagenum - 1) * req.query.pagesize)
+    }).populate('conferences').limit(req.body.pagesize)
+        .skip((req.body.pagenum - 1) * req.body.pagesize)
     // console.log(paperlist)
 
     const paperNum = await Paper.find({ reviewList: { $in: reviewsIdList } }).where({
