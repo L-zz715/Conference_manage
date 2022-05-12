@@ -47,12 +47,21 @@
               size="mini"
               @click="removePaperById(scope.row._id)"
             ></el-button>
+
+            <!-- 分配审核按钮 -->
+            <el-button
+              :disabled="currentRole !== 'admin' && currentRole !== 'chair'"
+              type="warning"
+              icon="el-icon-setting"
+              size="mini"
+              @click="showAssignDialog(scope.row)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
-    <!-- 修改用户的对话框 -->
+    <!-- 修改文章的对话框 -->
     <el-dialog
       title="修改文章信息"
       :visible.sync="editDialogVisible"
@@ -97,7 +106,49 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editUserInfo">确 定</el-button>
+        <el-button type="primary" @click="editPaperInfo">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 分配审核人员的对话框 -->
+    <el-dialog
+      title="分配文章审核人员"
+      :visible.sync="assignDialogVisible"
+      width="50%"
+      @close="assignDialogClosed"
+    >
+      <!-- 内容主体区 -->
+      <el-form
+        :model="assignForm"
+        :rules="assignFormRules"
+        ref="assignFormRef"
+        label-width="100px"
+      >
+        <el-form-item label="标题" prop="title">
+          <el-input v-model.trim="assignForm.title" disabled></el-input>
+        </el-form-item>
+
+        <el-form-item label="审核人员" prop="reviewerName">
+          <el-select
+            v-model="assignForm.reviewerName"
+            placeholder="请选择"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in reviewers"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <!-- 底部区域 -->
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="assignDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="assiginReviewer">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -109,12 +160,14 @@ import Search from "@/components/Search.vue";
 import AddButton from "@/components/AddButton.vue";
 import Pagination from "@/components/Pagination.vue";
 import {
+  getAllUsers,
   getPapers,
   getPapersByAuthor,
   deletePaper,
   editPaper,
   searchPaper,
-  reviewPapers
+  reviewPapers,
+  assignReviewer,
 } from "@/api";
 import { mapState } from "vuex";
 export default {
@@ -147,6 +200,18 @@ export default {
           },
         ],
       },
+      assignDialogVisible: false,
+      reviewers: [],
+      assignForm: {},
+      assignFormRules: {
+        reviewerName: [
+          {
+            required: true,
+            message: "请选择审核人员",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   created() {
@@ -169,7 +234,6 @@ export default {
           this.$message.error(res.meta.message);
         }
         this.paperList = res.data;
-
       } else if (this.currentRole === "chair") {
         let papers = [];
         const res = await getPapers({
@@ -181,17 +245,18 @@ export default {
           if (item.conferences[0].chairname === this.userProfile.username) {
             papers.push(item);
           }
-
         });
         this.paperList = papers;
-
-      } else if(this.currentRole === "reviewer"){
+      } else if (this.currentRole === "reviewer") {
         const res = await reviewPapers(this.userProfile.username, {
           params: this.queryInfo,
-        })
-        console.log(res)
-      }
-      else {
+        });
+        // console.log(res)
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.message);
+        }
+        this.paperList = res.data;
+      } else {
         // 根据作者名（用户名）获得文章列表
         const res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
@@ -202,11 +267,7 @@ export default {
         }
         this.paperList = res.data;
       }
-
-      // if (res.meta.status !== 200) {
-      //   this.$message.error(res.meta.message);
-      // }
-      // this.paperList = res.data;
+      console.log(this.paperList);
     },
 
     searchManyFunc(queryP) {
@@ -234,7 +295,7 @@ export default {
       this.$refs.editFormRef.resetFields();
     },
 
-    editUserInfo() {
+    editPaperInfo() {
       this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return;
         const res = await editPaper(this.editForm._id, {
@@ -274,6 +335,47 @@ export default {
         .catch(() => {
           return this.$message.info("已取消删除");
         });
+    },
+
+    // 分配审核人员
+    async showAssignDialog(paper) {
+      let usersRes = await getAllUsers();
+      // const paperRes = await searchPaper(paper._id);
+
+      let reviewers = [];
+      usersRes.data.forEach((item) => {
+        if (item.rolelist.includes("reviewer")) {
+          reviewers.push(item.username);
+        }
+      });
+      this.reviewers = reviewers;
+      this.assignForm.paperId = paper._id;
+      this.assignForm.title = paper.title;
+      this.assignDialogVisible = true;
+    },
+
+    assignDialogClosed() {
+      this.$refs.assignFormRef.resetFields();
+    },
+
+    // 分配审核人员
+    assiginReviewer() {
+      this.$refs.assignFormRef.validate(async (valid) => {
+        if (!valid) return;
+
+        let res = await assignReviewer(
+          this.assignForm.reviewerName,
+          this.assignForm.paperId
+        );
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.message);
+        }
+
+        this.assignDialogVisible = false;
+        this.$message.success(res.meta.message);
+        this.getPapersFunc();
+      });
     },
   },
 };
