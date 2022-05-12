@@ -103,8 +103,8 @@ export function searchPaper(paperId,params) {
 }
 
 // 获取需要评论的文章列表
-export function reviewPapers(reviewerName){
-    return axios.get(`rpapers/${reviewerName}`)
+export function reviewPapers(reviewerName,params){
+    return axios.get(`rpapers/${reviewerName}`,params)
 }
 
 // 添加文字

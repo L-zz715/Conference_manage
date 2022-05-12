@@ -189,6 +189,7 @@ export default {
         const res = await reviewPapers(this.userProfile.username, {
           params: this.queryInfo,
         })
+        console.log(res)
       }
       else {
         // 根据作者名（用户名）获得文章列表
