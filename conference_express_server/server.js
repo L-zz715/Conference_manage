@@ -1072,14 +1072,14 @@ app.get('/api/rpapers/:reviewerName', async (req, res) => {
     })
     // console.log(reviewsIdList)
 
-    const queryStr = "^.*" + req.body.query + ".*$"
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     // 获得拥有上述列表中评论的文章列表
     const paperlist = await Paper.find({ reviewList: { $in: reviewsIdList } }).where({
         title: reg
-    }).populate('conferences').limit(req.body.pagesize)
-        .skip((req.body.pagenum - 1) * req.body.pagesize)
+    }).populate('conferences').limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
     // console.log(paperlist)
 
     const paperNum = await Paper.find({ reviewList: { $in: reviewsIdList } }).where({
