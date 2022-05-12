@@ -229,5 +229,11 @@ get {{url}}cpapers/user2
 }
 
 ###
+post {{url}}review/user5/627bb337b04e86b3c5b1aa47
+
+
+###
+get {{url}}rpapers/user5
+###
 get {{url}}profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90

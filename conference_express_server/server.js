@@ -872,8 +872,8 @@ app.get('/api/allpaper', async (req, res) => {
 })
 
 // 根据作者名(用户)，query获取文章列表
-app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
-    let papers = await Paper.find({authorName: req.params.userName}).populate('conferences')
+app.get('/api/papers/:userName', authMiddleware, async (req, res) => {
+    let papers = await Paper.find({ authorName: req.params.userName }).populate('conferences')
     if (!papers) {
         return res.send({
             meta: {
@@ -885,11 +885,11 @@ app.get('/api/papers/:userName', authMiddleware, async (req,res) =>{
     const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
-    const paperNum = await Paper.find({authorName: req.params.userName}).where({
+    const paperNum = await Paper.find({ authorName: req.params.userName }).where({
         papername: reg
     }).count()
 
-    papers = await Paper.find({authorName: req.params.userName}).where({
+    papers = await Paper.find({ authorName: req.params.userName }).where({
         title: reg
     }).populate('conferences')
         .limit(req.query.pagesize)
@@ -950,32 +950,32 @@ app.get('/api/paper/:id', async (req, res) => {
     console.log(req.params)
     let paper = await Paper.findById(req.params.id)
     console.log(paper)
-    if(!paper){
+    if (!paper) {
         return res.send({
-            meta:{
-                status:403,
-                message:'文章不存在'
+            meta: {
+                status: 403,
+                message: '文章不存在'
             }
         })
     }
 
     res.send({
-        meta:{
-            status:200,
-            message:'获取文章成功'
+        meta: {
+            status: 200,
+            message: '获取文章成功'
         },
-        data:paper
+        data: paper
     })
 })
 
 // 修改文章
-app.put('/api/paper/:paperId', async(req,res)=>{
+app.put('/api/paper/:paperId', async (req, res) => {
     let paper = await Paper.findById(req.params.paperId)
-    if(!paper){
+    if (!paper) {
         return res.send({
-            meta:{
-                status:403,
-                message:'文章不存在'
+            meta: {
+                status: 403,
+                message: '文章不存在'
             }
         })
     }
@@ -983,13 +983,13 @@ app.put('/api/paper/:paperId', async(req,res)=>{
     paper.title = req.body.title
     paper.topic = req.body.topic
     await paper.save()
-    
+
     res.send({
-        meta:{
-            status:200,
-            message:'修改文章成功'
+        meta: {
+            status: 200,
+            message: '修改文章成功'
         },
-        data:paper
+        data: paper
     })
 })
 
@@ -1029,7 +1029,7 @@ app.post('/api/paper/:conferId', async (req, res) => {
 })
 
 // 删除文章
-app.delete('/api/apaper/:id',async(req,res)=>{
+app.delete('/api/apaper/:id', async (req, res) => {
     const paper = await Paper.findById(req.params.id).populate('conferences');
     const meta = {
         status: 403,
@@ -1042,10 +1042,10 @@ app.delete('/api/apaper/:id',async(req,res)=>{
     }
 
     // 获得含有此文章的会议
-    const conference = await Conference.findOne().where({paperList:{ $elemMatch: { $eq: paper._id } }})
+    const conference = await Conference.findOne().where({ paperList: { $elemMatch: { $eq: paper._id } } })
     // 会议删除此文章
     let index = conference.paperList.indexOf(paper._id)
-    conference.paperList.splice(index,1)
+    conference.paperList.splice(index, 1)
     await conference.save()
     // 在paper 数据库删除文章
     await paper.remove();
@@ -1057,6 +1057,107 @@ app.delete('/api/apaper/:id',async(req,res)=>{
     })
 })
 
+//  reviewTitle: { type: String },
+// reviewerName: { type: String },
+// content: { type: String }
+//   reviewList: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Review' , maxlength: 3}]
+
+// 获得需要评论的文章列表
+app.get('/api/rpapers/:reviewerName', async (req, res) => {
+    const reviews = await Review.find().where({ reviewerName: req.params.reviewerName })
+    let reviewsIdList = []
+    reviews.forEach((item) => {
+        reviewsIdList.push(item._id)
+    })
+
+    const papers = await Paper.find()
+    let finPapers = []
+    // 判断文章是否该被评论者的评论
+    papers.forEach((item) => {
+        let hasA = false
+        item.reviewList.forEach(async (one) => {
+            const hasReview = await Review.findById(one)
+            if(hasReview.reviewerName ===req.params.reviewerName){
+                hasA = true
+            }
+        });
+        setTimeout(() => {
+            // console.log('$$$',hasA)
+            if(hasA){
+                // console.log(item)
+                finPapers.push(item)
+            }
+        },500)
+
+      
+    })
+    setTimeout(() => {
+        if(finPapers.length === 0){
+            res.send({
+                meta:{
+                    status:200,
+                    message:'没有需要评论的文章'
+                }
+            })
+        }else{
+            res.send({
+                meta:{
+                    status:200,
+                    message:'获取文章列表成功'
+                },
+                data:finPapers
+            })
+        }
+
+    },800)
+})
+
+// 分配评论者
+app.post('/api/review/:reviewerName/:paperId', async (req, res) => {
+    let hasReview = false
+    const paper = await Paper.findById(req.params.paperId)
+
+    paper.reviewList.forEach(async (item) => {
+        const tempReview = await Review.findById(item)
+        // console.log(tempReview)
+        if (tempReview.reviewerName === req.params.reviewerName) {
+            hasReview = true
+            // console.log('@@', hasReview)
+            return
+        }
+
+    })
+
+    setTimeout(async () => {
+        // console.log('!!!', hasReview)
+        if (hasReview) {
+            return res.send({
+                meta: {
+                    status: 403,
+                    message: '已经分配该评论者'
+                }
+            })
+        }
+        // console.log('ccccc')
+        const review = await Review.create({
+            reviewerName: req.params.reviewerName,
+            reviewTitle: '',
+            content: ''
+        })
+
+        paper.reviewList.push(review)
+        await paper.save()
+
+        res.send({
+            meta: {
+                status: 200,
+                message: '分配评论者成功'
+            },
+            data: paper
+        })
+
+    }, 500);
+})
 
 // 监听4000端口
 app.listen(4000, (err) => {
