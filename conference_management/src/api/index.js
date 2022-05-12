@@ -98,8 +98,13 @@ export function getPapersByAuthor(authorName,params){
 }
 
 // 获取文章 by id
-export function searchPaper(paperId) {
-    return axios.get(`paper/${paperId}`)
+export function searchPaper(paperId,params) {
+    return axios.get(`paper/${paperId}`,params)
+}
+
+// 获取需要评论的文章列表
+export function reviewPapers(reviewerName){
+    return axios.get(`rpapers/${reviewerName}`)
 }
 
 // 添加文字

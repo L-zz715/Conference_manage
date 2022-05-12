@@ -114,6 +114,7 @@ import {
   deletePaper,
   editPaper,
   searchPaper,
+  reviewPapers
 } from "@/api";
 import { mapState } from "vuex";
 export default {
@@ -184,7 +185,12 @@ export default {
         });
         this.paperList = papers;
 
-      } else {
+      } else if(this.currentRole === "reviewer"){
+        const res = await reviewPapers(this.userProfile.username, {
+          params: this.queryInfo,
+        })
+      }
+      else {
         // 根据作者名（用户名）获得文章列表
         const res = await getPapersByAuthor(this.userProfile.username, {
           params: this.queryInfo,
