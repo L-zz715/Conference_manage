@@ -1065,51 +1065,37 @@ app.delete('/api/apaper/:id', async (req, res) => {
 // 获得需要评论的文章列表
 app.get('/api/rpapers/:reviewerName', async (req, res) => {
     const reviews = await Review.find().where({ reviewerName: req.params.reviewerName })
+    // 获得给定评论者的评论id列表
     let reviewsIdList = []
     reviews.forEach((item) => {
         reviewsIdList.push(item._id)
     })
+    // console.log(reviewsIdList)
 
-    const papers = await Paper.find()
-    let finPapers = []
-    // 判断文章是否该被评论者的评论
-    papers.forEach((item) => {
-        let hasA = false
-        item.reviewList.forEach(async (one) => {
-            const hasReview = await Review.findById(one)
-            if(hasReview.reviewerName ===req.params.reviewerName){
-                hasA = true
-            }
-        });
-        setTimeout(() => {
-            // console.log('$$$',hasA)
-            if(hasA){
-                // console.log(item)
-                finPapers.push(item)
-            }
-        },500)
+    const queryStr = "^.*" + req.query.query + ".*$"
+    const reg = new RegExp(queryStr)
 
-      
+    // 获得拥有上述列表中评论的文章列表
+    const paperlist = await Paper.find({ reviewList: { $in: reviewsIdList } }).where({
+        title: reg
+    }).populate('conferences').limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
+    // console.log(paperlist)
+
+    const paperNum = await Paper.find({ reviewList: { $in: reviewsIdList } }).where({
+        title: reg
+    }).populate('conferences').count()
+    // console.log('##', paperNum)
+
+    res.send({
+        meta: {
+            status: 200,
+            message: '获取文章列表成功'
+        },
+        data: paperlist,
+        total: paperNum
     })
-    setTimeout(() => {
-        if(finPapers.length === 0){
-            res.send({
-                meta:{
-                    status:200,
-                    message:'没有需要评论的文章'
-                }
-            })
-        }else{
-            res.send({
-                meta:{
-                    status:200,
-                    message:'获取文章列表成功'
-                },
-                data:finPapers
-            })
-        }
-
-    },800)
+ 
 })
 
 // 分配评论者
