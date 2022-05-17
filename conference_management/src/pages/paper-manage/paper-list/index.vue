@@ -19,6 +19,31 @@
       <el-table :data="paperList" style="width: 100%" border stripe>
         <!-- 下面这一个column添加的是索引链 -->
         <el-table-column type="index"> </el-table-column>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="标题:">
+                <span>{{ props.row.title }}</span>
+              </el-form-item>
+              <el-form-item label="作者姓名:">
+                <span>{{ props.row.topic }}</span>
+              </el-form-item>
+              <el-form-item label="领域:">
+                <span>{{ props.row.chairname }}</span>
+              </el-form-item>
+              <el-form-item label="会议名称:">
+                <span>{{ props.row.conferences[0].confername }}</span>
+              </el-form-item>
+              <el-form-item label="文章内容:">
+                <span>{{ props.row.content }}</span>
+              </el-form-item>
+              <el-form-item label="审核人员：">
+                <span v-for="i in props.row.reviewList" :key="i">{{ i }}<br/> </span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+
         <el-table-column prop="title" label="标题"> </el-table-column>
         <el-table-column prop="authorName" label="作者姓名"> </el-table-column>
         <el-table-column prop="topic" label="领域"> </el-table-column>
@@ -381,5 +406,21 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.demo-table-expand {
+  font-size: 0;
+}
+
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+ 
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+   word-break: break-all;
+}
 </style>

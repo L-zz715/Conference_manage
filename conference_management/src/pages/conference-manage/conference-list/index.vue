@@ -18,6 +18,30 @@
       <el-table :data="conferList" style="width: 100%" border stripe>
         <!-- 下面这一个column添加的是索引链 -->
         <el-table-column type="index"> </el-table-column>
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="会议名称：">
+                <span>{{ props.row.confername }}</span>
+              </el-form-item>
+              <el-form-item label="主题：">
+                <span>{{ props.row.title }}</span>
+              </el-form-item>
+              <el-form-item label="领域：">
+                <span>{{ props.row.topic }}</span>
+              </el-form-item>
+              <el-form-item label="主席姓名：">
+                <span>{{ props.row.chairname }}</span>
+              </el-form-item>
+              <el-form-item label="会议日期：">
+                <span> {{ props.row.date | dateFormat }}</span>
+              </el-form-item>
+              <el-form-item label="与会人员：">
+                <span v-for="i in props.row.attendPpl" :key="i">{{ i }} </span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column prop="confername" label="会议名称"> </el-table-column>
         <el-table-column prop="title" label="主题"> </el-table-column>
         <el-table-column prop="topic" label="领域"> </el-table-column>
@@ -577,5 +601,19 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.demo-table-expand {
+  font-size: 0;
+}
+
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 </style>
