@@ -234,6 +234,26 @@ post {{url}}review/user5/627bb337b04e86b3c5b1aa47
 
 ###
 get {{url}}rpapers/user5
+{{json}}
+
+{
+    "query":"",
+    "pagenum":1,
+    "pagesize":7
+}
+
+###
+get {{url}}review/627ca0720f45027c2a7f0934
+
+###
+put {{url}}review/627ca0720f45027c2a7f0934
+{{json}}
+
+{
+    "reviewTitle":"sdadf",
+    "content":"asdfsdaf"
+}
+
 ###
 get {{url}}profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90

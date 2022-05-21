@@ -1145,6 +1145,51 @@ app.post('/api/review/:reviewerName/:paperId', async (req, res) => {
     }, 500);
 })
 
+// 获得评论通过id
+app.get('/api/review/:id', async(req,res) =>{
+    const review = await Review.findById(req.params.id)
+    if(!review){
+        return res.send({
+            meta:{
+                status:403,
+                message:'没有找到评论'
+            }
+        })
+    }
+    res.send({
+        meta:{
+            status:200,
+            message:'找到评论成功'
+        },
+        data:review
+    })
+})
+
+// 修改评论通过评论者id
+app.put('/api/review/:id', async(req,res)=>{
+    const review = await Review.findById(req.params.id)
+    if(!review){
+        return res.send({
+            meta:{
+                status:403,
+                message:'没有找到评论'
+            }
+        })
+    }
+
+    review.reviewTitle = req.body.reviewTitle
+    review.content = req.body.content
+    await review.save()
+
+    res.send({
+        meta:{
+            status:200,
+            message:'找到评论成功'
+        },
+        data:review
+    })
+})
+
 // 监听4000端口
 app.listen(4000, (err) => {
     if (!err) {
