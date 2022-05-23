@@ -126,3 +126,13 @@ export function editPaper(paperId, params){
 export function deletePaper(paperId){
     return axios.delete(`apaper/${paperId}`)
 }
+
+// 通过id获得评论
+export function searchReview(reviewId){
+    return axios.get(`review/${reviewId}`)
+}
+
+// 修改评论
+export function editReview(reviewId,params){
+    return axios.put(`review/${reviewId}`,params)
+}
