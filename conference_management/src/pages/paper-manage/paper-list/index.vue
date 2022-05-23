@@ -26,10 +26,10 @@
                 <span>{{ props.row.title }}</span>
               </el-form-item>
               <el-form-item label="作者姓名:">
-                <span>{{ props.row.topic }}</span>
+                <span>{{ props.row.authorName }}</span>
               </el-form-item>
               <el-form-item label="领域:">
-                <span>{{ props.row.chairname }}</span>
+                <span>{{ props.row.topic }}</span>
               </el-form-item>
               <el-form-item label="会议名称:">
                 <span>{{ props.row.conferences[0].confername }}</span>
@@ -37,8 +37,10 @@
               <el-form-item label="文章内容:">
                 <span>{{ props.row.content }}</span>
               </el-form-item>
-              <el-form-item label="审核人员：">
-                <span v-for="i in props.row.reviewList" :key="i">{{ i }}<br/> </span>
+              <el-form-item label="审核：">
+                <span v-for="(obj, index) in props.row.reviewInfo" :key="index"
+                  >审核人员姓名：{{ obj.reviewerName }}<br/>评论标题：{{ obj.reviewTitle }}<br/>评论内容：{{ obj.content }}
+                </span>
               </el-form-item>
             </el-form>
           </template>
@@ -193,6 +195,7 @@ import {
   searchPaper,
   reviewPapers,
   assignReviewer,
+  searchReview,
 } from "@/api";
 import { mapState } from "vuex";
 export default {
@@ -201,6 +204,7 @@ export default {
   data() {
     return {
       paperList: [],
+      reviewInfo: [],
       queryInfo: {
         query: "",
         pagenum: 1, // 当前的页数
@@ -292,7 +296,20 @@ export default {
         }
         this.paperList = res.data;
       }
-      console.log(this.paperList);
+
+      // 增加保存review的array
+      this.paperList.forEach((i) => {
+        // console.log("££", i.reviewList);
+        i.reviewInfo = [];
+      });
+
+      // 获取每个review信息并保存
+      this.paperList.forEach((i) => {
+        i.reviewList.forEach(async (r) => {
+          let res = await searchReview(r);
+          i.reviewInfo.push(res.data);
+        });
+      });
     },
 
     searchManyFunc(queryP) {
@@ -412,15 +429,18 @@ export default {
 }
 
 .demo-table-expand label {
-  width: 90px;
   color: #99a9bf;
- 
+}
+
+.demo-table-expand span {
+  font-size: 12px;
+  display: block;
 }
 
 .demo-table-expand .el-form-item {
   margin-right: 0;
   margin-bottom: 0;
   width: 100%;
-   word-break: break-all;
+  word-break: break-all;
 }
 </style>
