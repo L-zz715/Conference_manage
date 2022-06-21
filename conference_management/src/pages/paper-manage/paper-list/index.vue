@@ -7,10 +7,13 @@
       <el-row :gutter="20">
         <!-- 绑定自定义事件 -->
         <Search v-on:searchMany="searchManyFunc" />
+
+        <!-- 添加文章跳转按钮 -->
+        <!-- :disabled="currentRole !== 'author'" -->
         <el-button
+          v-show="currentRole === 'author'"
           type="primary"
           @click="transSubmitRoute"
-          :disabled="currentRole !== 'author'"
           >添加文章
         </el-button>
       </el-row>
@@ -39,7 +42,9 @@
               </el-form-item>
               <el-form-item label="审核：">
                 <span v-for="(obj, index) in props.row.reviewInfo" :key="index"
-                  >审核人员姓名：{{ obj.reviewerName }}<br/>评论标题：{{ obj.reviewTitle }}<br/>评论内容：{{ obj.content }}
+                  >审核人员姓名：{{ obj.reviewerName }}<br />评论标题：{{
+                    obj.reviewTitle
+                  }}<br />评论内容：{{ obj.content }}
                 </span>
               </el-form-item>
             </el-form>
@@ -57,18 +62,20 @@
 
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
-            <!-- {{scope.row}} -->
-            <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
+            <!-- 编辑按钮 -->
+            <!-- :disabled="currentRole !== 'admin' && currentRole !== 'author'" -->
             <el-button
-              :disabled="currentRole !== 'admin' && currentRole !== 'author'"
+              id="edi"
+              v-show="currentRole === 'admin' && currentRole === 'author'"
               type="primary"
               icon="el-icon-edit"
               size="mini"
               @click="showEditDialog(scope.row._id)"
             ></el-button>
             <!-- 删除按钮 -->
+            <!--  :disabled="currentRole !== 'admin' && currentRole !== 'author'"-->
             <el-button
-              :disabled="currentRole !== 'admin' && currentRole !== 'author'"
+              v-show="currentRole === 'admin' && currentRole === 'author'"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -76,13 +83,24 @@
             ></el-button>
 
             <!-- 分配审核按钮 -->
+            <!-- :disabled="currentRole !== 'admin' && currentRole !== 'chair'" -->
             <el-button
-              :disabled="currentRole !== 'admin' && currentRole !== 'chair'"
+              v-show="currentRole === 'admin' && currentRole === 'chair'"
               type="warning"
               icon="el-icon-setting"
               size="mini"
               @click="showAssignDialog(scope.row)"
             ></el-button>
+
+            <!-- 审核文章 -->
+            <el-button
+              v-show="currentRole === 'reviewer'"
+              type="warning"
+              icon="el-icon-s-check"
+              size="mini"
+              @click="transReviewRoute(scope.row._id)"
+            >
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -379,7 +397,7 @@ export default {
         });
     },
 
-    // 分配审核人员
+    // 展示分配审核人员对话框
     async showAssignDialog(paper) {
       let usersRes = await getAllUsers();
       // const paperRes = await searchPaper(paper._id);
@@ -396,6 +414,7 @@ export default {
       this.assignDialogVisible = true;
     },
 
+    // 关闭分配审核人员对话框
     assignDialogClosed() {
       this.$refs.assignFormRef.resetFields();
     },
@@ -419,6 +438,19 @@ export default {
         this.getPapersFunc();
       });
     },
+
+    // 跳转审核文章
+    transReviewRoute(id) {
+      this.$store.commit("permission/SET_CURRENTMENU", "paper-review-submit");
+
+      this.$router.push({
+        name:'paper-review-submit',
+        params:{paperId:id}
+      });
+      // this.$nextTick(function () {
+      //   this.$bus.$emit("hello", 220);
+      // });
+    },
   },
 };
 </script>
@@ -426,10 +458,6 @@ export default {
 <style scoped>
 .demo-table-expand {
   font-size: 0;
-}
-
-.demo-table-expand label {
-  color: #99a9bf;
 }
 
 .demo-table-expand span {
@@ -443,4 +471,9 @@ export default {
   width: 100%;
   word-break: break-all;
 }
+
+/* 测试展示按钮 */
+/* #edi{
+  display: none;
+} */
 </style>

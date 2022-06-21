@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- 面包屑导航 -->
-    <Breadcrumb />
-
     <el-card class="box-card">
       <el-form
         ref="addFormRef"
@@ -20,7 +17,7 @@
           <el-input v-model.trim="addForm.authorName" disabled></el-input>
         </el-form-item>
 
-        <el-form-item label="领域" prop="topic">
+        <el-form-item label="领域: " prop="topic">
           <el-select
             v-model="addForm.topic"
             placeholder="请选择"
@@ -36,7 +33,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="会议" prop="conferId">
+        <el-form-item label="会议: " prop="conferId">
           <el-select
             v-model="addForm.conferId"
             placeholder="请选择"
@@ -51,7 +48,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="内容" prop="content">
+        <el-form-item label="内容: " prop="content">
           <!-- 富文本编辑器 -->
           <quill-editor v-model="addForm.content"></quill-editor>
         </el-form-item>
@@ -66,7 +63,6 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb.vue";
 import { getAttConferList, addPaper } from "@/api";
 import { mapState } from "vuex";
 
@@ -113,7 +109,6 @@ export default {
       conferNameList: [],
     };
   },
-  components: { Breadcrumb },
   mounted() {},
   computed: {
     ...mapState(["interestOptions", "currentRole"]),
@@ -141,23 +136,35 @@ export default {
       this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
       this.$router.push("list");
     },
-    submitPaper() {
-      this.$refs.addFormRef.validate(async (valid) => {
-        if (!valid) return;
-        let res = await addPaper(this.addForm.conferId, {
-          title: this.addForm.title,
-          authorName: this.addForm.authorName,
-          topic: this.addForm.topic,
-          content: this.addForm.content,
-        });
-        if (res.meta.status !== 200) {
-          return this.$message.error(res.meta.message);
-        }
 
-        this.$message.success(res.meta.message);
-        this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
-        this.$router.push("list");
-      });
+    // 提交文章
+    submitPaper() {
+      this.$confirm("你确定要提交这篇文章吗, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$refs.addFormRef.validate(async (valid) => {
+            if (!valid) return;
+            let res = await addPaper(this.addForm.conferId, {
+              title: this.addForm.title,
+              authorName: this.addForm.authorName,
+              topic: this.addForm.topic,
+              content: this.addForm.content,
+            });
+            if (res.meta.status !== 200) {
+              return this.$message.error(res.meta.message);
+            }
+
+            this.$message.success(res.meta.message);
+            this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
+            this.$router.push("list");
+          });
+        })
+        .catch(() => {
+          return this.$message.info("已取消提交");
+        });
     },
   },
 };
