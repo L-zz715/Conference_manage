@@ -13,7 +13,10 @@
         style="width: 95%"
       >
         <el-form-item label="审核标题: " prop="reviewTitle">
-          <el-input v-model.trim="addForm.reviewTitle" :disabled="addForm.reviewTitle !== ''"></el-input>
+          <el-input
+            v-model.trim="addForm.reviewTitle"
+            :disabled="addForm.reviewTitle !== ''"
+          ></el-input>
         </el-form-item>
 
         <!-- :disabled="!userProfile.username.includes('admin')" -->
@@ -23,7 +26,10 @@
 
         <el-form-item label="评论内容:" prop="content">
           <!-- 富文本编辑器 -->
-          <quill-editor v-model="addForm.content" :disabled="addForm.content !== ''"></quill-editor>
+          <quill-editor
+            v-model="addForm.content"
+            :disabled="addForm.content !== ''"
+          ></quill-editor>
         </el-form-item>
       </el-form>
 
@@ -36,7 +42,7 @@
 </template>
 
 <script>
-import { searchPaper, editReview } from "@/api";
+import { searchPaper, searchReview, editReview } from "@/api";
 import { mapState } from "vuex";
 
 export default {
@@ -70,11 +76,10 @@ export default {
     };
   },
   created() {
-    // console.log(this.$route.params.paperId);
     this.paperId = this.$route.params.paperId || "";
     this.addForm.reviewerName = this.userProfile.username;
-
     this.getPaper();
+    this.getReview();
   },
   computed: {
     ...mapState("permission", ["userProfile"]),
@@ -93,6 +98,11 @@ export default {
       }
     },
 
+    async getReview() {
+      const res = await searchReview(this.paperId, this.addForm.reviewerName);
+      console.log(res);
+    },
+
     cacelSubmit() {
       this.$refs.addFormRef.resetFields();
       this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
@@ -108,15 +118,19 @@ export default {
       })
         .then(() => {
           this.$refs.addFormRef.validate(async (valid) => {
-             if (!valid) return;
-            let res = await editReview(this.paperId,this.addForm.reviewerName, {
-              reviewTitle: this.addForm.reviewTitle,
-              content: this.addForm.content,
-            });
-             if (res.meta.status !== 200) {
+            if (!valid) return;
+            let res = await editReview(
+              this.paperId,
+              this.addForm.reviewerName,
+              {
+                reviewTitle: this.addForm.reviewTitle,
+                content: this.addForm.content,
+              }
+            );
+            if (res.meta.status !== 200) {
               return this.$message.error(res.meta.message);
             }
-            console.log(res)
+            console.log(res);
           });
         })
         .catch(() => {

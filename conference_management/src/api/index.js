@@ -127,9 +127,9 @@ export function deletePaper(paperId){
     return axios.delete(`apaper/${paperId}`)
 }
 
-// 通过id获得评论
-export function searchReview(reviewId){
-    return axios.get(`review/${reviewId}`)
+// 通过paper id,reviewer name获得评论
+export function searchReview(paperId,reviewerName){
+    return axios.get(`review/${paperId}/${reviewerName}`)
 }
 
 // 提交审核文章评论
