@@ -12,8 +12,8 @@
         label-width="100px"
         style="width: 95%"
       >
-        <el-form-item label="审核标题: " prop="title">
-          <el-input v-model.trim="addForm.title"></el-input>
+        <el-form-item label="审核标题: " prop="reviewTitle">
+          <el-input v-model.trim="addForm.reviewTitle" :disabled="addForm.reviewTitle !== ''"></el-input>
         </el-form-item>
 
         <!-- :disabled="!userProfile.username.includes('admin')" -->
@@ -23,7 +23,7 @@
 
         <el-form-item label="评论内容:" prop="content">
           <!-- 富文本编辑器 -->
-          <quill-editor v-model="addForm.content"></quill-editor>
+          <quill-editor v-model="addForm.content" :disabled="addForm.content !== ''"></quill-editor>
         </el-form-item>
       </el-form>
 
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { searchPaper } from "@/api";
+import { searchPaper, editReview } from "@/api";
 import { mapState } from "vuex";
 
 export default {
@@ -46,19 +46,19 @@ export default {
       PaperTitle: "",
       PaperContent: "",
       addForm: {
-        title: "",
+        reviewTitle: "",
         reviewerName: "",
         content: "",
       },
       addFormRules: {
-        title: [
+        reviewTitle: [
           {
             required: true,
             message: "请输入标题",
             trigger: "blur",
           },
         ],
-       
+
         content: [
           {
             required: true,
@@ -76,8 +76,8 @@ export default {
 
     this.getPaper();
   },
-  computed:{
-    ...mapState('permission',['userProfile'])
+  computed: {
+    ...mapState("permission", ["userProfile"]),
   },
   methods: {
     async getPaper() {
@@ -92,15 +92,40 @@ export default {
         }
       }
     },
+
     cacelSubmit() {
       this.$refs.addFormRef.resetFields();
       this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
       this.$router.push("list");
     },
+
     submitReview() {
-      this.$refs.addFormRef.resetFields();
-      this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
-      this.$router.push("list");
+      console.log(this.addForm);
+      this.$confirm("你确定要提交审核吗, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$refs.addFormRef.validate(async (valid) => {
+             if (!valid) return;
+            let res = await editReview(this.paperId,this.addForm.reviewerName, {
+              reviewTitle: this.addForm.reviewTitle,
+              content: this.addForm.content,
+            });
+             if (res.meta.status !== 200) {
+              return this.$message.error(res.meta.message);
+            }
+            console.log(res)
+          });
+        })
+        .catch(() => {
+          return this.$message.info("已取消提交");
+        });
+
+      // this.$refs.addFormRef.resetFields();
+      // this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
+      // this.$router.push("list");
     },
   },
 };
