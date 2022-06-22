@@ -5,11 +5,11 @@
 get {{url}}
 
 ###
-get {{url}}users
+get {{url}}users 
 {{json}}
 
 {
-    "query":"a",
+    "query":"",
     "pagenum":1,
     "pagesize":7
     
@@ -202,6 +202,14 @@ post {{url}}paper/62751bbcfac70265ebf60f62
     "content": "asfdfasfasdfasdfcvdf"
 }
 
+###
+get {{url}}papers/user2
+{{json}}
+{
+    "query":"",
+    "pagenum":1,
+    "pagesize":8
+}
 
 ###
 delete {{url}}apaper/
@@ -229,7 +237,7 @@ get {{url}}cpapers/user2
 }
 
 ###
-post {{url}}review/user5/627bb337b04e86b3c5b1aa47
+post {{url}}review/user8/62b11ca8e8b3e2a38bdaef0b
 
 
 ###
@@ -250,12 +258,11 @@ put {{url}}review/627bb3afb04e86b3c5b1aa51/user5
 {{json}}
 
 {
-    {
-    "reviewTitle":"sdadf",
-    "content":"asdfsdaf"
-}
+    "reviewerName": "user5",
+    "reviewTitle":"sdadfwedf",
+    "content":"asdfsdzxczxcvvzvxcvcxaf"
 }
 
 ###
 get {{url}}profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1MTUxMjc2NH0.Hfza97YxHYg8OocK05uPi4XVg7Mc4wTIvhJMe-yQm90
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNmJlZTFiZDhjZjVkNmRhNWE4OWFlNiIsImlhdCI6MTY1NTg3OTMxMX0.jfSeN57lEhS_m7PdpgqjCDZyayVp3WLrBZdMYtlcMd0
