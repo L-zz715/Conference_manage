@@ -132,7 +132,7 @@ export function searchReview(reviewId){
     return axios.get(`review/${reviewId}`)
 }
 
-// 修改评论
-export function editReview(reviewId,params){
-    return axios.put(`review/${reviewId}`,params)
+// 提交审核文章评论
+export function editReview(paperId,reviewerName,params){
+    return axios.put(`review/${paperId}/${reviewerName}`,params)
 }
