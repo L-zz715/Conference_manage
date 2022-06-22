@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.connect('mongodb://localhost:27017/conference')
 
+// 创建用户模型
 const UserSchema = new mongoose.Schema({
     username: { type: String, unique: true },
     email: { type: String, unique: true },
@@ -18,6 +19,7 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema)
 
+// 创建admin权限模型
 const adminPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -27,7 +29,7 @@ const adminPermisSchema = new mongoose.Schema({
 
 const AdminPermiss = mongoose.model('AdminPermiss', adminPermisSchema)
 
-
+// 创建chair权限模型
 const chairPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -37,6 +39,7 @@ const chairPermisSchema = new mongoose.Schema({
 
 const ChairPermiss = mongoose.model('ChairPermiss', chairPermisSchema)
 
+// 创建author权限模型
 const authorPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -46,6 +49,7 @@ const authorPermisSchema = new mongoose.Schema({
 
 const AuthorPermiss = mongoose.model('AuthorPermiss', authorPermisSchema)
 
+// 创建reviewer权限模型
 const reviewerPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -55,6 +59,7 @@ const reviewerPermisSchema = new mongoose.Schema({
 
 const ReviewerPermiss = mongoose.model('ReviewerPermiss', reviewerPermisSchema)
 
+// 创建角色模型
 const RoleSchema = new mongoose.Schema({
     rolename: { type: String, unique: true },
     description: { type: String },
@@ -62,6 +67,7 @@ const RoleSchema = new mongoose.Schema({
 
 const Role = mongoose.model('Role', RoleSchema)
 
+// 创建评论review模型并和文章paper模型关联
 const reviewSchema = new mongoose.Schema({
     reviewTitle: { type: String },
     reviewerName: { type: String },
@@ -79,7 +85,7 @@ reviewSchema.virtual('papers', {
 
 const Review = mongoose.model('Review', reviewSchema)
 
-
+// 创建文章paper模型并和会议conference模型关联
 const paperSchema = new mongoose.Schema({
     title: { type: String },
     authorName: { type: String },
@@ -99,6 +105,7 @@ paperSchema.virtual('conferences', {
 
 const Paper = mongoose.model('Paper', paperSchema)
 
+// 创建会议conference模型
 const ConferenceSchema = new mongoose.Schema({
     confername: { type: String },
     title: { type: String },
