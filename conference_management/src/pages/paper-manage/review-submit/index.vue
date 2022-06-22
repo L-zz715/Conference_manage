@@ -15,7 +15,7 @@
         <el-form-item label="审核标题: " prop="reviewTitle">
           <el-input
             v-model.trim="addForm.reviewTitle"
-            :disabled="addForm.reviewTitle !== ''"
+            :disabled="review.reviewTitle !== ''"
           ></el-input>
         </el-form-item>
 
@@ -28,14 +28,19 @@
           <!-- 富文本编辑器 -->
           <quill-editor
             v-model="addForm.content"
-            :disabled="addForm.content !== ''"
+            :disabled="review.content !== ''"
           ></quill-editor>
         </el-form-item>
       </el-form>
 
       <div class="submit-footer">
         <el-button @click="cacelSubmit">取 消</el-button>
-        <el-button type="primary" @click="submitReview">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="submitReview"
+          v-show="review.content === ''"
+          >确 定</el-button
+        >
       </div>
     </el-card>
   </div>
@@ -51,6 +56,10 @@ export default {
       paperId: "",
       PaperTitle: "",
       PaperContent: "",
+      review: {
+        reviewTitle: "",
+        content: "",
+      },
       addForm: {
         reviewTitle: "",
         reviewerName: "",
@@ -100,7 +109,13 @@ export default {
 
     async getReview() {
       const res = await getReview(this.paperId, this.addForm.reviewerName);
-      console.log(res);
+      if (res.meta.status === 200) {
+        this.addForm.reviewTitle = res.data.reviewTitle;
+        const reg = /<\/?.+?\/?>/g;
+        this.addForm.content = res.data.content.replace(reg, " ").trim();
+        this.review.reviewTitle = res.data.reviewTitle;
+        this.review.content = res.data.content.replace(reg, " ").trim();
+      }
     },
 
     cacelSubmit() {
@@ -131,15 +146,15 @@ export default {
               return this.$message.error(res.meta.message);
             }
             console.log(res);
+            this.$message.success(res.meta.message);
+            this.$refs.addFormRef.resetFields();
+            this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
+            this.$router.push("list");
           });
         })
         .catch(() => {
           return this.$message.info("已取消提交");
         });
-
-      // this.$refs.addFormRef.resetFields();
-      // this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
-      // this.$router.push("list");
     },
   },
 };
