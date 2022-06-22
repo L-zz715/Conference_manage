@@ -246,12 +246,14 @@ get {{url}}rpapers/user5
 get {{url}}review/627ca0720f45027c2a7f0934
 
 ###
-put {{url}}review/627ca0720f45027c2a7f0934
+put {{url}}review/627bb3afb04e86b3c5b1aa51/user5
 {{json}}
 
 {
+    {
     "reviewTitle":"sdadf",
     "content":"asdfsdaf"
+}
 }
 
 ###
