@@ -1218,7 +1218,7 @@ app.put('/api/review/:paperId/:reviewerName', async (req, res) => {
         return res.send({
             meta: {
                 status: 404,
-                message: '没有找到评论'
+                message: '提交审核评论失败'
             }
         })
     }
@@ -1230,7 +1230,7 @@ app.put('/api/review/:paperId/:reviewerName', async (req, res) => {
     res.send({
         meta: {
             status: 200,
-            message: '找到评论成功'
+            message: '提交审核评论成功'
         },
         data: review
     })
