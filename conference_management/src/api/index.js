@@ -132,6 +132,11 @@ export function searchReview(reviewId){
     return axios.get(`review/${reviewId}`)
 }
 
+// 通过paper id,reviewer name获得评论
+export function getReview(paperId,reviewerName){
+    return axios.get(`areview/${paperId}/${reviewerName}`)
+}
+
 // 提交审核文章评论
 export function editReview(paperId,reviewerName,params){
     return axios.put(`review/${paperId}/${reviewerName}`,params)
