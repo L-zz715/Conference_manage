@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { searchPaper, searchReview, editReview } from "@/api";
+import { searchPaper, getReview, editReview } from "@/api";
 import { mapState } from "vuex";
 
 export default {
@@ -99,7 +99,7 @@ export default {
     },
 
     async getReview() {
-      const res = await searchReview(this.paperId, this.addForm.reviewerName);
+      const res = await getReview(this.paperId, this.addForm.reviewerName);
       console.log(res);
     },
 
