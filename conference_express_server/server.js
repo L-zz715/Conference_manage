@@ -1145,8 +1145,28 @@ app.post('/api/review/:reviewerName/:paperId', async (req, res) => {
     })
 })
 
+// 根据id获得评论
+app.get('/api/review/:id', async (req, res) => {
+    const review = await Review.findById(req.params.id)
+    if (!review) {
+        return res.send({
+            meta: {
+                status: 404,
+                message: '没有找到评论'
+            }
+        })
+    }
+    res.send({
+        meta: {
+            status: 200,
+            message: '找到评论成功'
+        },
+        data: review
+    })
+})
+
 // 根据paper id 和 review name获得评论
-app.get('/api/review/:paperId/:reviewerName', async (req, res) => {
+app.get('/api/areview/:paperId/:reviewerName', async (req, res) => {
     // 根据id找到要审核的文章
     const paper = await Paper.findById(req.params.paperId)
     // 根据审核人名寻找之前分配审核人时创建的空评论
