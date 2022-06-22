@@ -144,12 +144,11 @@ app.get('/api/profile', authMiddleware, async (req, res) => {
 })
 
 // 根据query值查询user信息
-app.get('/api/users', authMiddleware, async (req, res) => {
-    console.log(req)
+app.get('/api/users', async (req, res) => {
     let users = await User.find()
 
     // 根据query获取筛选用户的正则
-    const queryStr = "^.*" + req.query.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
     let meta = {
@@ -175,7 +174,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
     users = await User.find().where({
         username: reg
     })
-        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+        .limit(req.body.pagesize).skip((req.body.pagenum - 1) * req.body.pagesize)
     res.send({
         meta: meta,
         data: users,
@@ -184,7 +183,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 })
 
 // 获得所有用户信息
-app.get('/api/allusers', authMiddleware, async (req, res) => {
+app.get('/api/allusers', async (req, res) => {
     let users = await User.find()
 
     if (!users) {
@@ -650,7 +649,7 @@ app.post('/api/roles', async (req, res) => {
 })
 
 // 获取会议列表
-app.get('/api/conference', authMiddleware, async (req, res) => {
+app.get('/api/conference', async (req, res) => {
     let conferences = await Conference.find()
 
     let meta = {
@@ -662,7 +661,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
             meta: meta
         })
     }
-    const queryStr = "^.*" + req.query.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const conferNum = await Conference.find().where({
@@ -672,7 +671,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
     conferences = await Conference.find().where({
         confername: reg
     })
-        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+        .limit(req.body.pagesize).skip((req.body.pagenum - 1) * req.body.pagesize)
 
 
     meta = {
@@ -688,7 +687,7 @@ app.get('/api/conference', authMiddleware, async (req, res) => {
 })
 
 // 获取会议列表 是否参会者 根据参会者名字判断，传参用来判断返回分页和search
-app.get('/api/conference/:name', authMiddleware, async (req, res) => {
+app.get('/api/conference/:name', async (req, res) => {
     let conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
     let meta = {
         status: 404,
@@ -700,17 +699,20 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
         })
     }
 
-    const queryStr = "^.*" + req.query.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
-    const conferNum = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] }).where({
-        confername: reg
-    }).count()
+    const conferNum = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
+        .where({
+            confername: reg
+        }).count()
 
-    conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] }).where({
-        confername: reg
-    })
-        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
+    conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
+        .where({
+            confername: reg
+        })
+        .limit(req.body.pagesize)
+        .skip((req.body.pagenum - 1) * req.body.pagesize)
 
     meta = {
         status: 200,
@@ -724,7 +726,7 @@ app.get('/api/conference/:name', authMiddleware, async (req, res) => {
 })
 
 // 获取会议信息只根据参会者姓名
-app.get('/api/conferences/:name', authMiddleware, async (req, res) => {
+app.get('/api/conferences/:name', async (req, res) => {
     let conferences = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
 
     if (!conferences) {
@@ -747,7 +749,6 @@ app.get('/api/conferences/:name', authMiddleware, async (req, res) => {
 
 // 添加会议
 app.post('/api/conference', async (req, res) => {
-
     // 解决时差问题
     const date = new Date(req.body.date)
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
@@ -887,7 +888,7 @@ app.get('/api/allpaper', async (req, res) => {
 })
 
 // 根据作者名(用户)，query获取文章列表
-app.get('/api/papers/:userName', authMiddleware, async (req, res) => {
+app.get('/api/papers/:userName', async (req, res) => {
     let papers = await Paper.find({ authorName: req.params.userName }).populate('conferences')
     if (!papers) {
         return res.send({
@@ -897,7 +898,7 @@ app.get('/api/papers/:userName', authMiddleware, async (req, res) => {
             }
         })
     }
-    const queryStr = "^.*" + req.query.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const paperNum = await Paper.find({ authorName: req.params.userName }).where({
@@ -907,10 +908,9 @@ app.get('/api/papers/:userName', authMiddleware, async (req, res) => {
     papers = await Paper.find({ authorName: req.params.userName }).where({
         title: reg
     }).populate('conferences')
-        .limit(req.query.pagesize)
-        .skip((req.query.pagenum - 1) * req.query.pagesize)
+        .limit(req.body.pagesize)
+        .skip((req.body.pagenum - 1) * req.body.pagesize)
 
-    console.log(papers)
     res.send({
         meta: {
             status: 200,
@@ -922,7 +922,7 @@ app.get('/api/papers/:userName', authMiddleware, async (req, res) => {
 })
 
 // 根据query获取所有文章
-app.get('/api/paper', authMiddleware, async (req, res) => {
+app.get('/api/paper', async (req, res) => {
     let papers = await Paper.find().populate('conferences')
 
     let meta = {
@@ -934,7 +934,7 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
             meta: meta
         })
     }
-    const queryStr = "^.*" + req.query.query + ".*$"
+    const queryStr = "^.*" + req.body.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const paperNum = await Paper.find().where({
@@ -944,15 +944,15 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
     papers = await Paper.find().where({
         title: reg
     }).populate('conferences')
-        .limit(req.query.pagesize)
-        .skip((req.query.pagenum - 1) * req.query.pagesize)
+        .limit(req.body.pagesize)
+        .skip((req.body.pagenum - 1) * req.body.pagesize)
 
 
     meta = {
         status: 200,
         message: '获取文章信息成功'
     }
-    console.log(papers)
+
     res.send({
         meta: meta,
         data: papers,
@@ -962,9 +962,7 @@ app.get('/api/paper', authMiddleware, async (req, res) => {
 
 // 根据id获得文章
 app.get('/api/paper/:id', async (req, res) => {
-    console.log(req.params)
     let paper = await Paper.findById(req.params.id)
-    console.log(paper)
     if (!paper) {
         return res.send({
             meta: {
@@ -1120,7 +1118,6 @@ app.post('/api/review/:reviewerName/:paperId', async (req, res) => {
             break
         }
     }
-
     if (hasReview) {
         return res.send({
             meta: {
@@ -1129,7 +1126,6 @@ app.post('/api/review/:reviewerName/:paperId', async (req, res) => {
             }
         })
     }
-
     const review = await Review.create({
         reviewerName: req.params.reviewerName,
         reviewTitle: '',
@@ -1198,7 +1194,6 @@ app.put('/api/review/:paperId/:reviewerName', async (req, res) => {
     review.reviewTitle = req.body.reviewTitle
     review.content = req.body.content
     await review.save()
-
     res.send({
         meta: {
             status: 200,
