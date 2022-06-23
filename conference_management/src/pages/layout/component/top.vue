@@ -1,7 +1,6 @@
 <template>
-  <!-- <el-container> -->
   <el-header>
-    <span class="title">会议管理系统</span>
+    <h1 class="title">会议管理系统</h1>
     <span class="role_label">你好，{{ username }} </span>
     <span>用户角色：</span>
     <el-select
@@ -18,12 +17,10 @@
       >log out</el-button
     >
   </el-header>
-  <!-- </el-container> -->
 </template>
 
 <script>
 import { mapState } from "vuex";
-import {getProfile} from "@/api"
 export default {
   data() {
     return {
@@ -45,17 +42,16 @@ export default {
     getRoleList() {
       this.currentUserRoleList = this.UserRoleList.split(",");
     },
-    getUserProfile() {},
     logout() {
       this.$store.commit("LOGIN_OUT");
       this.$store.commit("CLEAR_USERROLELIST");
       this.$store.commit("CLEAR_CURRENTROLE");
-      window.sessionStorage.clear()
+      window.sessionStorage.clear();
       window.location.reload();
     },
     changeCurrentRole(role) {
       window.sessionStorage.setItem("currentRole", role);
-      this.$router.push('/home')
+      this.$router.push("/home");
       window.location.reload();
     },
   },
@@ -69,14 +65,20 @@ export default {
   justify-content: flex-start;
   align-items: center;
   padding-left: 0;
-  /* width: 100%; */
 }
 
 .el-header .title,
 span {
   font-size: 18px;
   color: #fff;
-  margin-left: 15px;
+  margin-left: 1%;
+  width: 300px;
+}
+
+h1 {
+  display: inline-block;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+
 }
 
 .el-header .role_label {
@@ -86,6 +88,6 @@ span {
 }
 
 .el-button {
-  margin-left: 1%;
+  margin-left: 3%;
 }
 </style>

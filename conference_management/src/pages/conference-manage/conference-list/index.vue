@@ -445,9 +445,7 @@ export default {
   methods: {
     async getConfersList() {
       if (this.currentRole === "admin") {
-        let res = await getAllConfers({
-          params: this.queryInfo,
-        });
+        let res = await getAllConfers(this.queryInfo);
         // console.log(res);
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);

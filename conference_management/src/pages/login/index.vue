@@ -1,7 +1,13 @@
 <template>
   <div class="login_container">
+    <div class="head">
+      <div class="title">
+        <img src="@/assets/newIcon1.png" alt="会议图标" />
+        <h1>会议管理系统CMS</h1>
+      </div>
+    </div>
     <div class="login_box">
-      <h3>Login</h3>
+      <h2>Login</h2>
       <el-form
         ref="loginFormRef"
         :model="loginForm"
@@ -71,6 +77,7 @@ export default {
     };
   },
   methods: {
+    // 登录
     loginFuc() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return;
@@ -86,17 +93,16 @@ export default {
         let token = res.token;
         let roleList = res.user.rolelist;
         this.$store.commit("LOGIN_IN", token);
-        //保存角色信息
 
+        //保存角色信息
         this.$store.commit("SET_USERROLELIST", roleList);
         this.$store.commit("SET_CURRENTROLE", roleList[0]);
         window.sessionStorage.setItem("currentRole", roleList[0]);
-        //保存用户信息
-        // let res2 = await getProfile(token);
-        // store.commit("permission/SET_USERPROFILE", res2.data);
+        //跳转首页
         this.$router.replace("/").catch(() => {});
       });
     },
+    // 重置登录信息
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields();
     },
@@ -105,6 +111,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.head {
+  height: 15%;
+  background-color: #fff;
+}
 .login_container {
   height: 100%;
   background-color: #2b4b6b;
@@ -113,38 +123,13 @@ export default {
 .login_box {
   width: 450px;
   height: 300px;
+  border-radius: 3%;
   background-color: #fff;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-
-  .avatar_box {
-    //less  的语法嵌套
-    height: 130px;
-    width: 130px;
-    border: 1px solid #eee;
-    border-radius: 50%;
-    padding: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px #ddd;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-
-    img {
-      width: 100%;
-      border-radius: 50%;
-      background-color: #eee;
-    }
-  }
-}
-
-.btns {
-  // float: right;
-  display: flex;
-  justify-content: flex-end;
+  box-shadow: 0 16px 20px 0 rgba(0, 0, 0, 0.4);
 }
 
 .login_form {
@@ -152,4 +137,37 @@ export default {
   position: absolute;
   bottom: 0;
 }
+
+.btns {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+img {
+  position: relative;
+  float: left;
+  top: 20px;
+}
+
+h1,h2{
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+h1 {
+  float: left;
+}
+
+h2 {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+
 </style>
