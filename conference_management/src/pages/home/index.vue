@@ -1,25 +1,18 @@
 <template>
-  <div>home 首页</div>
- 
+  <div>
+    <h1>欢迎来到会议管理系统</h1>
+  </div>
 </template>
 
 <script>
 export default {
   name: "Home",
-  // data() {
-  //   return {
-  //     isCollapse: false,
-  //     activePath: "",
-  //   };
-  // },
-  // methods: {
-  //   logout() {
-  //     this.$router.push("login");
-  //   },
-  // },
 };
 </script>
 
 <style scoped>
+h1{
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
 
+}
 </style> 

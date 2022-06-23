@@ -148,7 +148,7 @@ app.get('/api/users', async (req, res) => {
     let users = await User.find()
 
     // 根据query获取筛选用户的正则
-    const queryStr = "^.*" + req.body.query + ".*$"
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     let meta = {
@@ -174,7 +174,7 @@ app.get('/api/users', async (req, res) => {
     users = await User.find().where({
         username: reg
     })
-        .limit(req.body.pagesize).skip((req.body.pagenum - 1) * req.body.pagesize)
+        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
     res.send({
         meta: meta,
         data: users,
@@ -249,9 +249,9 @@ app.put('/api/users/:id', async (req, res) => {
     }
 
     // 修改用户信息
-    user.mobile = req.body.mobile
-    user.rolelist = req.body.rolelist
-    user.interest = req.body.interest
+    user.mobile = req.query.mobile
+    user.rolelist = req.query.rolelist
+    user.interest = req.query.interest
     await user.save()
     res.send({
         meta: meta,
