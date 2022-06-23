@@ -249,9 +249,9 @@ app.put('/api/users/:id', async (req, res) => {
     }
 
     // 修改用户信息
-    user.mobile = req.query.mobile
-    user.rolelist = req.query.rolelist
-    user.interest = req.query.interest
+    user.mobile = req.body.mobile
+    user.rolelist = req.body.rolelist
+    user.interest = req.body.interest
     await user.save()
     res.send({
         meta: meta,
@@ -661,7 +661,7 @@ app.get('/api/conference', async (req, res) => {
             meta: meta
         })
     }
-    const queryStr = "^.*" + req.body.query + ".*$"
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const conferNum = await Conference.find().where({
@@ -671,8 +671,7 @@ app.get('/api/conference', async (req, res) => {
     conferences = await Conference.find().where({
         confername: reg
     })
-        .limit(req.body.pagesize).skip((req.body.pagenum - 1) * req.body.pagesize)
-
+        .limit(req.query.pagesize).skip((req.query.pagenum - 1) * req.query.pagesize)
 
     meta = {
         status: 200,
@@ -699,7 +698,7 @@ app.get('/api/conference/:name', async (req, res) => {
         })
     }
 
-    const queryStr = "^.*" + req.body.query + ".*$"
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const conferNum = await Conference.find({ $or: [{ chairname: req.params.name }, { attendPpl: { $elemMatch: { $eq: req.params.name } } }] })
@@ -711,8 +710,8 @@ app.get('/api/conference/:name', async (req, res) => {
         .where({
             confername: reg
         })
-        .limit(req.body.pagesize)
-        .skip((req.body.pagenum - 1) * req.body.pagesize)
+        .limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
 
     meta = {
         status: 200,
@@ -795,9 +794,10 @@ app.put('/api/conference/:id', async (req, res) => {
     // 解决时差问题
     const date = new Date(req.body.date)
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-
     const hasConference = await Conference.findOne({ $and: [{ chairname: conference.chairname }, { date: date }] })
-    if (hasConference) {
+
+    //若不是要修改的会议，且会议时间和主席冲突
+    if (hasConference && (String(conference._id) !== String(hasConference._id))) {
         return res.send({
             meta: {
                 status: 404,
@@ -898,7 +898,7 @@ app.get('/api/papers/:userName', async (req, res) => {
             }
         })
     }
-    const queryStr = "^.*" + req.body.query + ".*$"
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const paperNum = await Paper.find({ authorName: req.params.userName }).where({
@@ -908,8 +908,8 @@ app.get('/api/papers/:userName', async (req, res) => {
     papers = await Paper.find({ authorName: req.params.userName }).where({
         title: reg
     }).populate('conferences')
-        .limit(req.body.pagesize)
-        .skip((req.body.pagenum - 1) * req.body.pagesize)
+        .limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
 
     res.send({
         meta: {
@@ -934,7 +934,7 @@ app.get('/api/paper', async (req, res) => {
             meta: meta
         })
     }
-    const queryStr = "^.*" + req.body.query + ".*$"
+    const queryStr = "^.*" + req.query.query + ".*$"
     const reg = new RegExp(queryStr)
 
     const paperNum = await Paper.find().where({
@@ -944,8 +944,8 @@ app.get('/api/paper', async (req, res) => {
     papers = await Paper.find().where({
         title: reg
     }).populate('conferences')
-        .limit(req.body.pagesize)
-        .skip((req.body.pagenum - 1) * req.body.pagesize)
+        .limit(req.query.pagesize)
+        .skip((req.query.pagenum - 1) * req.query.pagesize)
 
 
     meta = {

@@ -444,9 +444,11 @@ export default {
   mounted() {},
   methods: {
     async getConfersList() {
+      // 根据不同角色和用户名获得不同会议列表信息
       if (this.currentRole === "admin") {
-        let res = await getAllConfers(this.queryInfo);
-        // console.log(res);
+        let res = await getAllConfers({
+          params: this.queryInfo,
+        });
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }
@@ -456,7 +458,6 @@ export default {
         let res = await getAttendConfers(this.userProfile.username, {
           params: this.queryInfo,
         });
-        // console.log("@@",res);
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }
@@ -464,10 +465,14 @@ export default {
         this.total = res.total;
       }
     },
+
+    // 用来查询会议列表的query
     searchManyFunc(queryP) {
       this.queryInfo.query = queryP;
       this.getConfersList();
     },
+
+    // 弹出添加会议弹窗
     async transAddDialogVisible() {
       let res = await getAllUsers();
       console.log("@@@", res);
@@ -483,14 +488,20 @@ export default {
       this.addForm.chairname = this.userProfile.username;
       this.addDialogVisible = !this.addDialogVisible;
     },
+
+    // 用于分页控制
     selectPageUpdateList(newQueryInfo) {
       this.queryInfo = newQueryInfo;
       this.getConfersList();
     },
+
+    // 关闭添加会议弹窗
     addDialogClosed() {
       this.usernameList = [];
       this.$refs.addFormRef.resetFields();
     },
+
+    // 添加会议
     async addConferFuc() {
       this.$refs.addFormRef.validate(async (valid) => {
         if (!valid) return;
@@ -505,10 +516,14 @@ export default {
         this.getConfersList();
       });
     },
+
+    // 关闭编辑弹窗
     editDialogClosed() {
       this.usernameList = [];
       this.$refs.editFormRef.resetFields();
     },
+
+    // 编辑会议
     editConferInfo() {
       this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return;
@@ -575,6 +590,8 @@ export default {
 
       this.editDialogVisible = true;
     },
+
+    // 删除会议
     async removeConferById(conferId) {
       this.$confirm("此操作将永久删除该" + "会议" + ", 是否继续?", "提示", {
         confirmButtonText: "确定",

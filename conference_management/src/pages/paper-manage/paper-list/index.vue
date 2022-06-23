@@ -9,7 +9,6 @@
         <Search v-on:searchMany="searchManyFunc" />
 
         <!-- 添加文章跳转按钮 -->
-        <!-- :disabled="currentRole !== 'author'" -->
         <el-button
           v-show="currentRole === 'author'"
           type="primary"
@@ -66,16 +65,16 @@
             <!-- :disabled="currentRole !== 'admin' && currentRole !== 'author'" -->
             <el-button
               id="edi"
-              v-show="currentRole === 'admin' && currentRole === 'author'"
+              v-show="currentRole === 'admin' || currentRole === 'author'"
               type="primary"
               icon="el-icon-edit"
               size="mini"
               @click="showEditDialog(scope.row._id)"
             ></el-button>
+
             <!-- 删除按钮 -->
-            <!--  :disabled="currentRole !== 'admin' && currentRole !== 'author'"-->
             <el-button
-              v-show="currentRole === 'admin' && currentRole === 'author'"
+              v-show="currentRole === 'admin' || currentRole === 'author'"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -83,27 +82,47 @@
             ></el-button>
 
             <!-- 分配审核按钮 -->
-            <!-- :disabled="currentRole !== 'admin' && currentRole !== 'chair'" -->
-            <el-button
-              v-show="currentRole === 'admin' && currentRole === 'chair'"
-              type="warning"
-              icon="el-icon-setting"
-              size="mini"
-              @click="showAssignDialog(scope.row)"
-            ></el-button>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="分配审核人员"
+              placement="top"
+            >
+              <el-button
+                v-show="currentRole === 'chair'"
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+                @click="showAssignDialog(scope.row)"
+              ></el-button>
+            </el-tooltip>
 
             <!-- 审核文章 -->
-            <el-button
-              v-show="currentRole === 'reviewer'"
-              type="warning"
-              icon="el-icon-s-check"
-              size="mini"
-              @click="transReviewRoute(scope.row._id)"
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="审核文章"
+              placement="top"
             >
-            </el-button>
+              <el-button
+                v-show="currentRole === 'reviewer'"
+                type="warning"
+                icon="el-icon-s-check"
+                size="mini"
+                @click="transReviewRoute(scope.row._id)"
+              >
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页控制 -->
+      <Pagination
+        :getQueryInfo="queryInfo"
+        :totalNum="total"
+        v-on:updateList="selectPageUpdateList"
+      />
     </el-card>
 
     <!-- 修改文章的对话框 -->
@@ -270,6 +289,7 @@ export default {
   },
   mounted() {},
   methods: {
+    // 获得文章列表
     async getPapersFunc() {
       // 根据不同的角色显示不同的文章列表
       if (this.currentRole === "admin") {
@@ -281,6 +301,8 @@ export default {
           this.$message.error(res.meta.message);
         }
         this.paperList = res.data;
+        this.total = res.total;
+
       } else if (this.currentRole === "chair") {
         let papers = [];
         const res = await getPapers({
@@ -294,15 +316,19 @@ export default {
           }
         });
         this.paperList = papers;
+        this.total = this.paperList.length;
+
       } else if (this.currentRole === "reviewer") {
         const res = await reviewPapers(this.userProfile.username, {
           params: this.queryInfo,
         });
-        // console.log(res)
+
         if (res.meta.status !== 200) {
           this.$message.error(res.meta.message);
         }
         this.paperList = res.data;
+        this.total = res.total;
+
       } else {
         // 根据作者名（用户名）获得文章列表
         const res = await getPapersByAuthor(this.userProfile.username, {
@@ -313,6 +339,8 @@ export default {
           this.$message.error(res.meta.message);
         }
         this.paperList = res.data;
+        this.total = res.total;
+
       }
 
       // 增加保存review的array
@@ -330,9 +358,9 @@ export default {
       });
     },
 
+    // 改变查询文章的query（查询框使用）
     searchManyFunc(queryP) {
       this.queryInfo.query = queryP;
-
       this.getPapersFunc();
     },
 
@@ -342,6 +370,7 @@ export default {
       this.$router.push("paperSubmit");
     },
 
+    // 展示编辑框
     async showEditDialog(paperId) {
       const res = await searchPaper(paperId);
       if (res.meta.status !== 200) {
@@ -351,10 +380,12 @@ export default {
       this.editDialogVisible = true;
     },
 
+    // 关闭编辑框
     editDialogClosed() {
       this.$refs.editFormRef.resetFields();
     },
 
+    // 修改文章
     editPaperInfo() {
       this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return;
@@ -376,7 +407,7 @@ export default {
       });
     },
 
-    // 删除paper
+    // 删除文章
     removePaperById(paperId) {
       this.$confirm("此操作将永久删除该" + "文章" + ", 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -399,15 +430,15 @@ export default {
 
     // 展示分配审核人员对话框
     async showAssignDialog(paper) {
+      // 获得所有审核人员名单
       let usersRes = await getAllUsers();
-      // const paperRes = await searchPaper(paper._id);
-
       let reviewers = [];
       usersRes.data.forEach((item) => {
         if (item.rolelist.includes("reviewer")) {
           reviewers.push(item.username);
         }
       });
+
       this.reviewers = reviewers;
       this.assignForm.paperId = paper._id;
       this.assignForm.title = paper.title;
@@ -428,28 +459,30 @@ export default {
           this.assignForm.reviewerName,
           this.assignForm.paperId
         );
-
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.message);
         }
-
         this.assignDialogVisible = false;
         this.$message.success(res.meta.message);
         this.getPapersFunc();
       });
     },
 
-    // 跳转审核文章
+    // 跳转审核文章页面
     transReviewRoute(id) {
+      // 改变左边菜单栏高光指向
       this.$store.commit("permission/SET_CURRENTMENU", "paper-review-submit");
-
+      // 跳转 审核页面
       this.$router.push({
-        name:'paper-review-submit',
-        params:{paperId:id}
+        name: "paper-review-submit",
+        params: { paperId: id },
       });
-      // this.$nextTick(function () {
-      //   this.$bus.$emit("hello", 220);
-      // });
+    },
+
+    // 用于分页控制
+    selectPageUpdateList(newQueryInfo) {
+      this.queryInfo = newQueryInfo;
+      this.getConfersList();
     },
   },
 };
