@@ -1,5 +1,3 @@
-
-
 <template>
   <div>
     <!-- 面包屑导航 -->
@@ -32,7 +30,7 @@
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <!-- {{scope.row}} -->
-            <!-- 修改按钮   @click="showEditDialog(scope.row.id)"-->
+            <!-- 修改按钮 -->
             <el-button
               type="primary"
               icon="el-icon-edit"
@@ -112,7 +110,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="兴趣领域" prop="interest">
-              <el-select v-model="addForm.interest" placeholder="请选择"  style=" width: 100%">
+              <el-select v-model="addForm.interest" placeholder="请选择" style=" width: 100%">
                 <el-option
                   v-for="item in interestOptions"
                   :key="item.value"
@@ -229,6 +227,7 @@ export default {
 
       callback(new Error("请输入合法的手机号"));
     };
+
     return {
       queryInfo: {
         query: "",
@@ -355,8 +354,9 @@ export default {
     this.getUserList();
   },
   methods: {
+    // 获得用户列表
     async getUserList() {
-      let res = await getUsers({
+      const res = await getUsers({
         params: this.queryInfo,
       });
       if (res.meta.status !== 200) {

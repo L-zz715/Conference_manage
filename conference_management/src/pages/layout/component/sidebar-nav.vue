@@ -1,6 +1,4 @@
 <template>
-  <!--   :collapse="isCollapse"
-      :collapse-transition="false" -->
   <el-aside width="200px">
     <el-menu
       background-color="#2441a3"

@@ -57,10 +57,10 @@
             <!-- 修改按钮  -->
             <el-button
               :disabled="
-                (scope.row.chairname !== userProfile.username &&
-                  !userProfile.username.includes('admin')) ||
-                (currentRole !== 'chair' && currentRole !== 'admin')
+                scope.row.chairname !== userProfile.username &&
+                !userProfile.username.includes('admin')
               "
+              v-show="currentRole === 'chair' || currentRole === 'admin'"
               type="primary"
               icon="el-icon-edit"
               size="mini"
@@ -69,10 +69,10 @@
             <!-- 删除按钮 -->
             <el-button
               :disabled="
-                (scope.row.chairname !== userProfile.username &&
-                  !userProfile.username.includes('admin')) ||
-                (currentRole !== 'chair' && currentRole !== 'admin')
+                scope.row.chairname !== userProfile.username &&
+                !userProfile.username.includes('admin')
               "
+              v-show="currentRole === 'chair' || currentRole === 'admin'"
               type="danger"
               icon="el-icon-delete"
               size="mini"
@@ -446,7 +446,7 @@ export default {
     async getConfersList() {
       // 根据不同角色和用户名获得不同会议列表信息
       if (this.currentRole === "admin") {
-        let res = await getAllConfers({
+        const res = await getAllConfers({
           params: this.queryInfo,
         });
         if (res.meta.status !== 200) {
@@ -455,7 +455,7 @@ export default {
         this.conferList = res.data;
         this.total = res.total;
       } else {
-        let res = await getAttendConfers(this.userProfile.username, {
+        const res = await getAttendConfers(this.userProfile.username, {
           params: this.queryInfo,
         });
         if (res.meta.status !== 200) {
@@ -474,7 +474,7 @@ export default {
 
     // 弹出添加会议弹窗
     async transAddDialogVisible() {
-      let res = await getAllUsers();
+      const res = await getAllUsers();
       console.log("@@@", res);
       if (res.meta.status !== 200) {
         this.message.error(res.meta.message);
@@ -528,11 +528,8 @@ export default {
       this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return;
 
-        console.log(this.editForm.date);
         const dt = new Date(this.editForm.date);
-
         // 解决时差问题
-        // dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
         const y = dt.getFullYear();
         const m = (dt.getMonth() + 1 + "").padStart(2, "0");
         const d = (dt.getDate() + "").padStart(2, "0");
@@ -542,6 +539,7 @@ export default {
         this.editForm.date = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
         console.log(this.editForm.date);
 
+        // 修改会议
         const res = await editConference(this.editForm._id, {
           confername: this.editForm.confername,
           title: this.editForm.title,
@@ -561,20 +559,21 @@ export default {
 
     // 展示编辑会议对话框
     async showEditDialog(conferId) {
-      let res = await getAllUsers();
-      // console.log("@@@", res);
+      const res = await getAllUsers();
+
       if (res.meta.status !== 200) {
         this.message.error(res.meta.message);
       }
+
+      // 用于选择参加会议人员
       res.data.forEach((item) => {
         if (!item.username.includes("admin")) {
-          console.log(item);
           this.usernameList.push(item.username);
         }
       });
-      console.log(conferId);
-      let conferRes = await searchConference(conferId);
-      console.log(conferRes);
+
+      // 找到要修改的会议
+      const conferRes = await searchConference(conferId);
       this.editForm = conferRes.data;
 
       const dt = new Date(this.editForm.date);
@@ -605,7 +604,6 @@ export default {
             return this.$message.error("删除" + "会议" + "失败");
           }
           this.$message.success("删除" + "会议" + "成功");
-
           this.getConfersList();
         })
         .catch(() => {

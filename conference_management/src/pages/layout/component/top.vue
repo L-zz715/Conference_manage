@@ -35,20 +35,25 @@ export default {
     this.username = this.userProfile.username;
   },
   computed: {
+    // 获得储存的用户信息和角色信息
     ...mapState(["UserRoleList", "currentRole"]),
     ...mapState("permission", ["userProfile"]),
   },
   methods: {
+    // 获得当前用户的角色列表
     getRoleList() {
       this.currentUserRoleList = this.UserRoleList.split(",");
     },
+    // 登出
     logout() {
+      // 清除用户角色token等
       this.$store.commit("LOGIN_OUT");
       this.$store.commit("CLEAR_USERROLELIST");
       this.$store.commit("CLEAR_CURRENTROLE");
       window.sessionStorage.clear();
       window.location.reload();
     },
+    // 改变用户角色和跳转页面
     changeCurrentRole(role) {
       window.sessionStorage.setItem("currentRole", role);
       this.$router.push("/home");

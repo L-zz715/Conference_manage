@@ -11,36 +11,12 @@ Vue.use(VueRouter)
 
 // 初始化路由
 export const routes = [
-  // {
-  //   path: '/',
-  //   redirect: '/login',
-
-  // },
   {
     path: '/login',
     name: 'login',
     component: Login,
 
-  },
-  // {
-  //   path: '/layout',
-  //   name: 'layout',
-  //   component: Layout,
-
-  // },
-  // {
-  //   path: '/home',
-  //   name: 'Home',
-  //   component: Home,
-  //   children:[
-      // {
-      //   path: '/users',
-      //   name: 'Users',
-      //   component: Users,
-    
-      // },
-    // ]
-  // },
+  }
 ]
 
 // 动态路由

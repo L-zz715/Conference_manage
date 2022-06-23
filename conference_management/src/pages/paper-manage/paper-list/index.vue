@@ -13,7 +13,8 @@
           v-show="currentRole === 'author'"
           type="primary"
           @click="transSubmitRoute"
-          >添加文章
+        >
+          添加文章
         </el-button>
       </el-row>
 
@@ -302,7 +303,6 @@ export default {
         }
         this.paperList = res.data;
         this.total = res.total;
-
       } else if (this.currentRole === "chair") {
         let papers = [];
         const res = await getPapers({
@@ -317,7 +317,6 @@ export default {
         });
         this.paperList = papers;
         this.total = this.paperList.length;
-
       } else if (this.currentRole === "reviewer") {
         const res = await reviewPapers(this.userProfile.username, {
           params: this.queryInfo,
@@ -328,7 +327,6 @@ export default {
         }
         this.paperList = res.data;
         this.total = res.total;
-
       } else {
         // 根据作者名（用户名）获得文章列表
         const res = await getPapersByAuthor(this.userProfile.username, {
@@ -340,7 +338,6 @@ export default {
         }
         this.paperList = res.data;
         this.total = res.total;
-
       }
 
       // 增加保存review的array
@@ -431,10 +428,10 @@ export default {
     // 展示分配审核人员对话框
     async showAssignDialog(paper) {
       // 获得所有审核人员名单
-      let usersRes = await getAllUsers();
+      const usersRes = await getAllUsers();
       let reviewers = [];
       usersRes.data.forEach((item) => {
-        if (item.rolelist.includes("reviewer")) {
+        if (item.rolelist.includes("reviewer") && item.username !== this.userProfile.username) {
           reviewers.push(item.username);
         }
       });
@@ -455,7 +452,7 @@ export default {
       this.$refs.assignFormRef.validate(async (valid) => {
         if (!valid) return;
 
-        let res = await assignReviewer(
+        const res = await assignReviewer(
           this.assignForm.reviewerName,
           this.assignForm.paperId
         );
@@ -504,9 +501,4 @@ export default {
   width: 100%;
   word-break: break-all;
 }
-
-/* 测试展示按钮 */
-/* #edi{
-  display: none;
-} */
 </style>

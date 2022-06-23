@@ -83,7 +83,7 @@ export default {
         if (!valid) return;
 
         //调用封装的login
-        let res = await login(this.loginForm);
+        const res = await login(this.loginForm);
         if (res.meta.status !== 200) {
           return this.$message.error("登录失败");
         }
@@ -102,6 +102,7 @@ export default {
         this.$router.replace("/").catch(() => {});
       });
     },
+    
     // 重置登录信息
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields();

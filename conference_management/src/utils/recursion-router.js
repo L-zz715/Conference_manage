@@ -21,7 +21,7 @@
     return realRoutes;
 }
 
-
+// 设置默认路由
 export function setDefaultRoute(routes){
     routes.forEach((v,i) =>{
         if(v.children && v.children.length > 0){

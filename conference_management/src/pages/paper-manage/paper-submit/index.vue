@@ -12,9 +12,8 @@
           <el-input v-model.trim="addForm.title"></el-input>
         </el-form-item>
 
-        <!-- :disabled="!userProfile.username.includes('admin')" -->
         <el-form-item label="作者姓名: " prop="authorName">
-          <el-input v-model.trim="addForm.authorName" disabled></el-input>
+          <el-input v-model="addForm.authorName" disabled></el-input>
         </el-form-item>
 
         <el-form-item label="领域: " prop="topic">
@@ -118,8 +117,9 @@ export default {
     this.getConferlists();
   },
   methods: {
+    // 获得可选择的会议列表（文章属于哪个会议）
     async getConferlists() {
-      let res = await getAttConferList(this.userProfile.username);
+      const res = await getAttConferList(this.userProfile.username);
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.message);
       }
@@ -131,6 +131,8 @@ export default {
       });
       this.addForm.authorName = this.userProfile.username;
     },
+
+    // 取消提交文章
     cacelSubmit() {
       this.$refs.addFormRef.resetFields();
       this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
@@ -147,16 +149,16 @@ export default {
         .then(() => {
           this.$refs.addFormRef.validate(async (valid) => {
             if (!valid) return;
-            let res = await addPaper(this.addForm.conferId, {
+            const res = await addPaper(this.addForm.conferId, {
               title: this.addForm.title,
               authorName: this.addForm.authorName,
               topic: this.addForm.topic,
               content: this.addForm.content,
             });
+            
             if (res.meta.status !== 200) {
               return this.$message.error(res.meta.message);
             }
-
             this.$message.success(res.meta.message);
             this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
             this.$router.push("list");

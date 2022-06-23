@@ -19,9 +19,8 @@
           ></el-input>
         </el-form-item>
 
-        <!-- :disabled="!userProfile.username.includes('admin')" -->
         <el-form-item label="审核人: " prop="reviewerName">
-          <el-input v-model.trim="addForm.reviewerName" disabled></el-input>
+          <el-input v-model="addForm.reviewerName" disabled></el-input>
         </el-form-item>
 
         <el-form-item label="评论内容:" prop="content">
@@ -94,6 +93,7 @@ export default {
     ...mapState("permission", ["userProfile"]),
   },
   methods: {
+    // 获得选择的审核的文章内容
     async getPaper() {
       if (this.paperId === "") {
         this.$message.warning("请先选择要审核的文章！");
@@ -101,29 +101,39 @@ export default {
         const res = await searchPaper(this.paperId);
         if (res.meta.status === 200) {
           this.PaperTitle = res.data.title;
+          // 去掉html标签
           const reg = /<\/?.+?\/?>/g;
           this.PaperContent = res.data.content.replace(reg, " ").trim();
         }
       }
     },
 
+    // 找到之前添加的空评论
     async getReview() {
-      const res = await getReview(this.paperId, this.addForm.reviewerName);
-      if (res.meta.status === 200) {
-        this.addForm.reviewTitle = res.data.reviewTitle;
-        const reg = /<\/?.+?\/?>/g;
-        this.addForm.content = res.data.content.replace(reg, " ").trim();
-        this.review.reviewTitle = res.data.reviewTitle;
-        this.review.content = res.data.content.replace(reg, " ").trim();
+      if (this.paperId === "") {
+        this.$message.warning("请先选择要审核的文章！");
+      } else {
+        const res = await getReview(this.paperId, this.addForm.reviewerName);
+        if (res.meta.status === 200) {
+          this.addForm.reviewTitle = res.data.reviewTitle;
+          const reg = /<\/?.+?\/?>/g;
+          this.addForm.content = res.data.content.replace(reg, " ").trim();
+          this.review.reviewTitle = res.data.reviewTitle;
+          this.review.content = res.data.content.replace(reg, " ").trim();
+        }else{
+          this.message.error(res.meta.message)
+        }
       }
     },
 
+    // 取消提交
     cacelSubmit() {
       this.$refs.addFormRef.resetFields();
       this.$store.commit("permission/SET_CURRENTMENU", "paper-list");
       this.$router.push("list");
     },
 
+    // 提交审核评论
     submitReview() {
       console.log(this.addForm);
       this.$confirm("你确定要提交审核吗, 是否继续?", "提示", {
@@ -134,7 +144,7 @@ export default {
         .then(() => {
           this.$refs.addFormRef.validate(async (valid) => {
             if (!valid) return;
-            let res = await editReview(
+            const res = await editReview(
               this.paperId,
               this.addForm.reviewerName,
               {

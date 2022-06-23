@@ -11,7 +11,6 @@ const ConferenceList = () => import('@/pages/conference-manage/conference-list')
 const Paper = () => import('@/pages/paper-manage')
 const PaperList = () => import('@/pages/paper-manage/paper-list')
 const PaperSubmit = () => import('@/pages/paper-manage/paper-submit')
-const ReviewAssign = () => import('@/pages/paper-manage/review-assign')
 const ReviewSubmit = () => import('@/pages/paper-manage/review-submit')
 
 /* 需要权限判断的所有路由 */

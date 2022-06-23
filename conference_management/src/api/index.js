@@ -21,10 +21,12 @@ export function getUsers(params) {
     return axios.get('users', params)
 }
 
+// 获得所有用户列表
 export function getAllUsers(){
     return axios.get('allusers')
 }
 
+// 获得所有角色列表
 export function getAllRoles() {
     return axios.get('roles')
 }
@@ -35,18 +37,22 @@ export function getProfile(token) {
     return axios.get('profile', authTok)
 }
 
+// 添加用户
 export function addUser(userInfo) {
     return axios.post('register', userInfo)
 }
 
+// 修改用户
 export function modifyUser(userId, userInfo) {
     return axios.put(`users/${userId}`, userInfo)
 }
 
+// 查询用户
 export function searchUser(userId) {
     return axios.get(`users/${userId}`)
 }
 
+// 删除用户
 export function deleteUser(userId) {
     return axios.delete(`users/${userId}`)
 }

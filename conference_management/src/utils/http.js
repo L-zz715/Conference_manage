@@ -3,13 +3,10 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import baseURL from './baseURL'
 
-// const http = {}
-
 const instance = axios.create({
     timeout: 5000,
     baseURL
 })
-
 
 //添加请求拦截器
 instance.interceptors.request.use(
@@ -41,7 +38,6 @@ instance.interceptors.response.use(
                     Message.warning({
                         message: '授权失败，请重新登录'
                     })
-                    // store.commit('LOGIN_OUT')
                     setTimeout(() => {
                         window.location.reload()
                     }, 1000)
@@ -65,45 +61,5 @@ instance.interceptors.response.use(
         return Promise.reject(err.response)
     }
 )
-
-// instance.get = function (url, options) {
-//     return new Promise((resolve, reject) => {
-//         instance
-//             .get(url, options)
-//             .then(response => {
-//                 if (response.code === 0) {
-//                     resolve(response.data)
-//                 } else {
-//                     Message.error({
-//                         message: response.message+"@@@"
-//                     })
-//                     reject(response.message)
-//                 }
-//             })
-//             .catch(e => {
-//                 console.log(e)
-//             })
-//     })
-// }
-
-// instance.post = function (url, data, options) {
-//     return new Promise((resolve, reject) => {
-//         instance
-//             .post(url, data, options)
-//             .then(response => {
-//                 if (response.code === 0) {
-//                     resolve(response.data)
-//                 } else {
-//                     Message.error({
-//                         message: response.message
-//                     })
-//                     reject(response.message)
-//                 }
-//             })
-//             .catch(e => {
-//                 console.log(e)
-//             })
-//     })
-// }
 
 export default instance

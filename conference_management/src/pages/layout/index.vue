@@ -4,7 +4,6 @@
     <el-container>
       <SidebarNav class="sidebar" />
       <Content />
-     
     </el-container>
   </div>
 </template>
@@ -13,7 +12,6 @@
 import SidebarNav from "./component/sidebar-nav";
 import Top from "./component/top";
 import Content from "./component/content";
-import {getProfile} from "@/api/index"
 export default {
   data() {
     return {};
@@ -23,15 +21,8 @@ export default {
     Top,
     Content,
   },
-  created(){
-    this.getUserPro()
-  },
-  methods:{
-    async getUserPro(){
-      let res = await getProfile(window.sessionStorage.getItem("token"))
-    }
-  }
- 
+  created() {},
+  methods: {},
 };
 </script>
 
@@ -40,7 +31,7 @@ export default {
   height: 100%;
 }
 
-div{
+div {
   height: 100%;
 }
 </style>

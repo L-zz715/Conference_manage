@@ -14,7 +14,7 @@
       <!-- 下面这一个column添加的是展开链 可以用来展开二F级菜单-->
       <el-table-column type="expand" width="50px">
         <template slot-scope="scope">
-            <!-- {{scope.row}} -->
+          <!-- {{scope.row}} -->
           <el-row
             :class="index1 === 0 ? 'bdtop' : ''"
             class="bdbottom"
@@ -37,10 +37,7 @@
                 :key="cObj2.id"
               >
                 <el-col :span="6">
-                  <el-tag
-                    type="success"
-                    size="mini"
-                  >
+                  <el-tag type="success" size="mini">
                     {{ cObj2.name }}
                   </el-tag>
                 </el-col>
@@ -71,13 +68,19 @@ export default {
     };
   },
   computed: {
+    // 获得角色列表
     ...mapState("permission", ["roleObjList"]),
   },
   mounted() {},
   methods: {
+    // 获得权限列表
     async getRights(row) {
-      let res = await getRoleRights(row.rolename);
-      this.roleRightsList = res.data;
+      const res = await getRoleRights(row.rolename);
+      if (res.meta.status === 200) {
+        this.roleRightsList = res.data;
+      } else {
+        this.messege.error(res.meta.messege);
+      }
     },
   },
 };

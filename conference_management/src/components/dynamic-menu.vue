@@ -3,9 +3,9 @@
     <template v-for="v in menuList">
       <!-- 一级菜单 -->
       <el-submenu
+        :key="v.name"
         :index="v.name"
         v-if="v.children && v.children.length > 0"
-        :key="v.name"
       >
         <template slot="title">
           <i class="iconfont" :class="v.meta.icon"></i>
@@ -48,9 +48,11 @@ export default {
   methods: {
     gotoRoute(firstmenu,secondmenu,name) {
       const selectedMenu = [firstmenu, secondmenu]
-      this.$router.push({ name }).catch(()=>{}); 
+      // 保存当前选择的菜单，用于跳转页面的面包屑导航
       this.$store.commit("permission/SET_CURRENTMENU",name)
       this.$store.commit("permission/SET_SELECTEDMENUNAME",selectedMenu)
+      this.$router.push({ name }).catch(()=>{}); 
+
     },
   },
 };
