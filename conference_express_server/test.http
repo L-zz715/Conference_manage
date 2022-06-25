@@ -205,8 +205,19 @@ post {{url}}paper/62751bbcfac70265ebf60f62
 ###
 get {{url}}papers/user2
 {{json}}
+
 {
     "query":"",
+    "pagenum":1,
+    "pagesize":8
+}
+
+###
+get {{url}}paper
+{{json}}
+
+{
+    "query":"v",
     "pagenum":1,
     "pagesize":8
 }
@@ -251,7 +262,7 @@ get {{url}}rpapers/user5
 }
 
 ###
-get {{url}}review/627ca0720f45027c2a7f0934
+get {{url}}review/627bb3afb04e86b3c5b1aa51/user5
 
 ###
 put {{url}}review/627bb3afb04e86b3c5b1aa51/user5
