@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema)
 
-// 创建admin权限模型
+// 创建admin权限模型（用于动态导航菜单）
 const adminPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -29,7 +29,7 @@ const adminPermisSchema = new mongoose.Schema({
 
 const AdminPermiss = mongoose.model('AdminPermiss', adminPermisSchema)
 
-// 创建chair权限模型
+// 创建chair权限模型（用于动态导航菜单）
 const chairPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -39,7 +39,7 @@ const chairPermisSchema = new mongoose.Schema({
 
 const ChairPermiss = mongoose.model('ChairPermiss', chairPermisSchema)
 
-// 创建author权限模型
+// 创建author权限模型（用于动态导航菜单）
 const authorPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
@@ -49,7 +49,7 @@ const authorPermisSchema = new mongoose.Schema({
 
 const AuthorPermiss = mongoose.model('AuthorPermiss', authorPermisSchema)
 
-// 创建reviewer权限模型
+// 创建reviewer权限模型（用于动态导航菜单）
 const reviewerPermisSchema = new mongoose.Schema({
     name: { type: String, unique: true },
     children: [
